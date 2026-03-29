@@ -4,6 +4,8 @@ Geleneksel arıza tespit süreçlerini Google Gemini Yapay Zekâ modeli ile hız
 
 ![TeknikZeka Banner](https://via.placeholder.com/1000x400/4F46E5/FFFFFF?text=TeknikZeka+Yapay+Zeka+Destekli+Servis)
 
+🟢 **Canlı Demo (Hemen Deneyin):** [https://samehmet00.github.io/teknikzeka/](https://samehmet00.github.io/teknikzeka/)
+
 ## 🌟 Projenin Amacı
 Cihazı bozulan kullanıcılar genellikle sorunun ne olduğunu tam olarak bilemez ve teknik servise eksik bilgi verir. Servisler ise arıza tespitine saatlerini harcar. **TeknikZeka**, müşterinin girdiği basit şikayetleri gelişmiş dil modelleriyle analiz ederek anında donanımsal bir "Ön Teşhis Raporu" oluşturur. Oluşturulan bu biletler (ticket) yerel servislere düşer ve servisler cihazı tamir etmek için müşteriye talep gönderir.
 
