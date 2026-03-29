@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeknikZeka - Yapay Zekâ Destekli Servis Yönetimi</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    
+    <nav class="navbar">
+        <a href="index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
+        
+        <div class="nav-links">
+            <a href="#why-us">Neden Biz?</a>
+            <a href="#about">Nasıl Çalışır?</a>
+            <a href="#contact">İletişim</a>
+        </div>
+        
+        <div class="nav-actions">
+            <button id="theme-toggle-btn" class="theme-btn" title="Temayı Değiştir">☀️</button>
+            <div id="dynamic-auth-menu">
+                <a href="login.html" class="nav-login-btn">Sisteme Giriş Yap</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="animate-title">
+                Cihaz Arızalarınıza <br>
+                <span class="ai-glow-text">Yapay Zekâ</span> <br>
+                ile Çözüm Bulun
+            </h1>
+            <p class="animate-subtitle">Teknik servise gitmeden önce sorunun ne olduğunu öğrenin. Şikayetinizi yazın, gelişmiş algoritmamız saniyeler içinde donanımsal ön teşhisinizi yapsın ve sizi en doğru yerel servise yönlendirsin.</p>
+            
+            <a href="login.html" class="primary-btn-large" id="hero-action-btn">
+                <span class="btn-text">Hemen Arıza Kaydı Oluştur</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+        </div>
+    </header>
+
+    <a href="login.html" class="floating-fab" id="fab-action-btn">
+        <span class="btn-text">Hemen Arıza Kaydı Oluştur</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </a>
+
+    <section id="why-us" class="info-section">
+        <div class="sticky-container">
+            <h2 class="cinematic-sentence huge-title color-gradient-1">
+                Geleneksel Servis Anlayışını <span class="ai-glow-text" style="display:inline;">Değiştiriyoruz.</span>
+            </h2>
+            <p class="cinematic-sentence color-gradient-1">Cihazı bozulan kullanıcılar sorunun ne olduğunu tam olarak bilemezler.</p>
+            <p class="cinematic-sentence color-gradient-2">Teknik servisler ise müşteriden net bilgi alamadığı için arıza tespitinde saatlerini harcar.</p>
+            <p class="cinematic-sentence color-gradient-3">TeknikZeka, aradaki bu iletişim kopukluğunu yapay zekâ ile gidererek iki tarafın da zamanını kurtarır.</p>
+            <p class="cinematic-sentence color-gradient-1">Küçük işletmeler müşteri taleplerini defterler yerine dijital biletleme sistemiyle takip eder.</p>
+        </div>
+
+        <div class="scroll-triggers">
+            <div class="trigger" data-step="0"></div>
+            <div class="trigger" data-step="1"></div>
+            <div class="trigger" data-step="2"></div>
+            <div class="trigger" data-step="3"></div>
+            <div class="trigger" data-step="4"></div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="reveal">
+            <h2 class="section-title">Sadece 3 Adımda Çözüm</h2>
+        </div>
+        <div class="features">
+            <div class="feature-card reveal">
+                <div class="icon">📝</div>
+                <h3>1. Şikayetinizi Anlatın</h3>
+                <p>Cihazınızın gösterdiği belirtileri, duyduğunuz sesleri kendi kelimelerinizle yazın.</p>
+            </div>
+            <div class="feature-card reveal" style="transition-delay: 0.2s;">
+                <div class="icon">🤖</div>
+                <h3>2. AI Ön Teşhis Yapsın</h3>
+                <p>Dil modelimiz şikayetinizi okur ve olası donanım arızasını anında tespit eder.</p>
+            </div>
+            <div class="feature-card reveal" style="transition-delay: 0.4s;">
+                <div class="icon">🛠️</div>
+                <h3>3. Servise İletilsin</h3>
+                <p>Oluşan rapor güvenli buluta kaydedilir. Servisler panellerinden durumu görüp müdahale eder.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="footer reveal">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2>Teknik<span>Zeka</span></h2>
+                <p>İnternet Programcılığı Dersi Projesi olarak geliştirilmiştir.</p>
+            </div>
+            <div class="footer-contact">
+                <h3>İletişim & Konum</h3>
+                <p>📍 İnönü Üniversitesi, Bilgisayar Mühendisliği Bölümü</p>
+                <p>📧 destek@teknikzeka.app</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 TeknikZeka. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { auth } from './js/firebase-config.js';
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        // TEMA YÖNETİMİ
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        if (!localStorage.getItem('theme')) { localStorage.setItem('theme', 'dark'); }
+        if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeBtn.innerText = '🌙'; }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) { themeBtn.innerText = '🌙'; localStorage.setItem('theme', 'light'); } 
+            else { themeBtn.innerText = '☀️'; localStorage.setItem('theme', 'dark'); }
+        });
+
+        // İKİLİ BUTON ANİMASYON YÖNETİMİ
+        const heroBtn = document.getElementById('hero-action-btn');
+        const fabBtn = document.getElementById('fab-action-btn');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 250) {
+                heroBtn.classList.add('hidden'); // Ortadaki kaybolur
+                fabBtn.classList.add('visible'); // Sağ alttaki gelir
+            } else {
+                heroBtn.classList.remove('hidden'); 
+                fabBtn.classList.remove('visible'); 
+            }
+        });
+
+        // KULLANICI GİRİŞİ VE AKILLI BUTON YÖNETİMİ
+        const authMenu = document.getElementById('dynamic-auth-menu');
+        const techServiceEmails = ["servis@teknikzeka.app", "admin@test.com"];
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const username = user.email.split('@')[0]; 
+                const isTech = techServiceEmails.includes(user.email);
+                const targetPage = isTech ? "service.html" : "login.html"; 
+                
+                authMenu.innerHTML = `
+                    <div class="user-profile-pill">
+                        <a href="${targetPage}" class="user-name-text">👤 ${username}</a>
+                        <button id="home-logout-btn" class="logout-icon-btn" title="Çıkış Yap" style="width: 32px; height: 32px; border-width: 2px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        </button>
+                    </div>
+                `;
+                
+                document.getElementById('home-logout-btn').addEventListener('click', () => {
+                    signOut(auth).then(() => { window.location.reload(); });
+                });
+
+                // Giriş yapan SERVİS ise iki butonu da (ortadaki ve sağ alttaki) güncelle
+                const btnContent = isTech 
+                    ? `<span class="btn-text">Arıza Kayıtlarını Görüntüle</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`
+                    : `<span class="btn-text">Arıza Kayıtlarını Görüntüle</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
+                
+                heroBtn.innerHTML = btnContent; heroBtn.href = targetPage;
+                fabBtn.innerHTML = btnContent; fabBtn.href = targetPage;
+
+            } else {
+                authMenu.innerHTML = `<a href="login.html" class="nav-login-btn">Sisteme Giriş Yap</a>`;
+                
+                // Çıkış yapılmışsa butonları standart hale getir
+                const defaultContent = `<span class="btn-text">Hemen Arıza Kaydı Oluştur</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
+                
+                heroBtn.innerHTML = defaultContent; heroBtn.href = "login.html";
+                fabBtn.innerHTML = defaultContent; fabBtn.href = "login.html";
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sentences = document.querySelectorAll(".cinematic-sentence");
+            const triggers = document.querySelectorAll(".trigger");
+            const centerObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const stepIndex = entry.target.getAttribute("data-step");
+                    if (stepIndex === null) return;
+                    const text = sentences[stepIndex];
+                    if (entry.isIntersecting) { text.classList.add("active"); text.classList.remove("exit-up"); } 
+                    else { text.classList.remove("active"); if (entry.boundingClientRect.top < 0) { text.classList.add("exit-up"); } else { text.classList.remove("exit-up"); } }
+                });
+            }, { root: null, rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+
+            triggers.forEach(trigger => centerObserver.observe(trigger));
+
+            const reveals = document.querySelectorAll(".reveal");
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("active"); observer.unobserve(entry.target); } });
+            }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+            reveals.forEach(reveal => revealObserver.observe(reveal));
+        });
+    </script>
+</body>
+</html>

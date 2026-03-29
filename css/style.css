@@ -1,0 +1,327 @@
+/* css/style.css - Sadece index.html (Ana Sayfa) İçindir */
+
+:root {
+    --primary: #4F46E5;
+    --primary-dark: #3730A3;
+    --accent: #06B6D4;
+    
+    /* VARSAYILAN KOYU TEMA */
+    --bg-dark: #0B0F19; 
+    --text-main: #FFFFFF;
+    --text-muted: #94A3B8;
+    --nav-bg: rgba(11, 15, 25, 0.85);
+    --border-color: rgba(255, 255, 255, 0.05);
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --footer-bg: rgba(0, 0, 0, 0.5);
+}
+
+/* AÇIK TEMA (LIGHT MODE) */
+body.light-mode {
+    --bg-dark: #F8FAFC; 
+    --text-main: #0F172A;
+    --text-muted: #475569;
+    --nav-bg: rgba(255, 255, 255, 0.95);
+    --border-color: #E2E8F0;
+    --card-bg: #FFFFFF;
+    --footer-bg: #F1F5F9;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+html { scroll-behavior: smooth; background-color: var(--bg-dark); }
+body { background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; overflow-x: hidden; transition: background-color 0.4s ease, color 0.4s ease; }
+
+/* NAVBAR VE MENÜ KONTROL MERKEZİ */
+.navbar { position: fixed; top: 0; width: 100%; background-color: var(--nav-bg); backdrop-filter: blur(12px); display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; z-index: 1000; border-bottom: 1px solid var(--border-color); transition: background-color 0.4s ease; }
+.logo { color: var(--text-main); font-size: 1.8rem; font-weight: 800; letter-spacing: 1px; text-decoration: none;}
+.logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 2rem; }
+.nav-links a { color: var(--text-muted); text-decoration: none; font-size: 1.1rem; font-weight: 500; transition: color 0.3s ease; }
+.nav-links a:hover { color: var(--text-main); }
+
+/* Sağ Taraf Aksiyon Alanı (Tema Butonu + Giriş Butonu) */
+.nav-actions { display: flex; align-items: center; gap: 15px; }
+.theme-btn { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); padding: 0.5rem; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; font-size: 1.1rem; }
+.theme-btn:hover { background-color: var(--border-color); }
+
+.nav-login-btn { background-color: var(--primary); color: #FFFFFF; padding: 0.6rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; border: none; font-size: 1rem; cursor: pointer; }
+.nav-login-btn:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
+
+/* YAPAY ZEKÂ VE RENK EFEKTLERİ */
+.ai-glow-text { color: #3B82F6; text-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.4); animation: pulseGlow 3s infinite alternate; }
+@keyframes pulseGlow { 0% { text-shadow: 0 0 15px rgba(59, 130, 246, 0.6); } 100% { text-shadow: 0 0 30px rgba(59, 130, 246, 1), 0 0 50px rgba(59, 130, 246, 0.6); } }
+.color-gradient-1 { background-image: linear-gradient(to right, #A78BFA, #F472B6); }
+.color-gradient-2 { background-image: linear-gradient(to right, #34D399, #3B82F6); }
+.color-gradient-3 { background-image: linear-gradient(to right, #FBBF24, #F87171); }
+
+/* HERO BÖLÜMÜ */
+.hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 20px; position: relative; }
+.hero::before { content: ''; position: absolute; width: 50vw; height: 50vh; background: radial-gradient(circle, rgba(79, 70, 229, 0.15) 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; }
+.hero-content { max-width: 900px; }
+.hero h1 { font-size: 4.5rem; line-height: 1.1; margin-bottom: 2rem; color: var(--text-main); }
+.hero p { color: var(--text-muted); font-size: 1.4rem; margin-bottom: 3rem; font-weight: 300; }
+.primary-btn-large { display: inline-block; background-color: var(--primary); color: #FFFFFF; padding: 1.2rem 2.5rem; font-size: 1.3rem; font-weight: bold; border-radius: 50px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 0 20px rgba(79, 70, 229, 0.5); }
+.primary-btn-large:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 0 30px rgba(79, 70, 229, 0.8); color: #FFFFFF; }
+
+/* SİNEMATİK KAYDIRMA (SCROLL-JACKING) */
+.info-section { position: relative; background: transparent; }
+.sticky-container { position: sticky; top: 0; height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.scroll-triggers { position: relative; margin-top: -100vh; width: 100%; }
+.trigger { height: 100vh; width: 100%; margin-bottom: 60vh; }
+.trigger:last-child { margin-bottom: 0; }
+.cinematic-sentence { position: absolute; font-size: 3.5rem; font-weight: 700; line-height: 1.4; text-align: center; max-width: 1000px; padding: 0 5%; margin: 0; opacity: 0; transform: translateY(50px) scale(0.95); filter: blur(12px); transition: opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease; background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; pointer-events: none; }
+.cinematic-sentence.active { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+.cinematic-sentence.exit-up { opacity: 0; transform: translateY(-50px) scale(0.95); filter: blur(12px); }
+.huge-title { font-size: 4rem; }
+
+/* KARTLAR VE GECİKMELİ GÖSTERİM */
+.reveal { opacity: 0; transform: translateY(60px); transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.reveal.active { opacity: 1; transform: translateY(0); }
+.about-section { padding: 8rem 5%; text-align: center; }
+.section-title { font-size: 3rem; color: var(--text-main); margin-bottom: 4rem; }
+.features { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+.feature-card { background: var(--card-bg); backdrop-filter: blur(10px); padding: 3rem 2rem; border-radius: 16px; width: 350px; border: 1px solid var(--border-color); transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s; }
+.feature-card:hover { transform: translateY(-15px); border-color: var(--accent); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+.feature-card .icon { font-size: 4rem; margin-bottom: 1.5rem; }
+.feature-card h3 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-main); }
+.feature-card p { font-size: 1.1rem; color: var(--text-muted); }
+
+/* FOOTER */
+.footer { background: var(--footer-bg); padding: 5rem 5% 2rem; border-top: 1px solid var(--border-color); }
+.footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2rem; max-width: 1000px; margin: 0 auto; border-bottom: 1px solid var(--border-color); padding-bottom: 3rem; }
+.footer-brand h2 { font-size: 2rem; margin-bottom: 1rem; color: var(--text-main); }
+.footer-brand span { color: var(--accent); }
+.footer-contact h3 { margin-bottom: 1rem; color: var(--text-main); }
+.footer-contact p { color: var(--text-muted); margin-bottom: 0.5rem; }
+.footer-bottom { text-align: center; padding-top: 2rem; color: var(--text-muted); font-size: 0.9rem; }
+
+@media (max-width: 768px) { .nav-links { display: none; } .hero h1 { font-size: 3rem; } .cinematic-sentence { font-size: 2.2rem; } .huge-title { font-size: 2.8rem; } }
+
+/* --- YUVARLAK İKONLU ÇIKIŞ BUTONU --- */
+.logout-icon-btn {
+    background: transparent; 
+    border: 1px solid #EF4444; 
+    color: #EF4444; 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    transition: all 0.3s ease;
+}
+
+.logout-icon-btn:hover {
+    background-color: #EF4444; 
+    color: #FFFFFF; 
+    transform: scale(1.1);
+}
+
+/* İçindeki SVG ikonun boyutları ve çizgi ayarları */
+.logout-icon-btn svg {
+    width: 18px; 
+    height: 18px; 
+    stroke: currentColor; 
+    fill: none; 
+    stroke-width: 2; 
+    stroke-linecap: round; 
+    stroke-linejoin: round;
+}
+
+/* --- YENİ NESİL HERO BUTONU (Glow & Animasyon) --- */
+.primary-btn-large {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #FFFFFF !important;
+    padding: 1.2rem 2.8rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Üzerine gelince renk geçişi değişimi için hile */
+.primary-btn-large::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    z-index: -1;
+    transition: opacity 0.4s ease;
+    opacity: 0;
+}
+
+.primary-btn-large:hover::before { opacity: 1; }
+
+.primary-btn-large:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.6);
+}
+
+/* İçindeki Ok İkonunun Animasyonu */
+.primary-btn-large svg {
+    transition: transform 0.3s ease;
+}
+.primary-btn-large:hover svg {
+    transform: translateX(8px); /* Oku sağa kaydırır */
+}
+
+/* --- YENİ KULLANICI KAPSÜLÜ (NAVBAR İÇİN) --- */
+.user-profile-pill {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    padding: 5px 5px 5px 20px;
+    border-radius: 50px;
+    gap: 15px;
+    backdrop-filter: blur(10px);
+}
+body.light-mode .user-profile-pill {
+    background: #F1F5F9;
+}
+.user-name-text {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+.user-name-text:hover { color: var(--primary); }
+
+/* --- YÜZEN BUTON (SCROLL İLE SAĞ ALTA KÜÇÜLME VE GENİŞLEME) --- */
+.primary-btn-large {
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.primary-btn-large.floating-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 65px;
+    height: 65px;
+    padding: 0;
+    border-radius: 50px;
+    z-index: 1000;
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.6);
+    /* Sağdan kayarak ekrana girme animasyonu */
+    animation: slideInRight 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    overflow: hidden;
+    justify-content: center;
+}
+
+@keyframes slideInRight {
+    0% { transform: translateX(100px) scale(0.5); opacity: 0; }
+    100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+/* Yazıyı Gizleme / Gösterme Ayarları */
+.primary-btn-large .btn-text {
+    display: inline-block;
+    max-width: 300px;
+    opacity: 1;
+    transition: all 0.4s ease;
+    white-space: nowrap;
+}
+
+/* --- 1. ORTADAKİ ANA BUTON --- */
+.primary-btn-large {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #FFFFFF !important;
+    padding: 1.2rem 2.8rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+    
+    /* Görünürlük ayarları */
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+.primary-btn-large:hover { 
+    transform: translateY(-5px) scale(1.05); 
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.6); 
+}
+
+/* Kaydırınca bu buton yavaşça kaybolur, BÖYLECE YAZILAR ZIPLAMAZ */
+.primary-btn-large.hidden {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+    pointer-events: none;
+}
+
+
+/* --- 2. SAĞ ALTTAN ÇIKAN YÜZEN KAPSÜL BUTON (FAB) --- */
+.floating-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    height: 65px;
+    width: 65px; /* Başlangıçta sadece yuvarlak ikon boyutunda */
+    border-radius: 50px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #FFFFFF !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.6);
+    z-index: 1000;
+    overflow: hidden;
+    
+    /* Sayfa en üstteyken ekranın sağında gizli bekler */
+    opacity: 0;
+    transform: translateX(100px) rotate(90deg);
+    pointer-events: none;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Kaydırınca ekranın içine yumuşakça girer */
+.floating-fab.visible {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg);
+    pointer-events: auto;
+}
+
+.floating-fab svg { 
+    min-width: 24px; 
+    margin: 0; 
+}
+
+/* Yüzen butonun içindeki yazıyı gizleme */
+.floating-fab .btn-text {
+    display: inline-block;
+    max-width: 0;
+    opacity: 0;
+    white-space: nowrap;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+/* ÜZERİNE GELİNCE YAĞ GİBİ UZAMA (EXPAND) ANİMASYONU */
+.floating-fab.visible:hover {
+    width: 320px; /* Arıza kayıtlarını görüntüle yazısı sığsın diye genişlettik */
+    padding: 0 1.5rem;
+    justify-content: space-between;
+}
+
+.floating-fab.visible:hover .btn-text {
+    max-width: 250px;
+    opacity: 1;
+    margin-right: 10px;
+}

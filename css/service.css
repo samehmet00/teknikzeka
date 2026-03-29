@@ -1,0 +1,33 @@
+/* css/service.css - Sadece Servis Paneli İçin (app.css'i içeri aktarır) */
+
+@import url('app.css'); /* Temel renkleri ve navbarı app.css'ten alır */
+
+/* --- TEKNİK SERVİS YENİ LİSTE TASARIMI (AKORDİYON) --- */
+.service-container { display: flex; gap: 2rem; padding: 6rem 5% 4rem; max-width: 1400px; margin: 0 auto; align-items: flex-start; }
+.filter-sidebar { width: 320px; flex-shrink: 0; position: sticky; top: 6rem; }
+.grid-content { flex-grow: 1; width: 100%; }
+
+.filter-sidebar label { display: block; margin-bottom: 5px; margin-top: 15px; }
+.filter-sidebar select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); }
+
+.ticket-list-view { display: flex; flex-direction: column; gap: 1rem; }
+
+.service-list-bar { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+.service-list-bar:hover { border-color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+.bar-header { padding: 1.2rem 1.5rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background-color: transparent; }
+.bar-title { font-weight: 700; color: var(--text-main); font-size: 1.1rem; margin-bottom: 3px; }
+.bar-summary { color: #94A3B8; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 450px; }
+.expand-icon { transition: transform 0.3s ease; color: #94A3B8; font-size: 1.2rem; }
+
+.bar-details { padding: 0 1.5rem; max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); background-color: rgba(0,0,0,0.02); }
+body.light-mode .bar-details { background-color: #F8FAFC; }
+
+.service-list-bar.expanded .bar-details { padding: 1.5rem; max-height: 1000px; opacity: 1; border-top: 1px solid var(--border-color); }
+.service-list-bar.expanded .expand-icon { transform: rotate(180deg); color: var(--primary); }
+
+@media (max-width: 900px) {
+    .service-container { flex-direction: column; }
+    .filter-sidebar { width: 100%; position: relative; top: 0; }
+    .bar-summary { max-width: 200px; }
+}

@@ -1,0 +1,200 @@
+/* css/app.css - Tüm Uygulama ve Kullanıcı Paneli (Bütünleşik Tasarım) */
+
+/* --- TEMEL AYARLAR VE TEMA DEĞİŞKENLERİ --- */
+:root {
+    --primary: #4F46E5;
+    --primary-dark: #3730A3;
+    --accent: #06B6D4;
+    --bg-dark: #0B0F19; 
+    --text-main: #F8FAFC; 
+    --card-bg: #1E293B; 
+    --card-text: #F8FAFC; 
+    --border-color: rgba(255, 255, 255, 0.1); 
+    --input-bg: #0F172A; 
+    
+    --ai-box-bg: rgba(59, 130, 246, 0.1);
+    --ai-box-text: #BFDBFE;
+    --info-box-bg: rgba(245, 158, 11, 0.1);
+    --info-box-text: #FDE68A;
+    --success-box-bg: rgba(16, 185, 129, 0.1);
+    --success-box-text: #A7F3D0;
+    --error-box-bg: rgba(239, 68, 68, 0.1);
+    --error-box-text: #FECACA;
+}
+
+/* --- AÇIK TEMA (LIGHT MODE) DEĞİŞKENLERİ --- */
+body.light-mode {
+    --bg-dark: #F8FAFC;
+    --text-main: #0F172A;
+    --card-bg: #FFFFFF;
+    --card-text: #0F172A;
+    --border-color: #E2E8F0;
+    --input-bg: #F1F5F9;
+    
+    --ai-box-bg: #EFF6FF;
+    --ai-box-text: #1E3A8A;
+    --info-box-bg: #FFFBEB;
+    --info-box-text: #92400E;
+    --success-box-bg: #ECFDF5;
+    --success-box-text: #064E3B;
+    --error-box-bg: #FEF2F2;
+    --error-box-text: #991B1B;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+body { background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; transition: all 0.3s ease; }
+
+/* --- NAVBAR MİNİMAL (Uygulama İçi) --- */
+.navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 5%; background-color: rgba(11, 15, 25, 0.95); border-bottom: 1px solid var(--border-color); }
+body.light-mode .navbar { background-color: rgba(255, 255, 255, 0.95); }
+.logo { color: var(--text-main); font-size: 1.5rem; font-weight: 800; text-decoration: none;}
+.logo span { color: var(--accent); }
+
+/* İkon Butonları (Tema ve Çıkış) */
+.nav-icon-btn, #theme-toggle-btn, .logout-icon-btn {
+    background: transparent; border: 1px solid var(--primary); color: var(--primary);
+    width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.3s ease; text-decoration: none; padding: 0; font-size: 1.2rem;
+}
+.nav-icon-btn:hover, #theme-toggle-btn:hover { background-color: var(--primary); color: white; transform: scale(1.1); }
+#theme-toggle-btn { border-color: #94A3B8; color: var(--text-main); }
+.logout-icon-btn { border-color: #EF4444; color: #EF4444; }
+.logout-icon-btn:hover { background-color: #EF4444; color: white; transform: scale(1.1); }
+.nav-icon-btn svg, .logout-icon-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* --- UYGULAMA KONTEYNERİ VE KARTLAR --- */
+.app-container { padding: 4rem 5% 4rem; display: flex; justify-content: center; min-height: 100vh; }
+.app-wrapper { width: 100%; max-width: 800px; }
+.auth-box, .ticket-box { background-color: var(--card-bg); color: var(--card-text); padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--border-color); margin-bottom: 2rem; }
+body.light-mode .auth-box, body.light-mode .ticket-box { box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+
+.auth-box h2, .ticket-box h3, .header h2, .ticket-list-container h3 { color: var(--card-text); margin-bottom: 1.5rem; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; }
+
+/* --- LOGIN FORMU ÖZEL STİLLERİ --- */
+input:not([type="submit"]), select, textarea { 
+    width: 100%; padding: 1rem; margin-bottom: 1rem; 
+    border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; 
+    background-color: var(--input-bg); color: var(--text-main); transition: all 0.3s ease; 
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); }
+
+button[type="submit"] { background-color: var(--primary); color: white; font-weight: 600; font-size: 1rem; padding: 1rem; border: none; border-radius: 8px; cursor: pointer; width: 100%; transition: 0.2s; }
+button[type="submit"]:hover { background-color: var(--primary-dark); transform: scale(1.02); }
+
+#toggle-text { text-align: center; margin-top: 1.5rem; color: #94A3B8; }
+#toggle-link { color: var(--primary); text-decoration: none; font-weight: 600; }
+#auth-error { text-align: center; padding: 10px; border-radius: 5px; background: var(--error-box-bg); color: var(--error-box-text); }
+
+
+/* --- YENİ NESİL KULLANICI FORMU (PREMIUM LAYOUT) --- */
+.premium-form-header { display: flex; align-items: center; gap: 15px; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--border-color); }
+.premium-form-header .icon-wrapper { background: rgba(79, 70, 229, 0.1); color: var(--primary); width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.premium-form-header .icon-wrapper svg { width: 28px; height: 28px; }
+.premium-form-header h3 { margin-bottom: 0 !important; font-size: 1.4rem; }
+.premium-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-group label { font-size: 0.9rem; font-weight: 600; color: #94A3B8; }
+
+.premium-input { border: 2px solid var(--border-color) !important; background-color: var(--input-bg) !important; padding: 1rem 1.2rem !important; border-radius: 12px !important; font-size: 1rem !important; font-weight: 500; color: var(--text-main) !important; transition: all 0.3s ease !important; cursor: pointer; }
+textarea.premium-input { min-height: 140px; resize: vertical; cursor: text; }
+.premium-input:focus { border-color: var(--primary) !important; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1) !important; }
+.premium-input:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.submit-ticket-btn { background: linear-gradient(135deg, var(--primary), var(--accent)) !important; color: white !important; font-size: 1.1rem !important; font-weight: 700 !important; padding: 1.2rem !important; border-radius: 12px !important; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3) !important; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease !important; width: 100%; border: none; cursor: pointer;}
+.submit-ticket-btn:hover { transform: translateY(-3px) !important; box-shadow: 0 15px 25px rgba(79, 70, 229, 0.4) !important; }
+
+/* --- DİNAMİK BİLGİ KUTULARI --- */
+.ai-report-box { background-color: var(--ai-box-bg); color: var(--ai-box-text); padding: 12px; border-left: 4px solid #3B82F6; border-radius: 6px; margin-top: 10px; font-size: 0.95rem; }
+.info-box-dynamic { background-color: var(--info-box-bg); color: var(--info-box-text); padding: 12px; border-left: 4px solid #F59E0B; border-radius: 6px; margin-top: 10px; font-size: 0.95rem; }
+.success-box-dynamic { background-color: var(--success-box-bg); color: var(--success-box-text); padding: 12px; border-left: 4px solid #10B981; border-radius: 6px; margin-top: 10px; font-size: 0.95rem; }
+
+/* --- YÜKLEME ÇUBUĞU --- */
+.loading-bar-container { width: 100%; height: 6px; background-color: var(--border-color); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+.loading-bar { width: 30%; height: 100%; background-color: var(--primary); border-radius: 10px; animation: loadingSweep 1s infinite linear alternate; }
+@keyframes loadingSweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+
+/* --- GEÇMİŞ TALEPLERİM KARTI (MODERN UI VE SWIPE-TO-DELETE) --- */
+.ticket-wrapper { position: relative; overflow: hidden; border-radius: 16px; margin-bottom: 1.5rem; background-color: #EF4444; }
+
+.modern-ticket-card {
+    background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px;
+    padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;
+    position: relative; z-index: 2; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+.modern-ticket-card.swiped { transform: translateX(-80px); }
+
+.modern-ticket-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+.status-pill { padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; }
+.status-bekliyor { background: rgba(245, 158, 11, 0.1); color: #F59E0B; }
+.status-onaylandi { background: rgba(16, 185, 129, 0.1); color: #10B981; }
+
+.delete-action-btn { position: absolute; top: 0; right: 0; height: 100%; width: 80px; background-color: #EF4444; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1; }
+.delete-action-btn:hover { background-color: #DC2626; }
+.delete-action-btn svg { width: 24px; height: 24px; }
+
+/* --- PREMIUM YAPAY ZEKA RAPORU KARTI --- */
+.premium-ai-box {
+    background: linear-gradient(145deg, rgba(59, 130, 246, 0.05), rgba(6, 182, 212, 0.05));
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+body.light-mode .premium-ai-box { background: linear-gradient(145deg, #EFF6FF, #ECFEFF); }
+
+.ai-detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+.ai-detail-row:last-child { margin-bottom: 0; }
+
+.ai-detail-icon {
+    font-size: 1.2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.difficulty-track {
+    width: 100%;
+    height: 8px;
+    background: var(--input-bg);
+    border-radius: 10px;
+    margin-top: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.difficulty-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- KAPSÜL (PILL) KULLANICI MENÜSÜ TASARIMI --- */
+.user-profile-pill {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    padding: 5px 5px 5px 20px;
+    border-radius: 50px;
+    gap: 12px;
+    backdrop-filter: blur(10px);
+}
+body.light-mode .user-profile-pill {
+    background: #F1F5F9;
+}
+.user-name-text {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+}
