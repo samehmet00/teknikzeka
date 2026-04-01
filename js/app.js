@@ -15,6 +15,23 @@ const ticketMsg = document.getElementById('ticket-msg');
 const ticketList = document.getElementById('ticket-list');
 const themeToggleBtn = document.getElementById('theme-toggle-btn');
 const navAuthMenu = document.getElementById('nav-auth-menu');
+    // --- 1. YAN MENÜ (SIDEBAR) YÖNETİMİ ---
+    const menuBtn = document.getElementById('left-menu-btn');
+    const sidebar = document.getElementById('left-sidebar');
+
+    if (menuBtn && sidebar) {
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            sidebar.classList.toggle('open'); 
+        });
+    }
+
+    // Ekranın boş bir yerine tıklanınca menüyü kapatma mantığı
+    document.addEventListener('click', (e) => {
+        if (sidebar && sidebar.classList.contains('open') && !sidebar.contains(e.target)) {
+            sidebar.classList.remove('open');
+        }
+    });
 
 // --- TEMA DEĞİŞTİRME ---
 if (themeToggleBtn) {
@@ -118,7 +135,10 @@ if(ticketForm) {
 
             await addDoc(collection(db, "tickets"), {
                 userEmail: currentUser.email, deviceType: deviceTypeInput.value, deviceBrand: deviceBrandInput.value, deviceModel: deviceModelInput.value, description: issueDescInput.value,
-                aiReport: aiAnalysis, status: "Bekliyor", interestedServices: [], assignedService: "", createdAt: serverTimestamp() 
+                aiReport: aiAnalysis, status: "Bekliyor", interestedServices: [], assignedService: "", 
+                isForSale: isForSale, // Yeni
+                offers: {}, // Yeni
+                createdAt: serverTimestamp() 
             });
 
             ticketForm.reset(); deviceBrandInput.disabled = true; deviceModelInput.disabled = true;
@@ -149,6 +169,15 @@ window.selectService = async (ticketId, serviceEmail) => {
     } catch (error) { console.error("Hata:", error); }
 };
 
+window.acceptOffer = async (ticketId, serviceEmail, price) => {
+    if(confirm(`${price} TL teklifi kabul etmek istediğinize emin misiniz?`)) {
+        try {
+            await updateDoc(doc(db, "tickets", ticketId), { assignedService: serviceEmail, status: "Satıldı", acceptedPrice: price });
+            alert("Teklifi kabul ettiniz! Servis sizinle iletişime geçecektir.");
+        } catch (error) { console.error("Hata:", error); }
+    }
+};
+
 // --- MÜŞTERİ PANELİ VE KAPSÜL YÖNETİMİ ---
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -159,9 +188,6 @@ onAuthStateChanged(auth, (user) => {
             navAuthMenu.innerHTML = `
                 <div class="user-profile-pill">
                     <span class="user-name-text">👤 ${username}</span>
-                    <a href="index.html" class="nav-icon-btn" title="Ana Sayfaya Dön" style="width: 32px; height: 32px; border-width: 2px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                    </a>
                     <button id="logout-btn" class="logout-icon-btn" title="Sistemden Çıkış" style="width: 32px; height: 32px; border-width: 2px;">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     </button>
@@ -186,6 +212,35 @@ onAuthStateChanged(auth, (user) => {
                     const deviceInfo = data.deviceBrand ? `${data.deviceType} - ${data.deviceBrand} ${data.deviceModel}` : data.deviceType;
                     
                     let bidHtml = '';
+                
+                    // EĞER CİHAZ SATILIKSA
+                    if (data.isForSale) {
+                        if (data.status === "Satıldı") {
+                            bidHtml = `<div class="success-box-dynamic"><strong>💸 Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> servisine ${data.acceptedPrice} TL'ye satıldı! İletişime geçin.</strong></div>`;
+                        } else {
+                            bidHtml = `<div class="info-box-dynamic"><strong>💸 Servislerden Gelen Fiyat Teklifleri:</strong><br>`;
+                            const offerKeys = data.offers ? Object.keys(data.offers) : [];
+                            if (offerKeys.length > 0) {
+                                offerKeys.forEach(srv => {
+                                    bidHtml += `<div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding:10px; background:rgba(0,0,0,0.1); border-radius:8px;">
+                                        <span style="font-size:0.95rem;">${srv}: <strong style="font-size: 1.1rem; color: #10B981;">${data.offers[srv]} TL</strong></span>
+                                        <button onclick="window.acceptOffer('${ticketId}', '${srv}', ${data.offers[srv]})" style="background:#10B981; border:none; padding:6px 15px; border-radius:6px; color:white; font-weight:bold; cursor:pointer;">Kabul Et</button>
+                                    </div>`;
+                                });
+                            } else { bidHtml += `<span style="font-size:0.85rem;">⏳ Henüz fiyat teklifi gelmedi...</span>`; }
+                            bidHtml += `</div>`;
+                        }
+                    } 
+                    // EĞER NORMAL TAMİRSE
+                    else {
+                        if (data.assignedService) { bidHtml = `<div class="success-box-dynamic"><strong>✅ Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> isimli servise yönlendirildi.</strong></div>`; } 
+                        else if (data.interestedServices && data.interestedServices.length > 0) {
+                            bidHtml = `<div class="info-box-dynamic"><strong>🎉 Bu cihazı tamir edebilecek servisler:</strong><br>`;
+                            data.interestedServices.forEach(srv => { bidHtml += `<button onclick="window.selectService('${ticketId}', '${srv}')" style="margin-top:8px; background: #10B981; padding: 5px 10px; width: auto; font-size: 0.85rem; display: block; border:none; border-radius: 6px; color:white; font-weight:bold; cursor:pointer;">${srv} - Bu Servisi Seç</button>`; });
+                            bidHtml += `</div>`;
+                        }
+                    }
+
                     if (data.assignedService) { bidHtml = `<div class="success-box-dynamic"><strong>✅ Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> isimli servise yönlendirildi. Servis sizinle iletişime geçecektir.</strong></div>`; } 
                     else if (data.interestedServices && data.interestedServices.length > 0) {
                         bidHtml = `<div class="info-box-dynamic"><strong>🎉 Bu cihazı tamir edebilecek servisler:</strong><br>`;

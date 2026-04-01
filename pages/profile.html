@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilim - TeknikZeka</title>
+    <link rel="stylesheet" href="../css/app.css">
+    <style>
+        .profile-container { padding: 8rem 5% 4rem; display: flex; justify-content: center; min-height: 100vh; }
+        .profile-card { background: var(--card-bg); width: 100%; max-width: 500px; padding: 3rem; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        .profile-avatar { font-size: 4rem; background: rgba(79, 70, 229, 0.1); width: 100px; height: 100px; line-height: 100px; border-radius: 50%; margin: 0 auto 1.5rem; }
+    </style>
+</head>
+<body class="light-mode">
+
+    <nav class="navbar">
+        <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
+        <div class="nav-actions" style="display: flex; gap:15px; align-items:center;">
+            <button id="theme-toggle-btn" class="nav-icon-btn" title="Temayı Değiştir" style="border-color: var(--gray-light); color: var(--text-main);">☀️</button>
+            <a href="login.html" class="nav-icon-btn" title="Panele Dön"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
+        </div>
+    </nav>
+
+    <section class="profile-container">
+        <div class="profile-card" id="profile-content">
+            <p>Kullanıcı bilgileri yükleniyor...</p>
+        </div>
+    </section>
+
+    <script type="module">
+        // DÜZELTME 1: JS klasörüne ulaşmak için bir üst klasöre (../) çıkıldı
+        import { auth } from '../js/firebase-config.js';
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        // Tema Yönetimi
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeBtn.innerText = '🌙'; }
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) { themeBtn.innerText = '🌙'; localStorage.setItem('theme', 'light'); } 
+            else { themeBtn.innerText = '☀️'; localStorage.setItem('theme', 'dark'); }
+        });
+
+        // Profil Verisi Çekme
+        const profileContent = document.getElementById('profile-content');
+        const techServiceEmails = ["servis@teknikzeka.app", "admin@test.com"];
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const role = techServiceEmails.includes(user.email) ? "Yetkili Teknik Servis" : "Standart Müşteri";
+                const roleColor = techServiceEmails.includes(user.email) ? "#10B981" : "#4F46E5";
+                
+                profileContent.innerHTML = `
+                    <div class="profile-avatar">👤</div>
+                    <h2 style="color: var(--text-main); margin-bottom: 5px;">Hesap Bilgileriniz</h2>
+                    <p style="color: var(--gray-light); font-size: 1.1rem; margin-bottom: 20px;">${user.email}</p>
+                    
+                    <div style="background: rgba(0,0,0,0.05); padding: 15px; border-radius: 8px; margin-bottom: 30px;">
+                        <span style="font-size: 0.9rem; color: var(--gray-light);">Hesap Yetkisi</span><br>
+                        <strong style="color: ${roleColor}; font-size: 1.2rem;">${role}</strong>
+                    </div>
+
+                    <button id="profile-logout-btn" style="background: #EF4444; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s;">
+                        Sistemden Çıkış Yap
+                    </button>
+                `;
+
+                document.getElementById('profile-logout-btn').addEventListener('click', () => {
+                    // DÜZELTME 2: Aynı klasörde olduğumuz için sadece login.html
+                    signOut(auth).then(() => { window.location.href = "login.html"; });
+                });
+
+            } else {
+                profileContent.innerHTML = `
+                    <div class="profile-avatar" style="background: rgba(239, 68, 68, 0.1);">❌</div>
+                    <h2 style="color: var(--text-main);">Oturum Açılmamış</h2>
+                    <p style="color: var(--gray-light); margin-bottom: 20px;">Lütfen profilinizi görüntülemek için giriş yapın.</p>
+                    <a href="login.html" style="display: inline-block; background: var(--primary); color: white; text-decoration: none; padding: 12px 30px; border-radius: 8px; font-weight: bold;">Giriş Sayfasına Git</a>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

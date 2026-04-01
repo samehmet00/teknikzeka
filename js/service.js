@@ -135,10 +135,32 @@ function renderFilteredTickets() {
         const shortDesc = data.description.length > 60 ? data.description.substring(0, 60) + "..." : data.description;
 
         let techActionHtml = '';
-        if (data.assignedService === currentServiceEmail) { techActionHtml = `<div class="success-box-dynamic">✅ Müşteri sizi seçti! Mail: <strong>${data.userEmail}</strong> üzerinden iletişime geçin.</div>`; } 
-        else if (data.assignedService) { techActionHtml = `<div class="error-box-dynamic">❌ Müşteri başka servisi seçti.</div>`; } 
-        else if (data.interestedServices && data.interestedServices.includes(currentServiceEmail)) { techActionHtml = `<div class="info-box-dynamic">⏳ Müşterinin seçimi bekleniyor...</div>`; } 
-        else { techActionHtml = `<button onclick="window.approveTicket('${data.id}', event)" style="background: var(--primary); color: white; padding: 10px 20px; font-weight: 600; font-size: 1rem; border:none; border-radius: 8px; cursor: pointer; transition: 0.2s;">Ben Yapabilirim 🛠️</button>`; }
+        
+        // EĞER İLAN SATILIKSA
+        if (data.isForSale) {
+            if (data.status === "Satıldı") {
+                if (data.assignedService === currentServiceEmail) techActionHtml = `<div class="success-box-dynamic">🎉 Teklifiniz Kabul Edildi! Müşteri İletişim: <strong>${data.userEmail}</strong> (Fiyat: ${data.acceptedPrice} TL)</div>`;
+                else techActionHtml = `<div class="error-box-dynamic">❌ Cihaz başka bir servise satıldı.</div>`;
+            } else {
+                const myOffer = data.offers ? data.offers[currentServiceEmail] : null;
+                if (myOffer) {
+                    techActionHtml = `<div class="info-box-dynamic">⏳ Müşteriye <strong>${myOffer} TL</strong> satın alma teklifi sundunuz. Yanıt bekleniyor...</div>`;
+                } else {
+                    techActionHtml = `
+                        <div style="display:flex; gap:10px; margin-top:10px; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px; border: 1px dashed #10B981;">
+                            <input type="number" id="offer-input-${data.id}" placeholder="Satın Alma Teklifiniz (TL)" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border-color); background:var(--input-bg); color:var(--text-main); font-size: 1rem;" onclick="event.stopPropagation();">
+                            <button onclick="window.makeOffer('${data.id}', event)" style="background:#10B981; color:white; padding:8px 20px; font-weight:bold; font-size: 1rem; border:none; border-radius:6px; cursor:pointer;">Fiyat Ver</button>
+                        </div>`;
+                }
+            }
+        } 
+        // EĞER NORMAL TAMİRSE
+        else {
+            if (data.assignedService === currentServiceEmail) { techActionHtml = `<div class="success-box-dynamic">✅ Müşteri sizi seçti! Mail: <strong>${data.userEmail}</strong> üzerinden iletişime geçin.</div>`; } 
+            else if (data.assignedService) { techActionHtml = `<div class="error-box-dynamic">❌ Müşteri başka servisi seçti.</div>`; } 
+            else if (data.interestedServices && data.interestedServices.includes(currentServiceEmail)) { techActionHtml = `<div class="info-box-dynamic">⏳ Müşterinin seçimi bekleniyor...</div>`; } 
+            else { techActionHtml = `<button onclick="window.approveTicket('${data.id}', event)" style="background: var(--primary); color: white; padding: 10px 20px; font-weight: 600; font-size: 1rem; border:none; border-radius: 8px; cursor: pointer; transition: 0.2s;">Ben Yapabilirim 🛠️</button>`; }
+        }
 
         const bar = document.createElement('div');
         bar.className = 'service-list-bar';
@@ -179,4 +201,16 @@ window.approveTicket = async (ticketId, event) => {
     event.stopPropagation(); 
     try { await updateDoc(doc(db, "tickets", ticketId), { interestedServices: arrayUnion(currentServiceEmail) }); alert("Cihazı yapabileceğinizi onayladınız. Müşteriye iletildi!"); } 
     catch (error) { console.error("Hata:", error); }
+};
+
+window.makeOffer = async (ticketId, event) => {
+    event.stopPropagation();
+    const priceInput = document.getElementById(`offer-input-${ticketId}`);
+    const price = parseInt(priceInput.value);
+    if (!price || price <= 0) return alert("Lütfen geçerli bir fiyat girin.");
+    
+    try {
+        await updateDoc(doc(db, "tickets", ticketId), { [`offers.${currentServiceEmail}`]: price });
+        alert("Teklifiniz başarıyla müşteriye iletildi!");
+    } catch (error) { console.error("Hata:", error); }
 };

@@ -198,3 +198,43 @@ body.light-mode .user-profile-pill {
     font-weight: 600;
     font-size: 1rem;
 }
+
+/* --- YAN MENÜ (SIDEBAR) İSKELETİ --- */
+.sidebar {
+    position: fixed; /* Sayfadan kopar ve ekrana sabitle */
+    top: 0;
+    left: 0;
+    width: 250px; /* Menünün genişliği */
+    height: 100vh; /* Ekranın tamamını kaplasın (yukarıdan aşağı) */
+    background-color: var(--card-bg); /* Kendi tema rengimizi kullandık */
+    box-shadow: 2px 0 15px rgba(0,0,0,0.2); /* Sağa doğru hafif bir gölge */
+    z-index: 9999; /* Her şeyin üstünde olsun */
+    
+    /* EN ÖNEMLİ KISIM: Ekranın dışına it ve animasyon süresi ekle */
+    transform: translateX(-100%); 
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* JS ile bu sınıf eklendiğinde menü ekrana girecek */
+.sidebar.open {
+    transform: translateX(0);
+}
+
+/* Menü içindeki linklerin basit tasarımı */
+.sidebar a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.sidebar a:hover {
+    background-color: var(--border-color);
+}

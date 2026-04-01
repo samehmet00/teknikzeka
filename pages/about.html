@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hakkımızda - TeknikZeka</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .about-header { padding: 8rem 5% 4rem; text-align: center; }
+        .about-content { max-width: 800px; margin: 0 auto 4rem; background: var(--card-bg); padding: 3rem; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .about-content h2 { color: var(--primary); margin-bottom: 1.5rem; }
+        .about-content p { color: var(--text-main); font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body class="light-mode">
+
+    <nav class="navbar">
+        <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
+        <div class="nav-actions">
+            <button id="theme-toggle-btn" class="theme-btn" title="Temayı Değiştir">☀️</button>
+            <a href="login.html" class="nav-login-btn">Panele Git</a>
+        </div>
+    </nav>
+
+    <header class="about-header">
+        <h1 class="cinematic-sentence active huge-title color-gradient-1">Geleceğin Servis Ağı</h1>
+    </header>
+
+    <section style="padding: 0 5%;">
+        <div class="about-content">
+            <h2>Projenin Vizyonu</h2>
+            <p>TeknikZeka, geleneksel teknik servis süreçlerindeki zaman kaybını ve iletişim eksikliğini ortadan kaldırmak amacıyla tasarlanmış yenilikçi bir platformdur. Kullanıcıların teknik arızalarını kendi kelimeleriyle ifade etmesini sağlar ve Google Gemini Yapay Zeka modelini kullanarak saniyeler içinde donanımsal ön teşhis koyar.</p>
+            
+            <h2>Nasıl Çalışır?</h2>
+            <p>Oluşturulan yapay zeka destekli biletler (tickets), sistemdeki yerel teknik servislere anında düşer. Servisler, arıza tipine, cihaza ve onarım zorluğuna göre bu talepleri inceler ve tamir edebilecekleri cihazlar için müşteriye doğrudan "Teklif" gönderir. Bu ihale usulü sayesinde müşteri en hızlı çözüme ulaşır.</p>
+
+            <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px dashed var(--border-color); text-align: center;">
+                <span style="font-size: 2rem;">🎓</span>
+                <h3 style="margin-top: 10px;">Geliştirici Hakkında</h3>
+                <p style="font-size: 0.95rem; color: var(--gray-light);">Bu proje, İnönü Üniversitesi Bilgisayar Mühendisliği Bölümü "İnternet Programcılığı" dersi kapsamında geliştirilmiştir.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeBtn.innerText = '🌙'; }
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) { themeBtn.innerText = '🌙'; localStorage.setItem('theme', 'light'); } 
+            else { themeBtn.innerText = '☀️'; localStorage.setItem('theme', 'dark'); }
+        });
+    </script>
+</body>
+</html>

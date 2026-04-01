@@ -9,18 +9,43 @@
 <body>
     
     <nav class="navbar">
+        <button id="mobile-menu-btn" class="nav-icon-btn" title="Menü">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+
         <a href="index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
         
-        <div class="nav-links">
-            <a href="#why-us">Neden Biz?</a>
-            <a href="#about">Nasıl Çalışır?</a>
-            <a href="#contact">İletişim</a>
+        <div class="nav-links" id="nav-menu">
+            <a href="index.html">Ana Sayfa</a>
+            <a href="pages/login.html">Arıza Kayıtlarım</a>
+            <a href="#sell-device">Cihaz Sat</a>
+            <a href="pages/profile.html">Profilim</a>
+            <a href="pages/about.html">Hakkımızda</a>
         </div>
         
         <div class="nav-actions">
-            <button id="theme-toggle-btn" class="theme-btn" title="Temayı Değiştir">☀️</button>
+            <button id="theme-toggle-btn" class="modern-theme-btn" title="Temayı Değiştir">
+                <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>            
             <div id="dynamic-auth-menu">
-                <a href="login.html" class="nav-login-btn">Sisteme Giriş Yap</a>
+                <a href="pages/login.html" class="nav-login-btn">Sisteme Giriş Yap</a>
             </div>
         </div>
     </nav>
@@ -34,17 +59,51 @@
             </h1>
             <p class="animate-subtitle">Teknik servise gitmeden önce sorunun ne olduğunu öğrenin. Şikayetinizi yazın, gelişmiş algoritmamız saniyeler içinde donanımsal ön teşhisinizi yapsın ve sizi en doğru yerel servise yönlendirsin.</p>
             
-            <a href="login.html" class="primary-btn-large" id="hero-action-btn">
-                <span class="btn-text">Hemen Arıza Kaydı Oluştur</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </a>
+            <div style="min-height: 70px; display: flex; justify-content: center; align-items: center;">
+                <div id="btn-wrapper" style="width: fit-content; height: fit-content;">
+                    <a href="pages/login.html" class="primary-btn-large" id="hero-action-btn">
+                        <span class="btn-text">Hemen Arıza Kaydı Oluştur</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
 
-    <a href="login.html" class="floating-fab" id="fab-action-btn">
+    <a href="pages/login.html" class="floating-fab" id="fab-action-btn">
         <span class="btn-text">Hemen Arıza Kaydı Oluştur</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
     </a>
+
+    <div style="width: 70%; height: 2px; background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.4), transparent); margin: 2rem auto;"></div>
+
+    <section id="sell-device" class="reveal" style="padding: 6rem 5%; text-align: center; background: var(--card-bg);">
+        <div class="hero-content" style="max-width: 900px; margin: 0 auto;">
+            <h2 class="animate-title" style="font-size: 3rem;">
+                <span style="font-size: 4rem; display:block; margin-bottom:10px;">💸</span>
+                Arızalı Cihazını <br>
+                <span class="ai-glow-text" style="color: var(--accent);">Anında Sat</span>
+            </h2>
+            <p class="animate-subtitle" style="margin-top: 20px; font-size: 1.2rem; margin-bottom: 2.5rem; color: var(--text-muted);">
+                Tamir masrafı cihazın değerini mi aştı? Cihazınızı çekmeceye atmak yerine sistemimizdeki yüzlerce teknik servise doğrudan satın. Kayıt oluştururken "Satmak İstiyorum" seçeneğini işaretleyin ve servislerden gelen en iyi fiyat teklifini anında kabul edin.
+            </p>
+            
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <a href="pages/login.html" class="primary-btn-large" style="background: linear-gradient(135deg, #10B981, #047857);">
+                    <span class="btn-text">Arızalı Cihazıma Fiyat Al</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <div style="width: 70%; height: 2px; background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.4), transparent); margin: 2rem auto;"></div>
 
     <section id="why-us" class="info-section">
         <div class="sticky-container">
@@ -106,100 +165,6 @@
         </div>
     </footer>
 
-    <script type="module">
-        import { auth } from './js/firebase-config.js';
-        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
-        // TEMA YÖNETİMİ
-        const themeBtn = document.getElementById('theme-toggle-btn');
-        if (!localStorage.getItem('theme')) { localStorage.setItem('theme', 'dark'); }
-        if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeBtn.innerText = '🌙'; }
-
-        themeBtn.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            if (document.body.classList.contains('light-mode')) { themeBtn.innerText = '🌙'; localStorage.setItem('theme', 'light'); } 
-            else { themeBtn.innerText = '☀️'; localStorage.setItem('theme', 'dark'); }
-        });
-
-        // İKİLİ BUTON ANİMASYON YÖNETİMİ
-        const heroBtn = document.getElementById('hero-action-btn');
-        const fabBtn = document.getElementById('fab-action-btn');
-        
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 250) {
-                heroBtn.classList.add('hidden'); // Ortadaki kaybolur
-                fabBtn.classList.add('visible'); // Sağ alttaki gelir
-            } else {
-                heroBtn.classList.remove('hidden'); 
-                fabBtn.classList.remove('visible'); 
-            }
-        });
-
-        // KULLANICI GİRİŞİ VE AKILLI BUTON YÖNETİMİ
-        const authMenu = document.getElementById('dynamic-auth-menu');
-        const techServiceEmails = ["servis@teknikzeka.app", "admin@test.com"];
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const username = user.email.split('@')[0]; 
-                const isTech = techServiceEmails.includes(user.email);
-                const targetPage = isTech ? "service.html" : "login.html"; 
-                
-                authMenu.innerHTML = `
-                    <div class="user-profile-pill">
-                        <a href="${targetPage}" class="user-name-text">👤 ${username}</a>
-                        <button id="home-logout-btn" class="logout-icon-btn" title="Çıkış Yap" style="width: 32px; height: 32px; border-width: 2px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                        </button>
-                    </div>
-                `;
-                
-                document.getElementById('home-logout-btn').addEventListener('click', () => {
-                    signOut(auth).then(() => { window.location.reload(); });
-                });
-
-                // Giriş yapan SERVİS ise iki butonu da (ortadaki ve sağ alttaki) güncelle
-                const btnContent = isTech 
-                    ? `<span class="btn-text">Arıza Kayıtlarını Görüntüle</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`
-                    : `<span class="btn-text">Arıza Kayıtlarını Görüntüle</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
-                
-                heroBtn.innerHTML = btnContent; heroBtn.href = targetPage;
-                fabBtn.innerHTML = btnContent; fabBtn.href = targetPage;
-
-            } else {
-                authMenu.innerHTML = `<a href="login.html" class="nav-login-btn">Sisteme Giriş Yap</a>`;
-                
-                // Çıkış yapılmışsa butonları standart hale getir
-                const defaultContent = `<span class="btn-text">Hemen Arıza Kaydı Oluştur</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
-                
-                heroBtn.innerHTML = defaultContent; heroBtn.href = "login.html";
-                fabBtn.innerHTML = defaultContent; fabBtn.href = "login.html";
-            }
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const sentences = document.querySelectorAll(".cinematic-sentence");
-            const triggers = document.querySelectorAll(".trigger");
-            const centerObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const stepIndex = entry.target.getAttribute("data-step");
-                    if (stepIndex === null) return;
-                    const text = sentences[stepIndex];
-                    if (entry.isIntersecting) { text.classList.add("active"); text.classList.remove("exit-up"); } 
-                    else { text.classList.remove("active"); if (entry.boundingClientRect.top < 0) { text.classList.add("exit-up"); } else { text.classList.remove("exit-up"); } }
-                });
-            }, { root: null, rootMargin: "-45% 0px -45% 0px", threshold: 0 });
-
-            triggers.forEach(trigger => centerObserver.observe(trigger));
-
-            const reveals = document.querySelectorAll(".reveal");
-            const revealObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add("active"); observer.unobserve(entry.target); } });
-            }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
-            reveals.forEach(reveal => revealObserver.observe(reveal));
-        });
-    </script>
+    <script type="module" src="js/index.js"></script>
 </body>
 </html>
