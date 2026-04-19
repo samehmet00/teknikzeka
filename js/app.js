@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp, query, where, onSnapshot, doc, upd
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { deviceData } from './deviceData.js';
 
-const GEMINI_API_KEY = "AIzaSyAtQ_JMwbBK2-N-XcKVPZQ4E7lkgCS9Dkk"; 
+const GEMINI_API_KEY = "AIzaSyDSgiheLippiqGkAlUbxxMWqjmozAANS4g"; 
 
 const ticketForm = document.getElementById('ticket-form');
 const deviceTypeInput = document.getElementById('device-type');
@@ -114,38 +114,70 @@ if(ticketForm) {
     ticketForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const currentUser = auth.currentUser;
-        if (!currentUser) return alert("Giriş yapmalısınız!");
+        if (!currentUser) return alert("Sisteme dahil olmanız icap eder! (Giriş yapmalısınız)");
+
+        // Kullanıcının niyetini (Satış mı Tamir mi) kontrol edelim
+        const isForSale = document.getElementById('is-for-sale')?.checked || false;
 
         ticketMsg.style.display = 'block';
-        ticketMsg.innerHTML = `<div style="color: var(--primary); font-weight: 600; font-size: 0.95rem;">🤖 Yapay zekâ arızayı teşhis ediyor...</div><div class="loading-bar-container"><div class="loading-bar"></div></div>`;
+        ticketMsg.innerHTML = `<div style="color: var(--primary); font-weight: 600; font-size: 0.95rem;">🤖 Yapay zekâ analiz ediyor, lütfen bekleyiniz...</div><div class="loading-bar-container"><div class="loading-bar"></div></div>`;
 
         try {
-            const prompt = `Sen uzman bir teknik servissin. Şikayet: "${issueDescInput.value}". Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}.
-            KESİNLİKLE selamlama veya ekstra bir açıklama cümlesi yazma. SADECE aşağıdaki 3 satırı doldur ve en fazla 20 kelime kullan:
-            Arıza: [Kısa Tahmin]
-            Zorluk: [1-10]
-            Çözüm: [Tek cümlelik tavsiye]`;
+            // Niyete göre farklı Prompt hazırlayalım
+            let prompt = "";
+            if (isForSale) {
+                prompt = `Sen bir ikinci el cihaz eksperisin. Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. Arızası: "${issueDescInput.value}". 
+                SADECE 3 satır ve maksimum 15 kelime kullanarak şu formatta cevap ver. Açıklama yapma:
+                Arıza: [Sadece arızanın adı, örn: Ekran Kırık]
+                Zorluk: [Piyasa değer kaybı riski, 1-10 arası bir rakam]
+                Çözüm: [Sadece 4-5 kelimelik satış tavsiyesi, örn: Yedek parça olarak satılabilir.]`;
+            } else {
+                prompt = `Sen uzman bir teknik servissin. Şikayet: "${issueDescInput.value}". Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}.
+                KESİNLİKLE selamlama yazma. SADECE şu formatta cevap ver:
+                Arıza: [Kısa Tahmin]
+                Zorluk: [1-10]
+                Çözüm: [Tek cümlelik tamir tavsiyesi]`;
+            }
 
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                method: "POST", headers: { "Content-Type": "application/json" },
+                method: "POST", 
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             });
+
+            if (!response.ok) {
+                throw new Error(`API Hatası: ${response.status}`);
+            }
+
             const aiData = await response.json();
             const aiAnalysis = aiData.candidates[0].content.parts[0].text;
 
             await addDoc(collection(db, "tickets"), {
-                userEmail: currentUser.email, deviceType: deviceTypeInput.value, deviceBrand: deviceBrandInput.value, deviceModel: deviceModelInput.value, description: issueDescInput.value,
-                aiReport: aiAnalysis, status: "Bekliyor", interestedServices: [], assignedService: "", 
-                isForSale: isForSale, // Yeni
-                offers: {}, // Yeni
+                userEmail: currentUser.email, 
+                deviceType: deviceTypeInput.value, 
+                deviceBrand: deviceBrandInput.value, 
+                deviceModel: deviceModelInput.value, 
+                description: issueDescInput.value,
+                aiReport: aiAnalysis, 
+                status: "Bekliyor", 
+                interestedServices: [], 
+                assignedService: "", 
+                isForSale: isForSale, 
+                offers: {}, 
                 createdAt: serverTimestamp() 
             });
 
-            ticketForm.reset(); deviceBrandInput.disabled = true; deviceModelInput.disabled = true;
-            ticketMsg.innerHTML = `<span style="color: #10B981; font-weight: bold;">✅ Talebiniz başarıyla kaydedildi!</span>`;
+            ticketForm.reset(); 
+            if(deviceBrandInput) deviceBrandInput.disabled = true; 
+            if(deviceModelInput) deviceModelInput.disabled = true;
+            
+            ticketMsg.innerHTML = `<span style="color: #10B981; font-weight: bold;">✅ Talebiniz deftere kaydedildi (Başarıyla eklendi)!</span>`;
             setTimeout(() => ticketMsg.style.display = 'none', 4000);
 
-        } catch (error) { ticketMsg.innerHTML = `<span style="color: #EF4444; font-weight: bold;">❌ Bir hata oluştu, tekrar deneyin.</span>`; }
+        } catch (error) { 
+            console.error("Hata vuku buldu:", error);
+            ticketMsg.innerHTML = `<span style="color: #EF4444; font-weight: bold;">❌ Bir hata oluştu. API anahtarınızı ve internet bağlantınızı kontrol ediniz.</span>`; 
+        }
     });
 }
 
@@ -216,9 +248,9 @@ onAuthStateChanged(auth, (user) => {
                     // EĞER CİHAZ SATILIKSA
                     if (data.isForSale) {
                         if (data.status === "Satıldı") {
-                            bidHtml = `<div class="success-box-dynamic"><strong>💸 Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> servisine ${data.acceptedPrice} TL'ye satıldı! İletişime geçin.</strong></div>`;
+                            bidHtml = `<div class="success-box-dynamic"><strong>₺ Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> servisine ${data.acceptedPrice} TL'ye satıldı! İletişime geçin.</strong></div>`;
                         } else {
-                            bidHtml = `<div class="info-box-dynamic"><strong>💸 Servislerden Gelen Fiyat Teklifleri:</strong><br>`;
+                            bidHtml = `<div class="info-box-dynamic"><strong>₺ Servislerden Gelen Fiyat Teklifleri:</strong><br>`;
                             const offerKeys = data.offers ? Object.keys(data.offers) : [];
                             if (offerKeys.length > 0) {
                                 offerKeys.forEach(srv => {
@@ -231,21 +263,18 @@ onAuthStateChanged(auth, (user) => {
                             bidHtml += `</div>`;
                         }
                     } 
-                    // EĞER NORMAL TAMİRSE
+                    // EĞER NORMAL TAMİRSE (Hata çıkaran tekrar eden kodları temizledik)
                     else {
-                        if (data.assignedService) { bidHtml = `<div class="success-box-dynamic"><strong>✅ Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> isimli servise yönlendirildi.</strong></div>`; } 
+                        if (data.assignedService) { 
+                            bidHtml = `<div class="success-box-dynamic"><strong>✅ Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> isimli servise yönlendirildi. Servis sizinle iletişime geçecektir.</strong></div>`; 
+                        } 
                         else if (data.interestedServices && data.interestedServices.length > 0) {
                             bidHtml = `<div class="info-box-dynamic"><strong>🎉 Bu cihazı tamir edebilecek servisler:</strong><br>`;
-                            data.interestedServices.forEach(srv => { bidHtml += `<button onclick="window.selectService('${ticketId}', '${srv}')" style="margin-top:8px; background: #10B981; padding: 5px 10px; width: auto; font-size: 0.85rem; display: block; border:none; border-radius: 6px; color:white; font-weight:bold; cursor:pointer;">${srv} - Bu Servisi Seç</button>`; });
+                            data.interestedServices.forEach(srv => { 
+                                bidHtml += `<button onclick="window.selectService('${ticketId}', '${srv}')" style="margin-top:8px; background: #10B981; padding: 5px 10px; width: auto; font-size: 0.85rem; display: block; border:none; border-radius: 6px; color:white; font-weight:bold; cursor:pointer;">${srv} - Bu Servisi Seç</button>`; 
+                            });
                             bidHtml += `</div>`;
                         }
-                    }
-
-                    if (data.assignedService) { bidHtml = `<div class="success-box-dynamic"><strong>✅ Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> isimli servise yönlendirildi. Servis sizinle iletişime geçecektir.</strong></div>`; } 
-                    else if (data.interestedServices && data.interestedServices.length > 0) {
-                        bidHtml = `<div class="info-box-dynamic"><strong>🎉 Bu cihazı tamir edebilecek servisler:</strong><br>`;
-                        data.interestedServices.forEach(srv => { bidHtml += `<button onclick="window.selectService('${ticketId}', '${srv}')" style="margin-top:8px; background: #10B981; padding: 5px 10px; width: auto; font-size: 0.85rem; display: block; border:none; border-radius: 6px; color:white; font-weight:bold; cursor:pointer;">${srv} - Bu Servisi Seç</button>`; });
-                        bidHtml += `</div>`;
                     }
 
                     const statusClass = data.status === 'Bekliyor' ? 'status-bekliyor' : 'status-onaylandi';
@@ -272,7 +301,6 @@ onAuthStateChanged(auth, (user) => {
             });
         }
     } else {
-        // Kullanıcı giriş yapmamışsa, kapsülü boşalt
         if(navAuthMenu) navAuthMenu.innerHTML = '';
     }
 });
