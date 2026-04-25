@@ -12,9 +12,19 @@
         <a href="../index.html" class="logo">Teknik<span>Zeka</span> <span style="font-size: 0.9rem; color: #EF4444;">(Servis)</span></a>
         <div style="display: flex; gap: 15px; align-items: center; margin-left: auto;">
             <button id="theme-toggle-btn" class="nav-icon-btn" title="Temayı Değiştir">🌙</button>
+
+            <a href="../index.html" class="nav-icon-btn" title="Ana Sayfaya Dön"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
+
+
             <button id="service-logout-btn" class="logout-icon-btn" title="Çıkış Yap">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
             </button>
+
+
+            <a href="notifications.html" class="nav-icon-btn" style="position:relative; text-decoration:none;" title="Bildirimler">
+                🔔
+                <span id="noti-badge" style="position:absolute; top:-5px; right:-5px; background:#EF4444; color:white; border-radius:50%; width: 18px; height: 18px; font-size:0.75rem; font-weight:bold; display:none; align-items:center; justify-content:center;">0</span>
+            </a>
         </div>
     </nav>
 
@@ -26,7 +36,7 @@
             <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light);">Kategori</label>
             <select id="filter-type">
                 <option value="Tümü">Tümü</option>
-                </select>
+            </select>
 
             <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light);">Marka</label>
             <select id="filter-brand" disabled>
@@ -38,11 +48,24 @@
                 <option value="Tümü">Önce Marka Seçin</option>
             </select>
 
+            <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light); margin-top: 1rem;">İşlem Tipi</label>
+            <select id="filter-sale">
+                <option value="Tümü">Tümü (Tamir ve Satış)</option>
+                <option value="Sadece Satılık">Sadece Satılık Cihazlar</option>
+                <option value="Sadece Tamir">Sadece Tamir Talepleri</option>
+            </select>
+
             <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light); margin-top: 1rem;">İhale Durumu</label>
             <select id="filter-status">
                 <option value="Tümü">Tüm Arızalar</option>
                 <option value="Bekliyor">Sadece Teklif Bekleyenler</option>
                 <option value="Bana Atananlar">Sadece Bana Atananlar</option>
+            </select>
+
+            <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light); margin-top: 1rem;">Tarih Sıralaması</label>
+            <select id="filter-date">
+                <option value="newest">En Yeni Eklenenler</option>
+                <option value="oldest">En Eski Eklenenler</option>
             </select>
         </aside>
 
@@ -53,7 +76,7 @@
             </div>
             
             <div id="service-ticket-list" class="ticket-list-view">
-                </div>
+            </div>
         </main>
 
     </section>

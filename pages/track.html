@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Süreç Takibi - TeknikZeka</title>
+    <link rel="stylesheet" href="../css/app.css">
+    <style>
+        .track-container { max-width: 800px; margin: 100px auto 50px; padding: 2rem; background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .device-header { display: flex; align-items: center; gap: 15px; padding-bottom: 20px; border-bottom: 1px dashed var(--border-color); margin-bottom: 30px; }
+        
+        /* Zaman Çizelgesi (Timeline) CSS */
+        .timeline { position: relative; padding-left: 30px; margin-bottom: 30px; }
+        .timeline::before { content: ''; position: absolute; left: 7px; top: 0; height: 100%; width: 2px; background: var(--border-color); }
+        .step { position: relative; padding-bottom: 30px; }
+        .step:last-child { padding-bottom: 0; }
+        .step::before { content: ''; position: absolute; left: -29.5px; top: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--border-color); z-index: 1; transition: 0.3s; }
+        .step.completed::before { background: #10B981; border-color: #10B981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+        .step.active::before { border-color: var(--primary); background: var(--primary); box-shadow: 0 0 15px rgba(79, 70, 229, 0.6); }
+        
+        .step-content h4 { margin: 0 0 5px; color: var(--text-main); font-size: 1.1rem; }
+        .step-content p { margin: 0; color: var(--gray-light); font-size: 0.9rem; }
+        
+        .cargo-box { background: rgba(79, 70, 229, 0.05); border: 1px solid rgba(79, 70, 229, 0.2); padding: 15px; border-radius: 12px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .service-controls { margin-top: 30px; padding-top: 20px; border-top: 1px dashed var(--border-color); display: none; }
+    </style>
+</head>
+<body class="light-mode">
+
+    <nav class="navbar">
+        <a href="javascript:history.back()" class="logo" style="text-decoration: none;">⬅️ Geri Dön</a>
+        <div style="margin-left: auto;">
+            <button id="theme-toggle-btn" class="theme-btn" style="border:none; font-size:1.5rem; background:transparent; cursor:pointer;">🌙</button>
+        </div>
+    </nav>
+
+    <section class="track-container">
+        <div class="device-header">
+            <span style="font-size: 3rem; background: rgba(79, 70, 229, 0.1); border-radius: 16px; padding: 10px;">📦</span>
+            <div>
+                <h2 id="device-title" style="margin:0; color:var(--text-main);">Yükleniyor...</h2>
+                <span id="ticket-id-display" style="color:var(--gray-light); font-size:0.9rem;">ID: Bekleniyor</span>
+            </div>
+            <span id="status-badge" style="margin-left:auto; background:var(--primary); color:white; padding:5px 15px; border-radius:20px; font-weight:bold; font-size:0.9rem;">...</span>
+        </div>
+
+        <div class="timeline" id="timeline-container">
+            </div>
+
+        <div class="cargo-box" id="cargo-display-box" style="display: none;">
+            <div>
+                <span style="font-size: 0.85rem; color: var(--gray-light);">Kargo Takip Numarası</span><br>
+                <strong id="cargo-code-text" style="font-size: 1.2rem; color: var(--text-main); letter-spacing: 1px;">Girildiğinde Görünecek</strong>
+            </div>
+            <button onclick="copyCargoCode()" style="background:var(--card-bg); border:1px solid var(--border-color); color:var(--text-main); padding:8px 15px; border-radius:8px; cursor:pointer;">Kopyala</button>
+        </div>
+
+        <div class="service-controls" id="service-controls">
+            <h3 style="color: var(--text-main); margin-bottom: 15px;">⚙️ Servis Yönetim Paneli</h3>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <input type="text" id="cargo-input" placeholder="Kargo Kodu Girin" style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--border-color); background:transparent; color:var(--text-main);">
+                <button id="save-cargo-btn" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">Kaydet</button>
+            </div>
+            <button id="advance-step-btn" style="width: 100%; background: #10B981; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.2s;">
+                Sonraki Aşamaya Geç 🚀
+            </button>
+        </div>
+    </section>
+
+    <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/track.js"></script>
+    <script>
+        function copyCargoCode() {
+            const text = document.getElementById('cargo-code-text').innerText;
+            if(text && text !== "Girildiğinde Görünecek") {
+                navigator.clipboard.writeText(text);
+                alert("Kargo kodu kopyalandı!");
+            }
+        }
+    </script>
+</body>
+</html>
