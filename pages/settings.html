@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayarlar - TeknikZeka</title>
+    <link rel="stylesheet" href="../css/app.css">
+    <style>
+        .settings-container { max-width: 600px; margin: 100px auto 50px; background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .setting-group { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px dashed var(--border-color); }
+        .setting-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .setting-title { font-size: 1.1rem; color: var(--text-main); font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        
+        .toggle-switch { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        .toggle-switch label { color: var(--gray-light); font-size: 0.95rem; }
+        
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #10B981; }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* YENİ TEMA SEÇİM KARTLARI */
+        .theme-options { display: flex; gap: 10px; }
+        .theme-card { flex: 1; text-align: center; padding: 15px 10px; border: 2px solid var(--border-color); border-radius: 12px; cursor: pointer; transition: 0.3s; font-weight: 600; color: var(--gray-light); font-size: 0.9rem; }
+        .theme-card:hover { border-color: var(--text-muted); background: rgba(0,0,0,0.02); }
+        .theme-card.active { border-color: var(--primary); background: rgba(79, 70, 229, 0.05); color: var(--primary); }
+        .theme-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+    </style>
+</head>
+<body class="light-mode"> <nav class="navbar">
+        <a href="javascript:history.back()" class="logo" style="text-decoration: none;">⬅️ Geri Dön</a>
+    </nav>
+
+    <section class="settings-container">
+        <h2 style="margin-top: 0; color: var(--text-main); font-size: 2rem; margin-bottom: 30px;">🛠️ Ayarlar</h2>
+
+        <div class="setting-group">
+            <div class="setting-title">🎨 Görünüm Tercihleri</div>
+            <p style="color: var(--gray-light); font-size: 0.85rem; margin-bottom: 15px;">Uygulamanın genel görünümünü buradan değiştirebilirsiniz. "Akıllı" seçenek, ana sayfayı koyu, çalışma alanlarını açık tutar.</p>
+            
+            <div class="theme-options">
+                <div class="theme-card" id="theme-smart" onclick="setTheme('smart')">
+                    <span class="theme-icon">🌗</span> Akıllı (Önerilen)
+                </div>
+                <div class="theme-card" id="theme-dark" onclick="setTheme('dark')">
+                    <span class="theme-icon">🌙</span> Her Yerde Koyu
+                </div>
+                <div class="theme-card" id="theme-light" onclick="setTheme('light')">
+                    <span class="theme-icon">☀️</span> Her Yerde Açık
+                </div>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <div class="setting-title">🔔 Bildirim Tercihleri</div>
+            <div class="toggle-switch">
+                <label>Sistem İçi Bildirimler (Teklif & Durum)</label>
+                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <div class="toggle-switch">
+                <label>E-Posta Bildirimleri Al</label>
+                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <div class="setting-title">🔒 Güvenlik & Şifre</div>
+            <input type="password" placeholder="Mevcut Şifreniz" class="premium-input" style="margin-bottom: 10px;">
+            <input type="password" placeholder="Yeni Şifreniz" class="premium-input" style="margin-bottom: 10px;">
+            <button style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">Şifreyi Güncelle</button>
+        </div>
+
+        <div class="setting-group">
+            <div class="setting-title" style="color: #EF4444;">🚨 Tehlikeli Bölge</div>
+            <p style="color: var(--gray-light); font-size: 0.85rem; margin-bottom: 10px;">Hesabınızı sildiğinizde tüm arıza ve teklif geçmişiniz kalıcı olarak silinir.</p>
+            <button style="background: transparent; border: 1px solid #EF4444; color: #EF4444; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#EF4444'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='#EF4444';">Hesabımı Kalıcı Olarak Sil</button>
+        </div>
+    </section>
+
+    <script>
+        // Sayfa yüklendiğinde mevcut temayı bul ve kartı işaretle
+        let currentTheme = localStorage.getItem('global_theme') || 'smart';
+        
+        function updateThemeCards() {
+            document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('active'));
+            document.getElementById(`theme-${currentTheme}`).classList.add('active');
+        }
+
+        function setTheme(mode) {
+            currentTheme = mode;
+            localStorage.setItem('global_theme', mode);
+            updateThemeCards();
+            window.applyGlobalTheme(); // Global fonksiyonu tetikle
+        }
+
+        // İlk Yükleme
+        updateThemeCards();
+    </script>
+    <script type="module" src="../js/theme-manager.js"></script>
+    <script type="module" src="js/theme-manager.js"></script>
+</body>
+</html>

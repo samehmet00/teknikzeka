@@ -1,12 +1,12 @@
 // js/service.js
 import { db, auth } from './firebase-config.js';
-import { collection, query, onSnapshot, doc, updateDoc, arrayUnion, addDoc, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, query, onSnapshot, doc, updateDoc, arrayUnion, addDoc, serverTimestamp, where, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { deviceData } from './deviceData.js';
 
-const techServiceEmails = ["servis@teknikzeka.app", "admin@test.com"];
 const listContainer = document.getElementById('service-ticket-list'); 
 const ticketCountEl = document.getElementById('ticket-count');
+const navAuthMenu = document.getElementById('nav-auth-menu');
 
 const filterType = document.getElementById('filter-type');
 const filterBrand = document.getElementById('filter-brand');
@@ -16,26 +16,13 @@ const filterSale = document.getElementById('filter-sale');
 const filterDate = document.getElementById('filter-date'); 
 
 let allTickets = []; 
+window.highestBids = {}; 
 
-// --- YENİ: OTOMATİK BİNLİK AYRAÇ (SAHİBİNDEN STİLİ) ---
 window.formatPrice = (input) => {
     let val = input.value.replace(/\D/g, ''); 
     if (val === '') { input.value = ''; return; }
     input.value = parseInt(val, 10).toLocaleString('tr-TR');
 };
-
-// --- TEMA VE ÇIKIŞ ---
-const themeBtn = document.getElementById('theme-toggle-btn');
-if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeBtn.innerText = '🌙'; }
-themeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('light-mode');
-    if (document.body.classList.contains('light-mode')) { themeBtn.innerText = '🌙'; localStorage.setItem('theme', 'light'); } 
-    else { themeBtn.innerText = '☀️'; localStorage.setItem('theme', 'dark'); }
-});
-
-document.getElementById('service-logout-btn').addEventListener('click', () => {
-    signOut(auth).then(() => { window.location.href = "login.html"; });
-});
 
 function formatAIReport(aiText) {
     if (!aiText) return '';
@@ -67,26 +54,59 @@ const initServiceCategories = () => {
 };
 initServiceCategories();
 
-onAuthStateChanged(auth, (user) => {
-    if (user && techServiceEmails.includes(user.email)) {
-        window.currentServiceEmail = user.email; // Global olarak atadık
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists() && userDoc.data().role === "servis") {
+            window.currentServiceEmail = user.email;
+            const companyName = userDoc.data().companyName || "Servis";
 
-        // YENİ: BİLDİRİM SAYACI
-        const notiQ = query(collection(db, "notifications"), where("userEmail", "==", user.email), where("read", "==", false));
-        onSnapshot(notiQ, (snapshot) => {
-            const badge = document.getElementById('noti-badge');
-            if(badge) {
-                if(snapshot.empty) { badge.style.display = 'none'; } 
-                else { badge.style.display = 'flex'; badge.innerText = snapshot.size; }
+            if (navAuthMenu) {
+                navAuthMenu.innerHTML = `
+                    <div class="profile-dropdown" id="profile-dropdown-container">
+                        <span class="user-name-text" style="color: var(--text-main); font-weight: bold; font-size: 1rem;">&nbsp;&nbsp;🛠️ ${companyName}</span>
+                        <button class="three-dots-btn" title="Menü">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+                        </button>
+                        <div class="profile-dropdown-content">
+                            <a href="../index.html">🏠 ⏐ Ana Sayfa</a>
+                            <a href="../pages/profile.html">👤 ⏐ Profilim</a>
+                            <a href="../pages/settings.html">⚙️ ⏐ Ayarlar</a>
+                        </div>
+                        <div class="nav-divider"></div>
+                    </div>
+                    <button id="home-logout-btn" class="logout-icon-btn" title="Çıkış Yap" style="margin-left: 5px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </button>
+                `;
+
+                const dropdownContainer = document.getElementById('profile-dropdown-container');
+                dropdownContainer.addEventListener('click', (e) => { e.stopPropagation(); dropdownContainer.classList.toggle('open'); });
+                document.addEventListener('click', () => { if (dropdownContainer) dropdownContainer.classList.remove('open'); });
+                
+                document.getElementById('home-logout-btn').addEventListener('click', (e) => { 
+                    e.stopPropagation(); signOut(auth).then(() => { window.location.href = "login.html"; }); 
+                });
             }
-        });
 
-        const qAll = query(collection(db, "tickets"));
-        onSnapshot(qAll, (snapshot) => {
-            allTickets = [];
-            snapshot.forEach(doc => { allTickets.push({ id: doc.id, ...doc.data() }); });
-            renderFilteredTickets(); 
-        });
+            const notiQ = query(collection(db, "notifications"), where("userEmail", "==", user.email), where("read", "==", false));
+            onSnapshot(notiQ, (snapshot) => {
+                const badge = document.getElementById('noti-badge');
+                if(badge) {
+                    if(snapshot.empty) { badge.style.display = 'none'; } 
+                    else { badge.style.display = 'flex'; badge.innerText = snapshot.size; }
+                }
+            });
+
+            const qAll = query(collection(db, "tickets"));
+            onSnapshot(qAll, (snapshot) => {
+                allTickets = [];
+                snapshot.forEach(document => { allTickets.push({ id: document.id, ...document.data() }); });
+                renderFilteredTickets(); 
+            });
+        } else {
+            window.location.href = "dashboard.html";
+        }
     } else { window.location.href = "login.html"; }
 });
 
@@ -145,22 +165,47 @@ function renderFilteredTickets() {
     }
 
     ticketCountEl.innerText = `${filtered.length} Kayıt`;
-    if (filtered.length === 0) { listContainer.innerHTML = `<p style="color: var(--gray-light);">Filtrelere uygun kayıt yok.</p>`; return; }
+    if (filtered.length === 0) { listContainer.innerHTML = `<p style="color: var(--gray-light); text-align:center; padding: 2rem;">Filtrelere uygun kayıt yok.</p>`; return; }
 
     filtered.forEach(data => {
         const deviceInfo = data.deviceBrand ? `${data.deviceType} - ${data.deviceBrand} ${data.deviceModel}` : data.deviceType;
-        const shortDesc = data.description.length > 60 ? data.description.substring(0, 60) + "..." : data.description;
-        const saleBadge = data.isForSale ? `<span style="color:#10B981; font-size:0.8rem; border:1px solid #10B981; padding:2px 6px; border-radius:4px; margin-left:8px;">Satılık</span>` : ``;
-
+        
         let dateStr = "Şimdi eklendi";
         if(data.createdAt) {
             const d = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
-            dateStr = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' });
+            dateStr = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' });
         }
 
         let techActionHtml = '';
+        let highestBidHtml = '';
+        let saleBadge = '';
         
+        // --- HATA DÜZELTİLDİ: EN YÜKSEK TEKLİF HESAPLAMA ---
         if (data.isForSale) {
+            let highestBid = 0;
+            
+            // Veritabanındaki offers objesini dönüp sayıları buluyoruz
+            if (data.offers && typeof data.offers === 'object') {
+                Object.values(data.offers).forEach(val => {
+                    // Sayı veya obje olup olmadığını kontrol edip saf sayıyı al
+                    let priceNumber = (typeof val === 'object' && val !== null) ? Number(val.price) : Number(val);
+                    if (!isNaN(priceNumber) && priceNumber > highestBid) {
+                        highestBid = priceNumber;
+                    }
+                });
+            }
+            
+            window.highestBids[data.id] = highestBid; 
+
+            saleBadge = `<span style="color:#10B981; border:1px solid #10B981; padding:2px 6px; border-radius:4px; font-size:0.75rem;">SATILIK</span>`;
+            
+            // Teklif rozeti satılık yazısının SAĞINA taşınması için burada oluşturuldu
+            if(highestBid > 0) {
+                saleBadge += `<span class="highest-bid-badge">💰 Teklif: ${highestBid.toLocaleString('tr-TR')} ₺</span>`;
+            } else {
+                saleBadge += `<span class="highest-bid-badge" style="background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px dashed #10B981; box-shadow: none;">Bekleniyor</span>`;
+            }
+
             if (data.status === "Satıldı") {
                 if (data.assignedService === window.currentServiceEmail) {
                     techActionHtml = `
@@ -172,21 +217,23 @@ function renderFilteredTickets() {
                     techActionHtml = `<div class="error-box-dynamic">❌ Cihaz başka bir servise satıldı.</div>`;
                 }
             } else {
-                let myOffer = data.offers ? data.offers[window.currentServiceEmail] : null;
-                if (typeof myOffer === 'object') myOffer = myOffer.price || 0;
+                let myOfferRaw = data.offers ? data.offers[window.currentServiceEmail] : null;
+                let myOffer = (typeof myOfferRaw === 'object' && myOfferRaw !== null) ? Number(myOfferRaw.price) : Number(myOfferRaw);
+                if (isNaN(myOffer)) myOffer = 0;
                 
-                // input type="text" VE oninput="window.formatPrice(this)" ÖZELLİĞİ EKLENDİ
+                const minOfferAllowed = highestBid > 0 ? highestBid + 10 : 100; 
+
                 const offerInputHtml = `
                     <div style="display:flex; align-items:center; gap:10px; margin-top:10px; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px; border: 1px dashed #10B981;">
                         <span style="font-weight: 800; color: #10B981; font-size: 1.2rem;">₺</span>
-                        <input type="text" id="offer-input-${data.id}" oninput="window.formatPrice(this)" placeholder="Teklif girin (Örn: 1.500)" value="${myOffer ? Number(myOffer).toLocaleString('tr-TR') : ''}" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); font-size: 1rem; outline:none;" onclick="event.stopPropagation();">
+                        <input type="text" id="offer-input-${data.id}" oninput="window.formatPrice(this)" placeholder="Teklif girin (Örn: ${minOfferAllowed})" value="${myOffer ? myOffer.toLocaleString('tr-TR') : ''}" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); font-size: 1rem; outline:none;" onclick="event.stopPropagation();">
                         <button onclick="window.makeOffer('${data.id}', '${data.userEmail}', event)" style="background:#10B981; color:white; padding:8px 20px; font-weight:bold; font-size: 1rem; border:none; border-radius:6px; cursor:pointer; transition: 0.2s;">${myOffer ? 'Güncelle' : 'Teklif Gönder'}</button>
                     </div>`;
 
                 if (myOffer) {
                     techActionHtml = `
                         <div id="offer-display-${data.id}" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-top:10px;">
-                            <span style="color: var(--text-main);">✅ <strong>${Number(myOffer).toLocaleString('tr-TR')} ₺</strong> teklif verdiniz.</span>
+                            <span style="color: var(--text-main);">✅ <strong>${myOffer.toLocaleString('tr-TR')} ₺</strong> teklif verdiniz.</span>
                             <button onclick="event.stopPropagation(); document.getElementById('offer-display-${data.id}').style.display='none'; document.getElementById('offer-edit-${data.id}').style.display='block';" style="background: transparent; border: 1px solid #10B981; color: #10B981; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Değiştir</button>
                         </div>
                         <div id="offer-edit-${data.id}" style="display: none;">
@@ -198,6 +245,7 @@ function renderFilteredTickets() {
             }
         } 
         else {
+            saleBadge = `<span style="color:var(--primary); border:1px solid var(--primary); padding:2px 6px; border-radius:4px; font-size:0.75rem;">TAMİR</span>`;
             if (data.assignedService === window.currentServiceEmail) { 
                 techActionHtml = `
                 <div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:10px;">
@@ -215,20 +263,20 @@ function renderFilteredTickets() {
         
         bar.innerHTML = `
             <div class="bar-header" onclick="this.parentElement.classList.toggle('expanded')">
-                <div style="display: flex; align-items: center; gap: 15px; flex-grow: 1; overflow: hidden;">
+                <div style="display: flex; align-items: flex-start; gap: 15px; flex-grow: 1; overflow: hidden;">
                     <span style="font-size: 1.8rem;">📱</span>
-                    <div style="overflow: hidden;">
+                    <div style="overflow: hidden; width: 100%;">
                         <div class="bar-title">
                             ${deviceInfo} ${saleBadge}
                         </div>
                         <div class="bar-summary">
-                            <span style="font-size: 0.8rem; color: #94A3B8; font-weight: normal; margin-right: 10px;">📅 ${dateStr}</span>
-                            ${shortDesc}
+                            <span class="ticket-date-badge">📅 ${dateStr}</span>
+                            <span class="ticket-desc-text">${data.description.substring(0, 50)}${data.description.length > 50 ? '...' : ''}</span>
                         </div>
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 20px;">
-                    <span style="font-size: 0.85rem; color: ${data.status === 'Bekliyor' ? '#F59E0B' : '#10B981'}; font-weight: bold; background: rgba(0,0,0,0.05); padding: 4px 10px; border-radius: 20px;">${data.status}</span>
+                    <span style="font-size: 0.85rem; color: ${data.status === 'Bekliyor' ? '#F59E0B' : '#10B981'}; font-weight: bold; background: rgba(0,0,0,0.05); padding: 4px 10px; border-radius: 20px; white-space: nowrap;">${data.status}</span>
                     <span class="expand-icon">▼</span>
                 </div>
             </div>
@@ -250,31 +298,46 @@ window.approveTicket = async (ticketId, customerEmail, event) => {
     event.stopPropagation(); 
     try { 
         await updateDoc(doc(db, "tickets", ticketId), { interestedServices: arrayUnion(window.currentServiceEmail) }); 
-        
-        // MÜŞTERİYE BİLDİRİM GÖNDER
         await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: "🛠️ Bir servis cihazınızı tamir edebileceğini belirtti!", link: "dashboard.html", read: false, createdAt: serverTimestamp() });
-        
         alert("Cihazı yapabileceğinizi onayladınız. Müşteriye iletildi!"); 
     } catch (error) { console.error("Hata:", error); }
 };
 
+
 window.makeOffer = async (ticketId, customerEmail, event) => {
     event.stopPropagation();
     const priceRaw = document.getElementById(`offer-input-${ticketId}`).value;
-    const price = parseInt(priceRaw.replace(/\D/g, ''), 10); // Noktaları silip saf sayıya çeviriyoruz
+    const price = parseInt(priceRaw.replace(/\D/g, ''), 10); 
+    const currentHighestBid = window.highestBids[ticketId] || 0;
     
     if (isNaN(price) || price < 100 || price > 500000) {
         return alert("Lütfen 100 ₺ ile 500.000 ₺ arasında geçerli bir tutar girin.");
+    }
+
+    if (price <= currentHighestBid) {
+        return alert(`Teklifiniz reddedildi! Sisteme daha önce ${currentHighestBid.toLocaleString('tr-TR')} ₺ teklif verilmiş. Bunun üzerinde bir rakam girmelisiniz.`);
     }
     
     if(!confirm(`Müşteriye cihazı satın almak için ${price.toLocaleString('tr-TR')} ₺ teklif göndermek istediğinize emin misiniz?`)) return;
     
     try {
-        await updateDoc(doc(db, "tickets", ticketId), { [`offers.${window.currentServiceEmail}`]: price });
+        const ticketRef = doc(db, "tickets", ticketId);
+        const ticketSnap = await getDoc(ticketRef);
         
-        // MÜŞTERİYE BİLDİRİM GÖNDER
-        await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: `💸 Cihazınız için ${price.toLocaleString('tr-TR')} ₺ yeni bir teklif geldi!`, link: "dashboard.html", read: false, createdAt: serverTimestamp() });
-
-        alert("Teklifiniz başarıyla müşteriye iletildi!");
-    } catch (error) { console.error("Hata:", error); }
+        if (ticketSnap.exists()) {
+            // Firebase nokta (dot-notation) hatasını aşmak için teklifleri önce alıp sonra güncelliyoruz
+            let currentOffers = ticketSnap.data().offers || {};
+            currentOffers[window.currentServiceEmail] = price; 
+            
+            // Güncellenmiş teklifler objesini tek seferde gönderiyoruz
+            await updateDoc(ticketRef, { offers: currentOffers });
+            
+            await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: `💸 Cihazınız için ${price.toLocaleString('tr-TR')} ₺ yeni bir teklif geldi!`, link: "dashboard.html", read: false, createdAt: serverTimestamp() });
+            
+            alert("Teklifiniz başarıyla müşteriye iletildi!");
+        }
+    } catch (error) { 
+        console.error("Hata:", error); 
+        alert("Teklif gönderilirken bir hata oluştu.");
+    }
 };

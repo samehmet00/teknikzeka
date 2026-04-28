@@ -10,11 +10,7 @@
     
     <nav class="navbar">
         <button id="mobile-menu-btn" class="nav-icon-btn" title="Menü">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
 
         <a href="index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
@@ -23,27 +19,11 @@
             <a href="index.html">Ana Sayfa</a>
             <a href="pages/login.html">Arıza Kayıtlarım</a>
             <a href="#sell-device">Cihaz Sat</a>
-            <a href="pages/profile.html">Profilim</a>
             <a href="pages/about.html">Hakkımızda</a>
         </div>
         
-        <div class="nav-actions">
-            <button id="theme-toggle-btn" class="modern-theme-btn" title="Temayı Değiştir">
-                <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-            </button>            
+        <div class="nav-actions-pill">
+            
             <div id="dynamic-auth-menu">
                 <a href="pages/login.html" class="nav-login-btn">Giriş Yap</a>
             </div>
@@ -52,21 +32,13 @@
 
     <header class="hero">
         <div class="hero-content">
-            <h1 class="animate-title">
-                Cihaz Arızalarınıza <br>
-                <span class="ai-glow-text">Yapay Zekâ</span> <br>
-                ile Çözüm Bulun
-            </h1>
+            <h1 class="animate-title">Cihaz Arızalarınıza <br><span class="ai-glow-text">Yapay </span><span class="ai-glow-text" style="color: var(--accent);">Zekâ</span> <br>ile Çözüm Bulun</h1>
             <p class="animate-subtitle">Teknik servise gitmeden önce sorunun ne olduğunu öğrenin. Şikayetinizi yazın, gelişmiş algoritmamız saniyeler içinde donanımsal ön teşhisinizi yapsın ve sizi en doğru yerel servise yönlendirsin.</p>
-            
             <div style="min-height: 70px; display: flex; justify-content: center; align-items: center;">
                 <div id="btn-wrapper" style="width: fit-content; height: fit-content;">
                     <a href="pages/login.html" class="primary-btn-large" id="hero-action-btn">
                         <span class="btn-text">Hemen Arıza Kaydı Oluştur</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                     </a>
                 </div>
             </div>
@@ -82,22 +54,12 @@
 
     <section id="sell-device" class="reveal" style="padding: 6rem 5%; text-align: center; background: var(--card-bg);">
         <div class="hero-content" style="max-width: 900px; margin: 0 auto;">
-            <h2 class="animate-title" style="font-size: 3rem;">
-                <span style="font-size: 4rem; display:block; margin-bottom:10px;">₺</span>
-                Arızalı Cihazını <br>
-                <span class="ai-glow-text" style="color: var(--accent);">Anında Sat</span>
-            </h2>
-            <p class="animate-subtitle" style="margin-top: 20px; font-size: 1.2rem; margin-bottom: 2.5rem; color: var(--text-muted);">
-                Tamir masrafı cihazın değerini mi aştı? Cihazınızı çekmeceye atmak yerine sistemimizdeki yüzlerce teknik servise doğrudan satın. Kayıt oluştururken "Satmak İstiyorum" seçeneğini işaretleyin ve servislerden gelen en iyi fiyat teklifini anında kabul edin.
-            </p>
-            
+            <h2 class="animate-title" style="font-size: 3rem;"><span style="font-size: 4rem; display:block; margin-bottom:10px;">₺</span>Arızalı Cihazını <br><span class="ai-glow-text" style="color: var(--accent);">Anında Sat</span></h2>
+            <p class="animate-subtitle" style="margin-top: 20px; font-size: 1.2rem; margin-bottom: 2.5rem; color: var(--text-muted);">Tamir masrafı cihazın değerini mi aştı? Cihazınızı çekmeceye atmak yerine sistemimizdeki yüzlerce teknik servise doğrudan satın. Kayıt oluştururken "Satmak İstiyorum" seçeneğini işaretleyin ve servislerden gelen en iyi fiyat teklifini anında kabul edin.</p>
             <div style="display: flex; justify-content: center; align-items: center;">
                 <a href="pages/login.html" class="primary-btn-large" style="background: linear-gradient(135deg, #10B981, #047857);">
                     <span class="btn-text">Arızalı Cihazıma Fiyat Al</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </a>
             </div>
         </div>
@@ -107,22 +69,13 @@
 
     <section id="why-us" class="info-section">
         <div class="sticky-container">
-            <h2 class="cinematic-sentence huge-title color-gradient-1">
-                Geleneksel Servis Anlayışını <span class="ai-glow-text" style="display:inline;">Değiştiriyoruz.</span>
-            </h2>
+            <h2 class="cinematic-sentence huge-title color-gradient-1">Geleneksel Servis Anlayışını Değiştiriyoruz.</h2>
             <p class="cinematic-sentence color-gradient-1">Cihazı bozulan kullanıcılar sorunun ne olduğunu tam olarak bilemezler.</p>
             <p class="cinematic-sentence color-gradient-2">Teknik servisler ise müşteriden net bilgi alamadığı için arıza tespitinde saatlerini harcar.</p>
             <p class="cinematic-sentence color-gradient-3">TeknikZeka, aradaki bu iletişim kopukluğunu yapay zekâ ile gidererek iki tarafın da zamanını kurtarır.</p>
             <p class="cinematic-sentence color-gradient-1">Küçük işletmeler müşteri taleplerini defterler yerine dijital biletleme sistemiyle takip eder.</p>
         </div>
-
-        <div class="scroll-triggers">
-            <div class="trigger" data-step="0"></div>
-            <div class="trigger" data-step="1"></div>
-            <div class="trigger" data-step="2"></div>
-            <div class="trigger" data-step="3"></div>
-            <div class="trigger" data-step="4"></div>
-        </div>
+        <div class="scroll-triggers"><div class="trigger" data-step="0"></div><div class="trigger" data-step="1"></div><div class="trigger" data-step="2"></div><div class="trigger" data-step="3"></div><div class="trigger" data-step="4"></div></div>
     </section>
 
     <section id="about" class="about-section">
@@ -131,40 +84,26 @@
         </div>
         <div class="features">
             <div class="feature-card reveal">
-                <div class="icon">📝</div>
-                <h3>1. Şikayetinizi Anlatın</h3>
-                <p>Cihazınızın gösterdiği belirtileri, duyduğunuz sesleri kendi kelimelerinizle yazın.</p>
+                <div class="icon">📝</div><h3>1. Şikayetinizi Anlatın</h3><p>Cihazınızın gösterdiği belirtileri, duyduğunuz sesleri kendi kelimelerinizle yazın.</p>
             </div>
             <div class="feature-card reveal" style="transition-delay: 0.2s;">
-                <div class="icon">🤖</div>
-                <h3>2. AI Ön Teşhis Yapsın</h3>
-                <p>Dil modelimiz şikayetinizi okur ve olası donanım arızasını anında tespit eder.</p>
+                <div class="icon">🤖</div><h3>2. AI Ön Teşhis Yapsın</h3><p>Dil modelimiz şikayetinizi okur ve olası donanım arızasını anında tespit eder.</p>
             </div>
             <div class="feature-card reveal" style="transition-delay: 0.4s;">
-                <div class="icon">🛠️</div>
-                <h3>3. Servise İletilsin</h3>
-                <p>Oluşan rapor güvenli buluta kaydedilir. Servisler panellerinden durumu görüp müdahale eder.</p>
+                <div class="icon">🛠️</div><h3>3. Servise İletilsin</h3><p>Oluşan rapor güvenli buluta kaydedilir. Servisler panellerinden durumu görüp müdahale eder.</p>
             </div>
         </div>
     </section>
 
     <footer id="contact" class="footer reveal">
         <div class="footer-content">
-            <div class="footer-brand">
-                <h2>Teknik<span>Zeka</span></h2>
-                <p>İnternet Programcılığı Dersi Projesi olarak geliştirilmiştir.</p>
-            </div>
-            <div class="footer-contact">
-                <h3>İletişim & Konum</h3>
-                <p>📍 İnönü Üniversitesi, Bilgisayar Mühendisliği Bölümü</p>
-                <a href="mailto:destek@teknikzeka.app" style="color:var(--text-muted);">📧 destek@teknikzeka.app</a>
-            </div>
+            <div class="footer-brand"><h2>Teknik<span>Zeka</span></h2><p>İnternet Programcılığı Dersi Projesi olarak geliştirilmiştir.</p></div>
+            <div class="footer-contact"><h3>İletişim & Konum</h3><p>📍 İnönü Üniversitesi, Bilgisayar Mühendisliği Bölümü</p><a href="mailto:destek@teknikzeka.app" style="color:var(--text-muted);">📧 destek@teknikzeka.app</a></div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 TeknikZeka. Tüm hakları saklıdır.</p>
-        </div>
+        <div class="footer-bottom"><p>&copy; 2026 TeknikZeka. Tüm hakları saklıdır.</p></div>
     </footer>
 
     <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/theme-manager.js"></script>
 </body>
 </html>

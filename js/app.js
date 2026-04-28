@@ -1,11 +1,11 @@
 // js/app.js
 import { db, auth } from './firebase-config.js';
-import { collection, addDoc, serverTimestamp, query, where, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, addDoc, serverTimestamp, query, where, onSnapshot, doc, updateDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { deviceData } from './deviceData.js';
 
-const keyPart1 = "AIzaSyDumR9BNz_Gh7"; 
-const keyPart2 = "stBbXBki0T-TcZB9kfuWo"; 
+const keyPart1 = "AIzaSyBb37dubusQPS"; 
+const keyPart2 = "bNmvQJJllhM58MySTyKls"; 
 const GEMINI_API_KEY = keyPart1 + keyPart2;
 
 const ticketForm = document.getElementById('ticket-form');
@@ -121,7 +121,7 @@ if(ticketForm) {
                 Çözüm: [Tek cümlelik tamir tavsiyesi]`;
             }
 
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                 method: "POST", 
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
@@ -152,7 +152,7 @@ if(ticketForm) {
             if(deviceBrandInput) deviceBrandInput.disabled = true; 
             if(deviceModelInput) deviceModelInput.disabled = true;
             
-            ticketMsg.innerHTML = `<span style="color: #10B981; font-weight: bold;">✅ Talebiniz deftere kaydedildi (Başarıyla eklendi)!</span>`;
+            ticketMsg.innerHTML = `<span style="color: #10B981; font-weight: bold;">✅ Talebiniz kaydedildi (Başarıyla eklendi)!</span>`;
             setTimeout(() => ticketMsg.style.display = 'none', 4000);
 
         } catch (error) { 
@@ -171,7 +171,7 @@ window.toggleSwipe = (event, element) => {
 
 window.deleteTicket = async (ticketId, event) => {
     if(event) event.stopPropagation();
-    if(confirm("Bu kaydını silmek istediğinize emin misiniz?")) {
+    if(confirm("Bu kaydı silmek istediğinize emin misiniz?")) {
         try { await deleteDoc(doc(db, "tickets", ticketId)); } catch (error) { alert("Silinirken bir hata oluştu."); }
     }
 };
@@ -180,7 +180,7 @@ window.selectService = async (ticketId, serviceEmail, event) => {
     if(event) event.stopPropagation();
     try {
         await updateDoc(doc(db, "tickets", ticketId), { assignedService: serviceEmail, status: "Servise Yönlendirildi", processStep: 0 });
-        // SERVİSE BİLDİRİM GÖNDER
+        // Servise Bildirim Gönder
         await addDoc(collection(db, "notifications"), { userEmail: serviceEmail, message: "🎉 Bir müşteri tamir için sizi seçti!", link: `track.html?id=${ticketId}`, read: false, createdAt: serverTimestamp() });
         alert(serviceEmail + " servisini başarıyla seçtiniz!");
     } catch (error) { console.error("Hata:", error); }
@@ -191,18 +191,24 @@ window.acceptOffer = async (ticketId, serviceEmail, price, event) => {
     if(confirm(`${price.toLocaleString('tr-TR')} TL teklifi kabul etmek istediğinize emin misiniz?`)) {
         try {
             await updateDoc(doc(db, "tickets", ticketId), { assignedService: serviceEmail, status: "Satıldı", acceptedPrice: price, processStep: 0 });
-            // SERVİSE BİLDİRİM GÖNDER
-            await addDoc(collection(db, "notifications"), { userEmail: serviceEmail, message: `💸 Müşteri cihazını size satmayı kabul etti! (${price.toLocaleString('tr-TR')} ₺)`, link: `track.html?id=${ticketId}`, read: false, createdAt: serverTimestamp() });
+            // Servise Bildirim Gönder
+            await addDoc(collection(db, "notifications"), { userEmail: serviceEmail, message: `₺ Müşteri cihazını size satmayı kabul etti! (${price.toLocaleString('tr-TR')} ₺)`, link: `track.html?id=${ticketId}`, read: false, createdAt: serverTimestamp() });
             alert("Teklifi kabul ettiniz! Süreç takibine başlayabilirsiniz.");
         } catch (error) { console.error("Hata:", error); }
     }
 };
 
 // --- MÜŞTERİ PANELİ YÖNETİMİ ---
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user) {
+        // ROL GÜVENLİĞİ: Servis buraya giremez!
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if(userDoc.exists() && userDoc.data().role === "servis") {
+            window.location.href = "service.html";
+            return;
+        }
 
-        // YENİ: BİLDİRİM SAYACI
+        // BİLDİRİM SAYACI KONTROLÜ
         const notiQ = query(collection(db, "notifications"), where("userEmail", "==", user.email), where("read", "==", false));
         onSnapshot(notiQ, (snapshot) => {
             const badge = document.getElementById('noti-badge');
@@ -212,19 +218,43 @@ onAuthStateChanged(auth, (user) => {
             }
         });
 
+        // NAVBAR KULLANICI MENÜSÜ OLUŞTURMA
         if(navAuthMenu) {
-            const username = user.email.split('@')[0];
+            const username = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+            
             navAuthMenu.innerHTML = `
-                <div class="user-profile-pill">
-                    <span class="user-name-text">👤 ${username}</span>
-                    <button id="logout-btn" class="logout-icon-btn" title="Sistemden Çıkış" style="width: 32px; height: 32px; border-width: 2px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="profile-dropdown" id="profile-dropdown-container">
+                        <span class="user-name-text" style="color: var(--text-main); font-weight: bold; font-size: 1rem;">👤 ${username}</span>
+                        <button class="three-dots-btn" title="Menü">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+                        </button>
+                        
+                        <div class="profile-dropdown-content">
+                            <a href="dashboard.html">📊 Müşteri Paneli</a>
+                            <a href="profile.html">👤 Profilim</a>
+                            <a href="settings.html">🛠️ Ayarlar</a>
+                        </div>
+                    </div>
+                    
+                    <button id="home-logout-btn" class="logout-icon-btn" title="Sistemden Çıkış">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     </button>
                 </div>
             `;
-            document.getElementById('logout-btn').addEventListener('click', () => { signOut(auth).then(() => { window.location.href = "login.html"; }); });
+            
+            // Açılır Menü Dinleyicileri
+            const dropdownContainer = document.getElementById('profile-dropdown-container');
+            dropdownContainer.addEventListener('click', (e) => { e.stopPropagation(); dropdownContainer.classList.toggle('open'); });
+            document.addEventListener('click', () => { if (dropdownContainer) dropdownContainer.classList.remove('open'); });
+
+            // Çıkış Yapma
+            document.getElementById('home-logout-btn').addEventListener('click', (e) => { 
+                e.stopPropagation(); signOut(auth).then(() => { window.location.href = "login.html"; }); 
+            });
         }
 
+        // BİLETLERİ LİSTELE
         if(ticketList) {
             const q = query(collection(db, "tickets"), where("userEmail", "==", user.email));
             onSnapshot(q, (querySnapshot) => {
@@ -254,11 +284,11 @@ onAuthStateChanged(auth, (user) => {
                         if (data.status === "Satıldı") {
                             bidHtml = `
                             <div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:10px;">
-                                <span><strong>💸 Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> servisine ${data.acceptedPrice} TL'ye satıldı!</strong></span>
+                                <span><strong>₺ Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> servisine ${data.acceptedPrice.toLocaleString('tr-TR')} TL'ye satıldı!</strong></span>
                                 <a href="track.html?id=${ticketId}" style="align-self:flex-start; padding:8px 20px; background: linear-gradient(135deg, #10B981, #059669); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 15px rgba(16,185,129,0.3);">Süreci Takip Et 🚚</a>
                             </div>`;
                         } else {
-                            bidHtml = `<div class="info-box-dynamic"><strong>💸 Servislerden Gelen Fiyat Teklifleri:</strong><br>`;
+                            bidHtml = `<div class="info-box-dynamic"><strong>₺ Servislerden Gelen Fiyat Teklifleri:</strong><br>`;
                             const offerKeys = data.offers ? Object.keys(data.offers) : [];
                             if (offerKeys.length > 0) {
                                 offerKeys.forEach(srv => {

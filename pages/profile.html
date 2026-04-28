@@ -16,7 +16,6 @@
     <nav class="navbar">
         <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
         <div class="nav-actions" style="display: flex; gap:15px; align-items:center;">
-            <button id="theme-toggle-btn" class="nav-icon-btn" title="Temayı Değiştir" style="border-color: var(--gray-light); color: var(--text-main);">☀️</button>
             <a href="../index.html" class="nav-icon-btn" title="Ana Sayfaya Dön"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
         </div>
     </nav>
@@ -32,14 +31,6 @@
         import { auth } from '../js/firebase-config.js';
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // Tema Yönetimi
-        const themeBtn = document.getElementById('theme-toggle-btn');
-        if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeBtn.innerText = '🌙'; }
-        themeBtn.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            if (document.body.classList.contains('light-mode')) { themeBtn.innerText = '🌙'; localStorage.setItem('theme', 'light'); } 
-            else { themeBtn.innerText = '☀️'; localStorage.setItem('theme', 'dark'); }
-        });
 
         // Profil Verisi Çekme
         const profileContent = document.getElementById('profile-content');
@@ -80,5 +71,6 @@
             }
         });
     </script>
+    <script type="module" src="js/theme-manager.js"></script>
 </body>
 </html>

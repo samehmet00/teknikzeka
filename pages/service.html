@@ -4,31 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teknik Servis Paneli - TeknikZeka</title>
+    <link rel="stylesheet" href="../css/style.css"> 
     <link rel="stylesheet" href="../css/service.css">
+    
+    <style>
+        .service-list-bar .bar-title { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-weight: bold; color: var(--text-main); font-size: 1.1rem; }
+        .service-list-bar .bar-summary { display: flex; flex-direction: column; gap: 4px; margin-top: 5px; }
+        
+        /* Tarih Rozeti Daraltıldı */
+        .ticket-date-badge { display: inline-flex; align-items: center; width: fit-content; background: rgba(79, 70, 229, 0.1); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; border: 1px solid rgba(79, 70, 229, 0.2); }
+        .ticket-desc-text { color: var(--gray-light); font-size: 0.9rem; }
+        
+        /* En Yüksek Teklif Rozeti (Küçültüldü ve Satılık Yanına Uyumlu Hale Getirildi) */
+        .highest-bid-badge { background: linear-gradient(135deg, #10B981, #047857); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3); }
+    </style>
 </head>
 <body class="light-mode">
 
     <nav class="navbar">
-        <a href="../index.html" class="logo">Teknik<span>Zeka</span> <span style="font-size: 0.9rem; color: #EF4444;">(Servis)</span></a>
+        <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span> <span style="font-size: 0.9rem; color: #EF4444;">(Servis)</span></a>
+        
         <div style="display: flex; gap: 15px; align-items: center; margin-left: auto;">
-            <button id="theme-toggle-btn" class="nav-icon-btn" title="Temayı Değiştir">🌙</button>
-
-            <a href="../index.html" class="nav-icon-btn" title="Ana Sayfaya Dön"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
-
-
-            <button id="service-logout-btn" class="logout-icon-btn" title="Çıkış Yap">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-            </button>
-
-
-            <a href="notifications.html" class="nav-icon-btn" style="position:relative; text-decoration:none;" title="Bildirimler">
+            
+            <a href="notifications.html" class="nav-icon-btn" style="position:relative; text-decoration:none; font-size: 1.4rem; padding-top: 5px;" title="Bildirimler">
                 🔔
-                <span id="noti-badge" style="position:absolute; top:-5px; right:-5px; background:#EF4444; color:white; border-radius:50%; width: 18px; height: 18px; font-size:0.75rem; font-weight:bold; display:none; align-items:center; justify-content:center;">0</span>
+                <span id="noti-badge" style="position:absolute; top:0px; right:-5px; background:#EF4444; color:white; border-radius:50%; width: 18px; height: 18px; font-size:0.75rem; font-weight:bold; display:none; align-items:center; justify-content:center;">0</span>
             </a>
+
+            <div class="nav-actions-pill" id="nav-auth-menu">
+                </div>
+            
         </div>
     </nav>
 
-    <section class="service-container">
+    <section class="service-container" style="margin-top: 100px;">
         
         <aside class="filter-sidebar ticket-box">
             <h3 style="margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">Filtrele</h3>

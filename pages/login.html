@@ -5,18 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sisteme Giriş - TeknikZeka</title>
     <link rel="stylesheet" href="../css/app.css"> 
-    <link rel="stylesheet" href="../css/style.css"> </head>
+    <link rel="stylesheet" href="../css/style.css"> 
+</head>
 <body class="light-mode">
 
     <nav class="navbar">
         <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
         <div style="display: flex; gap: 15px; align-items: center; margin-left: auto;">
-            
-            <button id="theme-toggle-btn" class="modern-theme-btn" title="Temayı Değiştir">
-                <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            </button>
-            
             <a href="../index.html" class="nav-icon-btn" title="Ana Sayfaya Dön"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
         </div>
     </nav>
@@ -25,16 +20,82 @@
         <div id="auth-container" class="auth-box">
             <h2 id="auth-title">Sisteme Giriş</h2>
             <form id="auth-form">
+                
+                <style>
+                    .acc-group { display: flex; gap: 12px; margin-top: 8px; }
+                    .acc-option { flex: 1; position: relative; }
+                    .acc-option input[type="radio"] { display: none; /* Standart yuvarlağı gizle */ }
+                    
+                    .acc-card {
+                        display: flex; flex-direction: column; align-items: center; justify-content: center;
+                        padding: 15px 5px; border: 2px solid var(--border-color); border-radius: 12px;
+                        cursor: pointer; transition: 0.3s ease; color: var(--gray-light);
+                        font-weight: 600; font-size: 0.95rem; background: transparent;
+                    }
+                    .acc-card:hover { border-color: var(--text-muted); background: rgba(0,0,0,0.02); }
+                    .acc-icon { font-size: 1.8rem; margin-bottom: 8px; transition: 0.3s ease; transform: scale(1); }
+
+                    /* Müşteri Seçildiğinde (Mor Tema) */
+                    .acc-option input[value="musteri"]:checked + .acc-card {
+                        border-color: var(--primary);
+                        background: rgba(79, 70, 229, 0.05);
+                        color: var(--primary);
+                    }
+                    .acc-option input[value="musteri"]:checked + .acc-card .acc-icon { transform: scale(1.15); }
+
+                    /* Servis Seçildiğinde (Yeşil Tema) */
+                    .acc-option input[value="servis"]:checked + .acc-card {
+                        border-color: #10B981;
+                        background: rgba(16, 185, 129, 0.05);
+                        color: #10B981;
+                    }
+                    .acc-option input[value="servis"]:checked + .acc-card .acc-icon { transform: scale(1.15); }
+                </style>
+
+                <div id="account-type-container" style="display: none; margin-bottom: 20px; text-align: left;">
+                    <p style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 5px; font-weight: bold;">Hesap Türünüzü Seçin</p>
+                    <div class="acc-group">
+                        <label class="acc-option">
+                            <input type="radio" name="acc-type" value="musteri" checked>
+                            <div class="acc-card">
+                                <span class="acc-icon">👤</span>
+                                <span>Bireysel Müşteri</span>
+                            </div>
+                        </label>
+                        
+                        <label class="acc-option">
+                            <input type="radio" name="acc-type" value="servis">
+                            <div class="acc-card">
+                                <span class="acc-icon">🛠️</span>
+                                <span>Teknik Servis</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <input type="text" id="first-name" placeholder="Adınız" style="display: none;">
+                <input type="text" id="last-name" placeholder="Soyadınız" style="display: none;">
+                
+                <input type="text" id="company-name" placeholder="Firma / Dükkan Adı" style="display: none; border-color: #10B981;">
+                <input type="password" id="secret-code" placeholder="Sistem Onay Kodu (Örn: TZ-2026-SERVIS)" style="display: none; border-color: #10B981;">
+
                 <input type="email" id="email" placeholder="E-posta adresiniz" required>
                 <input type="password" id="password" placeholder="Şifreniz" required>
+                
+                <div style="text-align: right; margin-bottom: 15px;">
+                    <a href="#" id="forgot-password-link" style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600; display: inline-block;">Şifremi Unuttum?</a>
+                </div>
+
                 <button type="submit" id="auth-btn">Giriş Yap</button>
             </form>
-            <p id="toggle-text">Hesabınız yok mu? <a href="#" id="toggle-link">Hemen Kayıt Olun</a></p>
-            <p id="auth-error" style="color: #EF4444; display: none; margin-top: 10px; font-size: 0.9rem;"></p>
+            <p id="toggle-text" style="margin-top: 15px;">Hesabınız yok mu? <a href="#" id="toggle-link" style="color: var(--primary); font-weight: bold;">Hemen Kayıt Olun</a></p>
+            <p id="auth-error" style="color: #EF4444; display: none; margin-top: 10px; font-size: 0.9rem; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px;"></p>
+            <p id="auth-success" style="color: #10B981; display: none; margin-top: 10px; font-size: 0.9rem; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px;"></p>
         </div>
     </section>
 
     <script type="module" src="../js/firebase-config.js"></script>
     <script type="module" src="../js/auth.js"></script>
+    <script type="module" src="js/theme-manager.js"></script>
 </body>
 </html>

@@ -6,14 +6,6 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/fi
 const listContainer = document.getElementById('notifications-list');
 let currentDocs = [];
 
-// Tema
-const themeBtn = document.getElementById('theme-toggle-btn');
-if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeBtn.innerText = '🌙'; }
-themeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('light-mode');
-    if (document.body.classList.contains('light-mode')) { themeBtn.innerText = '🌙'; localStorage.setItem('theme', 'light'); } 
-    else { themeBtn.innerText = '☀️'; localStorage.setItem('theme', 'dark'); }
-});
 
 onAuthStateChanged(auth, (user) => {
     if (user) {

@@ -18,14 +18,7 @@ const cargoInput = document.getElementById('cargo-input');
 let currentTicket = null;
 let currentUserEmail = "";
 
-// Tema Ayarı
-const themeBtn = document.getElementById('theme-toggle-btn');
-if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeBtn.innerText = '🌙'; }
-themeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('light-mode');
-    if (document.body.classList.contains('light-mode')) { themeBtn.innerText = '🌙'; localStorage.setItem('theme', 'light'); } 
-    else { themeBtn.innerText = '☀️'; localStorage.setItem('theme', 'dark'); }
-});
+
 
 if (!ticketId) {
     alert("Geçersiz takip numarası!");
