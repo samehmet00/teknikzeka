@@ -4,9 +4,10 @@ import { collection, addDoc, serverTimestamp, query, where, onSnapshot, doc, upd
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { deviceData } from './deviceData.js';
 
-const keyPart1 = "AIzaSyBb37dubusQPS"; 
-const keyPart2 = "bNmvQJJllhM58MySTyKls"; 
-const GEMINI_API_KEY = keyPart1 + keyPart2;
+// --- GROQ API ANAHTARI BURAYA GELECEK ---
+const keyPart1 = "gsk_FrBvhp1olAlq5nrdZ1IqWGdyb"; 
+const keyPart2 = "3FYPc8T04HcYnTBDJWMbjkTbFMF";
+const GROQ_API_KEY = keyPart1+keyPart2; 
 
 const ticketForm = document.getElementById('ticket-form');
 const deviceTypeInput = document.getElementById('device-type');
@@ -94,7 +95,7 @@ function formatAIReport(aiText) {
     `;
 }
 
-// --- KAYIT OLUŞTURMA (HATA TOLERANSLI - FALLBACK SİSTEMİ) ---
+// --- KAYIT OLUŞTURMA (GROQ / LLAMA 3.3 ENTEGRASYONU) ---
 if(ticketForm) {
     ticketForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -102,8 +103,6 @@ if(ticketForm) {
         if (!currentUser) return alert("Sisteme dahil olmanız icap eder! (Giriş yapmalısınız)");
 
         const isForSale = document.getElementById('is-for-sale')?.checked || false;
-        
-        // YENİ: Yapay Zekayı Atla Seçeneği
         const skipAi = document.getElementById('skip-ai')?.checked || false; 
 
         ticketMsg.style.display = 'block';
@@ -111,45 +110,56 @@ if(ticketForm) {
         if (skipAi) {
             ticketMsg.innerHTML = `<div style="color: var(--primary); font-weight: 600; font-size: 0.95rem;">🚀 Hızlı kayıt oluşturuluyor, lütfen bekleyiniz...</div>`;
         } else {
-            ticketMsg.innerHTML = `<div style="color: var(--primary); font-weight: 600; font-size: 0.95rem;">🤖 Yapay zekâ analiz ediyor, lütfen bekleyiniz...</div><div class="loading-bar-container"><div class="loading-bar"></div></div>`;
+            ticketMsg.innerHTML = `<div style="color: var(--primary); font-weight: 600; font-size: 0.95rem;">🤖 AI analiz ediyor, lütfen bekleyiniz...</div><div class="loading-bar-container"><div class="loading-bar"></div></div>`;
         }
 
         try {
-            let aiAnalysis = "Kullanıcı tercihi veya sistem yoğunluğu nedeniyle yapay zekâ analizi yapılmadan doğrudan servise iletilmiştir.";
+            let aiAnalysis = "";
 
-            // EĞER "ATLA" SEÇİLMEDİYSE API'YE GİT
             if (!skipAi) {
                 let prompt = isForSale 
-                    ? `Sen bir ikinci el cihaz eksperisin. Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. Arızası: "${issueDescInput.value}". SADECE 3 satır ve maksimum 15 kelime kullanarak şu formatta cevap ver: Arıza: [Sadece arızanın adı], Zorluk: [1-10 arası rakam], Çözüm: [Kısa satış tavsiyesi]` 
-                    : `Sen uzman bir teknik servissin. Şikayet: "${issueDescInput.value}". Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. SADECE şu formatta cevap ver: Arıza: [Kısa Tahmin], Zorluk: [1-10], Çözüm: [Tek cümlelik tavsiye]`;
+                    ? `Sen bir ikinci el cihaz eksperisin. Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. Arızası: "${issueDescInput.value}". SADECE 3 satır ve maksimum 15 kelime kullanarak şu formatta cevap ver: \nArıza: [Sadece arızanın adı]\nZorluk: [1-10 arası rakam]\nÇözüm: [Kısa satış tavsiyesi]` 
+                    : `Sen uzman bir teknik servissin. Şikayet: "${issueDescInput.value}". Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. SADECE şu formatta cevap ver: \nArıza: [Kısa Tahmin]\nZorluk: [1-10]\nÇözüm: [Tek cümlelik tavsiye]`;
 
-                try {
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
-                        method: "POST", 
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                    });
+                // GROQ API İSTEĞİ
+                const response = await fetch(`https://api.groq.com/openai/v1/chat/completions`, {
+                    method: "POST", 
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${GROQ_API_KEY}`
+                    },
+                    body: JSON.stringify({ 
+                        // MODEL İSMİ GÜNCELLENDİ (Groq'un en yeni ve stabil modeli)
+                        model: "llama-3.3-70b-versatile", 
+                        messages: [
+                            { role: "user", content: prompt }
+                        ],
+                        max_tokens: 150,
+                        temperature: 0.2 
+                    })
+                });
 
-                    if (response.ok) {
-                        const aiData = await response.json();
-                        aiAnalysis = aiData.candidates[0].content.parts[0].text;
-                    } else {
-                        console.warn("AI API Yanıt Vermedi, B Planına Geçiliyor...");
-                    }
-                } catch (apiError) {
-                    console.warn("API Çöktü, manuel formata dönüldü:", apiError);
-                    // HATA FIRLATMIYORUZ, SESSİZCE B PLANINA (Manuel Metin) GEÇİYORUZ.
+                if (!response.ok) {
+                    const errData = await response.json();
+                    console.error("Groq API Detaylı Hata:", errData);
+                    throw new Error(errData.error?.message || "Bilinmeyen API Hatası"); 
                 }
+
+                const aiData = await response.json();
+                aiAnalysis = aiData.choices[0].message.content;
+                
+            } else {
+                aiAnalysis = "Arıza kaydı, 'Hızlı Gönder' seçeneği kullanıldığı için yapay zekâ analizi yapılmadan doğrudan servise iletilmiştir.";
             }
 
-            // HER HALÜKARDA (AI ÇALIŞSA DA ÇÖKSE DE) VERİTABANINA KAYDET
+            // Veritabanına kaydet
             await addDoc(collection(db, "tickets"), {
                 userEmail: currentUser.email, 
                 deviceType: deviceTypeInput.value, 
                 deviceBrand: deviceBrandInput.value, 
                 deviceModel: deviceModelInput.value, 
                 description: issueDescInput.value,
-                aiReport: aiAnalysis, // Çökerse varsayılan metin gider
+                aiReport: aiAnalysis,
                 status: "Bekliyor", 
                 interestedServices: [], 
                 assignedService: "", 
@@ -167,9 +177,8 @@ if(ticketForm) {
             setTimeout(() => ticketMsg.style.display = 'none', 4000);
 
         } catch (error) { 
-            // BURAYA SADECE VERİTABANI (FİREBASE) ÇÖKERSE DÜŞERİZ
-            console.error("Kritik Hata:", error);
-            ticketMsg.innerHTML = `<span style="color: #EF4444; font-weight: bold;">❌ Bağlantı hatası! Lütfen internetinizi kontrol edin.</span>`; 
+            console.error("İşlem Hatası:", error);
+            ticketMsg.innerHTML = `<span style="color: #EF4444; font-weight: bold;">❌ Hata: ${error.message} <br>Lütfen API anahtarını kontrol edin veya "⚡ Hızlı Gönder"i seçin.</span>`;
         }
     });
 }

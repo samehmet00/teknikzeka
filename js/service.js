@@ -1,8 +1,43 @@
 // js/service.js
 import { db, auth } from './firebase-config.js';
-import { collection, query, onSnapshot, doc, updateDoc, arrayUnion, addDoc, serverTimestamp, where, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+// YENİ: getDocs eklendi
+import { collection, query, onSnapshot, doc, updateDoc, arrayUnion, addDoc, serverTimestamp, where, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { deviceData } from './deviceData.js';
+
+// --- YENİ: OTOMATİK E-POSTA GÖNDERME FONKSİYONU ---
+async function sendEmailNotification(toEmail, subject, message) {
+    try {
+        // 1. Kullanıcının mail ayarını kontrol et
+        const q = query(collection(db, "users"), where("email", "==", toEmail));
+        const querySnapshot = await getDocs(q);
+        let wantsEmail = true; // Bulunamazsa varsayılan olarak açık kabul et
+        
+        if (!querySnapshot.empty) {
+            const userData = querySnapshot.docs[0].data();
+            if (userData.notifEmail === false) wantsEmail = false; 
+        }
+
+        // 2. Eğer ayarı açıksa EmailJS ile maili yolla
+        if (wantsEmail) {
+            await emailjs.send(
+                "service_u85t58o",   // Örn: service_8x...
+                "template_0a4enu5",  // Örn: template_2z...
+                {
+                    to_email: toEmail,
+                    subject: subject,
+                    message: message
+                }, 
+                "_P1jn1r_0u2nA33Q3"    // Account > API Keys bölümündeki Public Key
+            );
+            console.log("E-posta başarıyla gönderildi!");
+        } else {
+            console.log("Kullanıcı ayarlardan kapattığı için mail atlanıyor.");
+        }
+    } catch (err) {
+        console.error("Mail gönderme hatası:", err);
+    }
+}
 
 const listContainer = document.getElementById('service-ticket-list'); 
 const ticketCountEl = document.getElementById('ticket-count');
@@ -325,15 +360,21 @@ window.makeOffer = async (ticketId, customerEmail, event) => {
         const ticketSnap = await getDoc(ticketRef);
         
         if (ticketSnap.exists()) {
-            // Firebase nokta (dot-notation) hatasını aşmak için teklifleri önce alıp sonra güncelliyoruz
             let currentOffers = ticketSnap.data().offers || {};
             currentOffers[window.currentServiceEmail] = price; 
             
-            // Güncellenmiş teklifler objesini tek seferde gönderiyoruz
             await updateDoc(ticketRef, { offers: currentOffers });
             
+            // Sistem içi bildirim (Çan ikonu)
             await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: `💸 Cihazınız için ${price.toLocaleString('tr-TR')} ₺ yeni bir teklif geldi!`, link: "dashboard.html", read: false, createdAt: serverTimestamp() });
             
+            // YENİ: E-POSTA BİLDİRİMİNİ TETİKLE!
+            sendEmailNotification(
+                customerEmail, 
+                "TeknikZeka: Cihazınıza Yeni Teklif Geldi!", 
+                `Merhaba, arızalı cihazınız için ${window.currentServiceEmail} servisi size ${price.toLocaleString('tr-TR')} ₺ teklif sundu. Kabul etmek veya incelemek için TeknikZeka paneline giriş yapabilirsiniz.`
+            );
+
             alert("Teklifiniz başarıyla müşteriye iletildi!");
         }
     } catch (error) { 
