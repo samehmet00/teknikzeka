@@ -94,7 +94,7 @@ function formatAIReport(aiText) {
     `;
 }
 
-// --- KAYIT OLUŞTURMA ---
+// --- KAYIT OLUŞTURMA (HATA TOLERANSLI - FALLBACK SİSTEMİ) ---
 if(ticketForm) {
     ticketForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -102,46 +102,54 @@ if(ticketForm) {
         if (!currentUser) return alert("Sisteme dahil olmanız icap eder! (Giriş yapmalısınız)");
 
         const isForSale = document.getElementById('is-for-sale')?.checked || false;
+        
+        // YENİ: Yapay Zekayı Atla Seçeneği
+        const skipAi = document.getElementById('skip-ai')?.checked || false; 
+
         ticketMsg.style.display = 'block';
-        ticketMsg.innerHTML = `<div style="color: var(--primary); font-weight: 600; font-size: 0.95rem;">🤖 Yapay zekâ analiz ediyor, lütfen bekleyiniz...</div><div class="loading-bar-container"><div class="loading-bar"></div></div>`;
+        
+        if (skipAi) {
+            ticketMsg.innerHTML = `<div style="color: var(--primary); font-weight: 600; font-size: 0.95rem;">🚀 Hızlı kayıt oluşturuluyor, lütfen bekleyiniz...</div>`;
+        } else {
+            ticketMsg.innerHTML = `<div style="color: var(--primary); font-weight: 600; font-size: 0.95rem;">🤖 Yapay zekâ analiz ediyor, lütfen bekleyiniz...</div><div class="loading-bar-container"><div class="loading-bar"></div></div>`;
+        }
 
         try {
-            let prompt = "";
-            if (isForSale) {
-                prompt = `Sen bir ikinci el cihaz eksperisin. Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. Arızası: "${issueDescInput.value}". 
-                SADECE 3 satır ve maksimum 15 kelime kullanarak şu formatta cevap ver. Açıklama yapma:
-                Arıza: [Sadece arızanın adı, örn: Ekran Kırık]
-                Zorluk: [Piyasa değer kaybı riski, 1-10 arası bir rakam]
-                Çözüm: [Sadece 4-5 kelimelik satış tavsiyesi, örn: Yedek parça olarak satılabilir.]`;
-            } else {
-                prompt = `Sen uzman bir teknik servissin. Şikayet: "${issueDescInput.value}". Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}.
-                KESİNLİKLE selamlama yazma. SADECE şu formatta cevap ver:
-                Arıza: [Kısa Tahmin]
-                Zorluk: [1-10]
-                Çözüm: [Tek cümlelik tamir tavsiyesi]`;
+            let aiAnalysis = "Kullanıcı tercihi veya sistem yoğunluğu nedeniyle yapay zekâ analizi yapılmadan doğrudan servise iletilmiştir.";
+
+            // EĞER "ATLA" SEÇİLMEDİYSE API'YE GİT
+            if (!skipAi) {
+                let prompt = isForSale 
+                    ? `Sen bir ikinci el cihaz eksperisin. Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. Arızası: "${issueDescInput.value}". SADECE 3 satır ve maksimum 15 kelime kullanarak şu formatta cevap ver: Arıza: [Sadece arızanın adı], Zorluk: [1-10 arası rakam], Çözüm: [Kısa satış tavsiyesi]` 
+                    : `Sen uzman bir teknik servissin. Şikayet: "${issueDescInput.value}". Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. SADECE şu formatta cevap ver: Arıza: [Kısa Tahmin], Zorluk: [1-10], Çözüm: [Tek cümlelik tavsiye]`;
+
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+                        method: "POST", 
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    });
+
+                    if (response.ok) {
+                        const aiData = await response.json();
+                        aiAnalysis = aiData.candidates[0].content.parts[0].text;
+                    } else {
+                        console.warn("AI API Yanıt Vermedi, B Planına Geçiliyor...");
+                    }
+                } catch (apiError) {
+                    console.warn("API Çöktü, manuel formata dönüldü:", apiError);
+                    // HATA FIRLATMIYORUZ, SESSİZCE B PLANINA (Manuel Metin) GEÇİYORUZ.
+                }
             }
 
-            // MODEL GÜNCELLENDİ: gemini-2.5-flash kullanılarak 503 trafik hatası aşıldı
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                method: "POST", 
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-
-            if (!response.ok) { 
-                throw new Error(`API Hatası: ${response.status}`); 
-            }
-
-            const aiData = await response.json();
-            const aiAnalysis = aiData.candidates[0].content.parts[0].text;
-
+            // HER HALÜKARDA (AI ÇALIŞSA DA ÇÖKSE DE) VERİTABANINA KAYDET
             await addDoc(collection(db, "tickets"), {
                 userEmail: currentUser.email, 
                 deviceType: deviceTypeInput.value, 
                 deviceBrand: deviceBrandInput.value, 
                 deviceModel: deviceModelInput.value, 
                 description: issueDescInput.value,
-                aiReport: aiAnalysis, 
+                aiReport: aiAnalysis, // Çökerse varsayılan metin gider
                 status: "Bekliyor", 
                 interestedServices: [], 
                 assignedService: "", 
@@ -155,13 +163,13 @@ if(ticketForm) {
             if(deviceBrandInput) deviceBrandInput.disabled = true; 
             if(deviceModelInput) deviceModelInput.disabled = true;
             
-            ticketMsg.innerHTML = `<span style="color: #10B981; font-weight: bold;">✅ Talebiniz kaydedildi (Başarıyla eklendi)!</span>`;
+            ticketMsg.innerHTML = `<span style="color: #10B981; font-weight: bold;">✅ Talebiniz başarıyla oluşturuldu ve servislere iletildi!</span>`;
             setTimeout(() => ticketMsg.style.display = 'none', 4000);
 
         } catch (error) { 
-            console.error("Hata vuku buldu:", error);
-            // Hata mesajı daha detaylı hale getirildi
-            ticketMsg.innerHTML = `<span style="color: #EF4444; font-weight: bold;">❌ Sunucu geçici olarak meşgul (Hata 503). Lütfen 1-2 dakika bekleyip tekrar deneyin.</span>`; 
+            // BURAYA SADECE VERİTABANI (FİREBASE) ÇÖKERSE DÜŞERİZ
+            console.error("Kritik Hata:", error);
+            ticketMsg.innerHTML = `<span style="color: #EF4444; font-weight: bold;">❌ Bağlantı hatası! Lütfen internetinizi kontrol edin.</span>`; 
         }
     });
 }
