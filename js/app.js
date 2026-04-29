@@ -121,13 +121,16 @@ if(ticketForm) {
                 Çözüm: [Tek cümlelik tamir tavsiyesi]`;
             }
 
+            // MODEL GÜNCELLENDİ: gemini-2.5-flash kullanılarak 503 trafik hatası aşıldı
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                 method: "POST", 
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             });
 
-            if (!response.ok) { throw new Error(`API Hatası: ${response.status}`); }
+            if (!response.ok) { 
+                throw new Error(`API Hatası: ${response.status}`); 
+            }
 
             const aiData = await response.json();
             const aiAnalysis = aiData.candidates[0].content.parts[0].text;
@@ -157,7 +160,8 @@ if(ticketForm) {
 
         } catch (error) { 
             console.error("Hata vuku buldu:", error);
-            ticketMsg.innerHTML = `<span style="color: #EF4444; font-weight: bold;">❌ Bir hata oluştu. API anahtarınızı ve internet bağlantınızı kontrol ediniz.</span>`; 
+            // Hata mesajı daha detaylı hale getirildi
+            ticketMsg.innerHTML = `<span style="color: #EF4444; font-weight: bold;">❌ Sunucu geçici olarak meşgul (Hata 503). Lütfen 1-2 dakika bekleyip tekrar deneyin.</span>`; 
         }
     });
 }

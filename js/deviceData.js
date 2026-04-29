@@ -23,8 +23,13 @@ export const deviceData = {
             "Galaxy A54", "Galaxy A34", "Galaxy A53", "Galaxy A73", "Galaxy A32", "Galaxy M34", "Diğer Samsung"
         ],
         "Xiaomi": [
-            "Xiaomi 14 Ultra", "Xiaomi 14", "Xiaomi 13T Pro", "Xiaomi 13T", "Xiaomi 13 Pro",
-            "Redmi Note 13 Pro+", "Redmi Note 13 Pro", "Redmi Note 13", "Redmi Note 12 Pro",
+            "Xiaomi 17 Ultra", "Xiaomi 17",
+            "Xiaomi 15 Ultra", "Xiaomi 15",
+            "Xiaomi 14 Ultra", "Xiaomi 14",
+            "Xiaomi 13T Pro", "Xiaomi 13T", "Xiaomi 13 Pro",
+            "Redmi Note 14 Pro+", "Redmi Note 14 Pro", "Redmi Note 14",
+            "Redmi Note 13 Pro+", "Redmi Note 13 Pro", "Redmi Note 13",
+            "Redmi Note 12 Pro+","Redmi Note 12 Pro","Redmi Note 12",
             "Poco X6 Pro", "Poco X6", "Poco F5 Pro", "Poco X5 Pro", "Diğer Xiaomi"
         ],
         "Huawei": [
