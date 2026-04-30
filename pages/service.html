@@ -15,8 +15,16 @@
         .ticket-date-badge { display: inline-flex; align-items: center; width: fit-content; background: rgba(79, 70, 229, 0.1); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; border: 1px solid rgba(79, 70, 229, 0.2); }
         .ticket-desc-text { color: var(--gray-light); font-size: 0.9rem; }
         
-        /* En Yüksek Teklif Rozeti (Küçültüldü ve Satılık Yanına Uyumlu Hale Getirildi) */
+        /* En Yüksek Teklif Rozeti */
         .highest-bid-badge { background: linear-gradient(135deg, #10B981, #047857); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3); }
+        
+        /* TAB TASARIMLARI (Servis) */
+        .tab-container { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .tab-btn { background: transparent; border: none; padding: 10px 20px; font-size: 1.05rem; font-weight: 600; color: var(--gray-light); cursor: pointer; position: relative; transition: 0.3s; border-radius: 8px 8px 0 0; }
+        .tab-btn:hover { color: var(--text-main); background: rgba(0,0,0,0.02); }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -12px; left: 0; width: 100%; height: 3px; background: var(--primary); border-radius: 3px 3px 0 0; }
+        .tab-badge { background: #EF4444; color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; margin-left: 5px; vertical-align: top; }
     </style>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
@@ -65,13 +73,6 @@
                 <option value="Sadece Tamir">Sadece Tamir Talepleri</option>
             </select>
 
-            <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light); margin-top: 1rem;">İhale Durumu</label>
-            <select id="filter-status">
-                <option value="Tümü">Tüm Arızalar</option>
-                <option value="Bekliyor">Sadece Teklif Bekleyenler</option>
-                <option value="Bana Atananlar">Sadece Bana Atananlar</option>
-            </select>
-
             <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light); margin-top: 1rem;">Tarih Sıralaması</label>
             <select id="filter-date">
                 <option value="newest">En Yeni Eklenenler</option>
@@ -85,6 +86,12 @@
                 <span id="ticket-count" style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold;">0 Kayıt</span>
             </div>
             
+            <!-- YENİ SEKMELİ YAPI (Servis) -->
+            <div class="tab-container" style="margin-bottom: 10px;">
+                <button class="tab-btn active" onclick="switchServiceTab('havuz', event)">Tüm Havuz</button>
+                <button class="tab-btn" onclick="switchServiceTab('aktif', event)">Aktif İşlerim <span class="tab-badge" id="service-active-badge" style="display:none;">0</span></button>
+            </div>
+            
             <div id="service-ticket-list" class="ticket-list-view">
             </div>
         </main>
@@ -93,5 +100,31 @@
 
     <script type="module" src="../js/firebase-config.js"></script>
     <script type="module" src="../js/service.js"></script>
+    <script type="module" src="../js/theme-manager.js"></script>
+
+    <!-- SERVİS İÇİN TAB SCRİPTİ -->
+    <script>
+        window.currentServiceTab = 'havuz'; 
+        
+        window.switchServiceTab = (tabName, event) => {
+            window.currentServiceTab = tabName;
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if(event) event.target.classList.add('active');
+            
+            const allTickets = document.querySelectorAll('.ticket-wrapper');
+            allTickets.forEach(wrapper => {
+                const htmlContent = wrapper.innerHTML;
+                // Eğer kartta "Bana Atandı" gibi bir ifade veya buton gizlenmişse, bu aktif bir iştir
+                const isMyActiveJob = htmlContent.includes('track.html') || htmlContent.includes('Süreci Yönet');
+                
+                if (tabName === 'aktif') {
+                    wrapper.style.display = isMyActiveJob ? 'block' : 'none';
+                } else {
+                    wrapper.style.display = 'block'; 
+                }
+            });
+        };
+    </script>
 </body>
 </html>

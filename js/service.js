@@ -1,55 +1,37 @@
 // js/service.js
 import { db, auth } from './firebase-config.js';
-// YENİ: getDocs eklendi
 import { collection, query, onSnapshot, doc, updateDoc, arrayUnion, addDoc, serverTimestamp, where, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { deviceData } from './deviceData.js';
 
-// --- YENİ: OTOMATİK E-POSTA GÖNDERME FONKSİYONU ---
+// --- OTOMATİK E-POSTA GÖNDERME FONKSİYONU ---
 async function sendEmailNotification(toEmail, subject, message) {
     try {
-        // 1. Kullanıcının mail ayarını kontrol et
         const q = query(collection(db, "users"), where("email", "==", toEmail));
         const querySnapshot = await getDocs(q);
-        let wantsEmail = true; // Bulunamazsa varsayılan olarak açık kabul et
+        let wantsEmail = true; 
         
         if (!querySnapshot.empty) {
             const userData = querySnapshot.docs[0].data();
             if (userData.notifEmail === false) wantsEmail = false; 
         }
 
-        // 2. Eğer ayarı açıksa EmailJS ile maili yolla
         if (wantsEmail) {
             await emailjs.send(
-                "service_u85t58o",   // Örn: service_8x...
-                "template_0a4enu5",  // Örn: template_2z...
-                {
-                    to_email: toEmail,
-                    subject: subject,
-                    message: message
-                }, 
-                "_P1jn1r_0u2nA33Q3"    // Account > API Keys bölümündeki Public Key
+                "service_u85t58o",   // KENDİ SERVICE ID'Nİ YAZ
+                "template_0a4enu5",  // KENDİ TEMPLATE ID'Nİ YAZ
+                { to_email: toEmail, subject: subject, message: message }, 
+                "_P1jn1r_0u2nA33Q3"    // KENDİ PUBLIC KEY'İNİ YAZ
             );
-            console.log("E-posta başarıyla gönderildi!");
-        } else {
-            console.log("Kullanıcı ayarlardan kapattığı için mail atlanıyor.");
         }
-    } catch (err) {
-        console.error("Mail gönderme hatası:", err);
-    }
+    } catch (err) { console.error("Mail gönderme hatası:", err); }
 }
 
 const listContainer = document.getElementById('service-ticket-list'); 
 const ticketCountEl = document.getElementById('ticket-count');
 const navAuthMenu = document.getElementById('nav-auth-menu');
 
-const filterType = document.getElementById('filter-type');
-const filterBrand = document.getElementById('filter-brand');
-const filterModel = document.getElementById('filter-model');
-const filterStatus = document.getElementById('filter-status');
-const filterSale = document.getElementById('filter-sale');
-const filterDate = document.getElementById('filter-date'); 
-
+// --- HATA VEREN ESKİ FİLTRELERİ KALDIRDIK, YERİNE AŞAĞIDAKİLERİ KOYDUK ---
 let allTickets = []; 
 window.highestBids = {}; 
 
@@ -81,13 +63,6 @@ function formatAIReport(aiText) {
         </div>
     `;
 }
-
-const initServiceCategories = () => {
-    if(!filterType) return;
-    filterType.innerHTML = '<option value="Tümü">Tümü</option>';
-    Object.keys(deviceData).forEach(category => { filterType.appendChild(new Option(category, category)); });
-};
-initServiceCategories();
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -133,11 +108,20 @@ onAuthStateChanged(auth, async (user) => {
                 }
             });
 
+            // TALEPLERİ ÇEK
             const qAll = query(collection(db, "tickets"));
             onSnapshot(qAll, (snapshot) => {
                 allTickets = [];
                 snapshot.forEach(document => { allTickets.push({ id: document.id, ...document.data() }); });
-                renderFilteredTickets(); 
+                
+                // Yeniden eskiye sırala
+                allTickets.sort((a, b) => {
+                    const dateA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+                    const dateB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+                    return dateB - dateA;
+                });
+                
+                renderTickets(); 
             });
         } else {
             window.location.href = "dashboard.html";
@@ -145,62 +129,30 @@ onAuthStateChanged(auth, async (user) => {
     } else { window.location.href = "login.html"; }
 });
 
-filterType.addEventListener('change', (e) => {
-    const type = e.target.value; 
-    filterBrand.innerHTML = '<option value="Tümü">Tümü</option>'; 
-    filterModel.innerHTML = '<option value="Tümü">Tümü</option>'; 
-    filterModel.disabled = true;
-    if (type !== "Tümü" && deviceData[type]) { 
-        Object.keys(deviceData[type]).forEach(brand => filterBrand.appendChild(new Option(brand, brand))); 
-        filterBrand.disabled = false; 
-    } else { filterBrand.disabled = true; }
-    renderFilteredTickets();
-});
 
-filterBrand.addEventListener('change', (e) => {
-    const type = filterType.value; 
-    const brand = e.target.value; 
-    filterModel.innerHTML = '<option value="Tümü">Tümü</option>';
-    if (brand !== "Tümü" && deviceData[type] && deviceData[type][brand]) { 
-        deviceData[type][brand].forEach(model => filterModel.appendChild(new Option(model, model))); 
-        filterModel.disabled = false; 
-    } else { filterModel.disabled = true; }
-    renderFilteredTickets();
-});
-
-filterModel.addEventListener('change', renderFilteredTickets);
-filterStatus.addEventListener('change', renderFilteredTickets);
-if(filterSale) filterSale.addEventListener('change', renderFilteredTickets);
-if(filterDate) filterDate.addEventListener('change', renderFilteredTickets);
-
-function renderFilteredTickets() {
+function renderTickets() {
     listContainer.innerHTML = ''; 
+    
+    // TAB FİLTRELEME MANTIĞI
     let filtered = allTickets.filter(ticket => {
-        const matchType = filterType.value === "Tümü" || ticket.deviceType === filterType.value;
-        const matchBrand = filterBrand.value === "Tümü" || ticket.deviceBrand === filterBrand.value;
-        const matchModel = filterModel.value === "Tümü" || ticket.deviceModel === filterModel.value;
-        let matchStatus = true;
-        if (filterStatus.value === "Bekliyor") matchStatus = !ticket.assignedService;
-        else if (filterStatus.value === "Bana Atananlar") matchStatus = ticket.assignedService === window.currentServiceEmail;
-        
-        let matchSale = true;
-        if (filterSale) {
-            if (filterSale.value === "Sadece Satılık") matchSale = ticket.isForSale === true;
-            else if (filterSale.value === "Sadece Tamir") matchSale = !ticket.isForSale;
+        if (window.currentServiceTab === 'aktif') {
+            return ticket.assignedService === window.currentServiceEmail;
+        } else {
+            // Havuz (Bekleyen işler veya herkesin görebileceği işler)
+            return true; 
         }
-        return matchType && matchBrand && matchModel && matchStatus && matchSale;
     });
 
-    if (filterDate) {
-        filtered.sort((a, b) => {
-            const dateA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-            const dateB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-            return filterDate.value === 'newest' ? dateB - dateA : dateA - dateB;
-        });
+    if(ticketCountEl) ticketCountEl.innerText = `${filtered.length} Kayıt`;
+    
+    if (filtered.length === 0) { 
+        listContainer.innerHTML = `<p style="color: var(--gray-light); text-align:center; padding: 2rem;">Kayıt bulunamadı.</p>`; 
+        
+        // Aktif iş sayısını 0 yap
+        const activeBadge = document.getElementById('service-active-badge');
+        if(activeBadge) activeBadge.style.display = 'none';
+        return; 
     }
-
-    ticketCountEl.innerText = `${filtered.length} Kayıt`;
-    if (filtered.length === 0) { listContainer.innerHTML = `<p style="color: var(--gray-light); text-align:center; padding: 2rem;">Filtrelere uygun kayıt yok.</p>`; return; }
 
     filtered.forEach(data => {
         const deviceInfo = data.deviceBrand ? `${data.deviceType} - ${data.deviceBrand} ${data.deviceModel}` : data.deviceType;
@@ -215,14 +167,11 @@ function renderFilteredTickets() {
         let highestBidHtml = '';
         let saleBadge = '';
         
-        // --- HATA DÜZELTİLDİ: EN YÜKSEK TEKLİF HESAPLAMA ---
         if (data.isForSale) {
             let highestBid = 0;
             
-            // Veritabanındaki offers objesini dönüp sayıları buluyoruz
             if (data.offers && typeof data.offers === 'object') {
                 Object.values(data.offers).forEach(val => {
-                    // Sayı veya obje olup olmadığını kontrol edip saf sayıyı al
                     let priceNumber = (typeof val === 'object' && val !== null) ? Number(val.price) : Number(val);
                     if (!isNaN(priceNumber) && priceNumber > highestBid) {
                         highestBid = priceNumber;
@@ -234,7 +183,6 @@ function renderFilteredTickets() {
 
             saleBadge = `<span style="color:#10B981; border:1px solid #10B981; padding:2px 6px; border-radius:4px; font-size:0.75rem;">SATILIK</span>`;
             
-            // Teklif rozeti satılık yazısının SAĞINA taşınması için burada oluşturuldu
             if(highestBid > 0) {
                 saleBadge += `<span class="highest-bid-badge">💰 Teklif: ${highestBid.toLocaleString('tr-TR')} ₺</span>`;
             } else {
@@ -294,7 +242,7 @@ function renderFilteredTickets() {
         }
 
         const bar = document.createElement('div');
-        bar.className = 'service-list-bar';
+        bar.className = 'service-list-bar ticket-wrapper'; // TAB sistemi için ticket-wrapper classı eklendi
         
         bar.innerHTML = `
             <div class="bar-header" onclick="this.parentElement.classList.toggle('expanded')">
@@ -327,7 +275,27 @@ function renderFilteredTickets() {
         `;
         listContainer.appendChild(bar);
     });
+
+    // Aktif İşler Rozeti Güncelleme
+    let activeCount = allTickets.filter(t => t.assignedService === window.currentServiceEmail).length;
+    const activeBadge = document.getElementById('service-active-badge');
+    if(activeBadge) {
+        if(activeCount > 0) { activeBadge.style.display = 'inline-block'; activeBadge.innerText = activeCount; }
+        else { activeBadge.style.display = 'none'; }
+    }
 }
+
+// --- GLOBAL (WİNDOW) FONKSİYONLARI ---
+
+// YENİ: TAB SİSTEMİ MANTIĞINI BURAYA TAŞIDIK (HTML içinden çağırmak yerine)
+window.currentServiceTab = 'havuz'; 
+window.switchServiceTab = (tabName, event) => {
+    window.currentServiceTab = tabName;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    if(event) event.target.classList.add('active');
+    
+    renderTickets(); // Filtreye göre yeniden listeler
+};
 
 window.approveTicket = async (ticketId, customerEmail, event) => {
     event.stopPropagation(); 
@@ -337,7 +305,6 @@ window.approveTicket = async (ticketId, customerEmail, event) => {
         alert("Cihazı yapabileceğinizi onayladınız. Müşteriye iletildi!"); 
     } catch (error) { console.error("Hata:", error); }
 };
-
 
 window.makeOffer = async (ticketId, customerEmail, event) => {
     event.stopPropagation();
@@ -365,10 +332,8 @@ window.makeOffer = async (ticketId, customerEmail, event) => {
             
             await updateDoc(ticketRef, { offers: currentOffers });
             
-            // Sistem içi bildirim (Çan ikonu)
             await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: `💸 Cihazınız için ${price.toLocaleString('tr-TR')} ₺ yeni bir teklif geldi!`, link: "dashboard.html", read: false, createdAt: serverTimestamp() });
             
-            // YENİ: E-POSTA BİLDİRİMİNİ TETİKLE!
             sendEmailNotification(
                 customerEmail, 
                 "TeknikZeka: Cihazınıza Yeni Teklif Geldi!", 

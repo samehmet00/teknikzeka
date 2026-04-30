@@ -51,7 +51,19 @@
 
         .submit-ticket-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4); }
         .submit-ticket-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6); }
+
+        /* TAB TASARIMLARI */
+        .tab-container { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .tab-btn { background: transparent; border: none; padding: 10px 20px; font-size: 1.05rem; font-weight: 600; color: var(--gray-light); cursor: pointer; position: relative; transition: 0.3s; border-radius: 8px 8px 0 0; }
+        .tab-btn:hover { color: var(--text-main); background: rgba(0,0,0,0.02); }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -12px; left: 0; width: 100%; height: 3px; background: var(--primary); border-radius: 3px 3px 0 0; }
+        .tab-badge { background: #EF4444; color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; margin-left: 5px; vertical-align: top; }
     </style>
+
+    <!-- EmailJS Kütüphanesi -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
 </head>
 <body class="light-mode">
 
@@ -128,9 +140,15 @@
                 </div>
 
                 <div class="ticket-list-container">
-                    <h3 style="margin-bottom: 1.5rem; color: var(--text-main); font-size: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">Geçmiş Taleplerim & Ön Teşhis Raporları</h3>
+                    <!-- YENİ SEKMELİ YAPI -->
+                    <div class="tab-container">
+                        <button class="tab-btn active" onclick="switchTab('all', event)">Tüm Kayıtlarım</button>
+                        <button class="tab-btn" onclick="switchTab('active', event)">Aktif İşlemlerim <span class="tab-badge" id="active-badge" style="display:none;">0</span></button>
+                    </div>
+                    
                     <div id="ticket-list">
-                        </div>
+                        <!-- Kayıtlar buraya gelecek -->
+                    </div>
                 </div>
                 
             </div>

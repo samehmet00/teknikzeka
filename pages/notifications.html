@@ -4,15 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bildirimler - TeknikZeka</title>
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/app.css">
     <style>
-        .noti-container { max-width: 600px; margin: 100px auto 50px; background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .noti-item { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; cursor: pointer; }
-        .noti-item:hover { background: rgba(79, 70, 229, 0.05); }
-        .noti-item.unread { background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10B981; }
-        .noti-item:last-child { border-bottom: none; }
-        .noti-text { color: var(--text-main); font-size: 1rem; font-weight: 600; margin-bottom: 5px; }
-        .noti-time { color: var(--gray-light); font-size: 0.8rem; }
+        .noti-container { max-width: 700px; margin: 100px auto 50px; background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
+        .noti-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed var(--border-color); padding-bottom: 20px; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        .noti-actions { display: flex; gap: 10px; }
+        
+        .action-btn { background: transparent; border: 1px solid var(--border-color); padding: 8px 15px; border-radius: 8px; color: var(--text-main); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
+        .action-btn:hover { background: rgba(0,0,0,0.03); border-color: var(--text-muted); }
+        
+        .danger-btn { border-color: #EF4444; color: #EF4444; }
+        .danger-btn:hover { background: #EF4444; color: white; border-color: #EF4444; }
+
+        .noti-item { padding: 18px; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease; cursor: pointer; background: var(--card-bg); }
+        .noti-item:hover { background: rgba(79, 70, 229, 0.03); border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        .noti-item.unread { background: rgba(16, 185, 129, 0.05); border-left: 5px solid #10B981; border-color: rgba(16, 185, 129, 0.2); }
+        
+        .noti-content { display: flex; align-items: center; gap: 15px; }
+        .noti-icon { font-size: 1.5rem; background: rgba(0,0,0,0.03); padding: 10px; border-radius: 50%; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; flex-shrink: 0; }
+        body.dark-mode .noti-icon { background: rgba(255,255,255,0.05); }
+        
+        .noti-text { color: var(--text-main); font-size: 1rem; font-weight: 600; margin-bottom: 5px; line-height: 1.4; }
+        .noti-time { color: var(--gray-light); font-size: 0.85rem; }
     </style>
 </head>
 <body class="light-mode">
@@ -22,10 +38,14 @@
     </nav>
 
     <section class="noti-container">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px;">
-            <h2 style="margin: 0; color: var(--text-main);">🔔 Bildirimleriniz</h2>
-            <button id="mark-all-read" style="background: transparent; border: 1px solid var(--border-color); padding: 5px 15px; border-radius: 8px; color: var(--text-main); cursor: pointer;">Tümünü Okundu İşaretle</button>
+        <div class="noti-header">
+            <h2 style="margin: 0; color: var(--text-main); font-size: 1.6rem;">🔔 Bildirimleriniz</h2>
+            <div class="noti-actions">
+                <button id="mark-all-read" class="action-btn">✔️ Tümünü Okundu İşaretle</button>
+                <button id="clear-all-btn" class="action-btn danger-btn">🗑️ Tümünü Sil</button>
+            </div>
         </div>
+        
         <div id="notifications-list">
             <p style="text-align: center; color: var(--gray-light); padding: 20px;">Yükleniyor...</p>
         </div>
@@ -33,6 +53,6 @@
 
     <script type="module" src="../js/firebase-config.js"></script>
     <script type="module" src="../js/notifications.js"></script>
-    <script type="module" src="js/theme-manager.js"></script>
+    <script type="module" src="../js/theme-manager.js"></script>
 </body>
 </html>

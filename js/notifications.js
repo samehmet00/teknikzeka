@@ -1,60 +1,113 @@
 // js/notifications.js
 import { db, auth } from './firebase-config.js';
-import { collection, query, where, onSnapshot, doc, updateDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-const listContainer = document.getElementById('notifications-list');
-let currentDocs = [];
-
+const notiList = document.getElementById('notifications-list');
+const markAllReadBtn = document.getElementById('mark-all-read');
+const clearAllBtn = document.getElementById('clear-all-btn');
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
+        // Kullanıcıya ait bildirimleri çek
         const q = query(collection(db, "notifications"), where("userEmail", "==", user.email));
+        
         onSnapshot(q, (snapshot) => {
-            currentDocs = [];
-            listContainer.innerHTML = '';
+            notiList.innerHTML = '';
             if (snapshot.empty) {
-                listContainer.innerHTML = '<p style="text-align: center; color: var(--gray-light); padding: 20px;">Hiç bildiriminiz yok.</p>';
+                notiList.innerHTML = '<p style="text-align: center; color: var(--gray-light); padding: 30px; font-weight: bold;">Henüz hiç bildiriminiz yok. 📭</p>';
                 return;
             }
 
-            let notis = [];
-            snapshot.forEach(doc => { notis.push({ id: doc.id, ...doc.data() }); currentDocs.push(doc.id); });
+            let notifications = [];
+            snapshot.forEach(doc => notifications.push({ id: doc.id, ...doc.data() }));
             
-            // Tarihe göre sırala (En yeni en üstte)
-            notis.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+            // Tarihe göre yeniden eskiye sırala
+            notifications.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
 
-            notis.forEach(noti => {
+            notifications.forEach(noti => {
                 let dateStr = "Az önce";
                 if(noti.createdAt) {
                     const d = noti.createdAt.toDate();
-                    dateStr = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' });
+                    dateStr = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', hour: '2-digit', minute:'2-digit' });
                 }
 
-                const item = document.createElement('div');
-                item.className = `noti-item ${noti.read ? '' : 'unread'}`;
-                item.innerHTML = `
-                    <div>
-                        <div class="noti-text">${noti.message}</div>
-                        <div class="noti-time">🕒 ${dateStr}</div>
+                // GÜVENLİK: Eğer metinde yanlışlıkla $ sembolü kalmışsa, zorla ₺'ye çevir.
+                let safeMessage = noti.message.replace(/\$/g, '₺');
+
+                // Bildirim ikonunu mesajın içeriğine göre dinamik yapalım
+                let icon = "💬";
+                if(safeMessage.includes("🎉")) icon = "🎉";
+                if(safeMessage.includes("₺") || safeMessage.includes("💸") || safeMessage.includes("🤝")) icon = "💸";
+                if(safeMessage.includes("📦") || safeMessage.includes("kargo")) icon = "📦";
+
+                const div = document.createElement('div');
+                div.className = `noti-item ${noti.read ? '' : 'unread'}`;
+                
+                div.innerHTML = `
+                    <div class="noti-content">
+                        <div class="noti-icon">${icon}</div>
+                        <div>
+                            <div class="noti-text">${safeMessage}</div>
+                            <div class="noti-time">🕒 ${dateStr}</div>
+                        </div>
                     </div>
-                    <div>${noti.read ? '👁️' : '<span style="color:#10B981; font-weight:bold;">Yeni</span>'}</div>
                 `;
-                item.onclick = async () => {
-                    if (!noti.read) await updateDoc(doc(db, "notifications", noti.id), { read: true });
-                    window.location.href = noti.link;
+                
+                // Tıklayınca okundu yap ve linke git
+                div.onclick = async () => {
+                    if (!noti.read) {
+                        await updateDoc(doc(db, "notifications", noti.id), { read: true });
+                    }
+                    if (noti.link) window.location.href = noti.link;
                 };
-                listContainer.appendChild(item);
+                
+                notiList.appendChild(div);
             });
         });
-    } else { window.location.href = "login.html"; }
-});
 
-document.getElementById('mark-all-read').addEventListener('click', async () => {
-    if (currentDocs.length === 0) return;
-    const batch = writeBatch(db);
-    currentDocs.forEach(id => {
-        batch.update(doc(db, "notifications", id), { read: true });
-    });
-    await batch.commit();
+        // --- TÜMÜNÜ OKUNDU İŞARETLE ---
+        if (markAllReadBtn) {
+            markAllReadBtn.onclick = async () => {
+                const unreadQ = query(collection(db, "notifications"), where("userEmail", "==", user.email), where("read", "==", false));
+                const unreadSnap = await getDocs(unreadQ);
+                unreadSnap.forEach(async (document) => {
+                    await updateDoc(doc(db, "notifications", document.id), { read: true });
+                });
+            };
+        }
+
+        // --- TÜMÜNÜ TEMİZLE ---
+        if (clearAllBtn) {
+            clearAllBtn.onclick = async () => {
+                if(!confirm("DİKKAT! Tüm bildirim geçmişinizi kalıcı olarak silmek istediğinize emin misiniz?")) return;
+                
+                // Butonu deaktif et ve yazısını değiştir (Yükleniyor efekti)
+                clearAllBtn.innerHTML = "⏳ Siliniyor...";
+                clearAllBtn.style.opacity = "0.5";
+                clearAllBtn.disabled = true;
+
+                try {
+                    const allQ = query(collection(db, "notifications"), where("userEmail", "==", user.email));
+                    const allSnap = await getDocs(allQ);
+                    
+                    // Firebase'deki tüm dökümanları tek tek sil
+                    allSnap.forEach(async (document) => {
+                        await deleteDoc(doc(db, "notifications", document.id));
+                    });
+                    
+                } catch (error) {
+                    console.error("Bildirimler silinirken hata:", error);
+                    alert("Bir hata oluştu, lütfen sayfayı yenileyip tekrar deneyin.");
+                } finally {
+                    clearAllBtn.innerHTML = "🗑️ Tümünü Temizle";
+                    clearAllBtn.style.opacity = "1";
+                    clearAllBtn.disabled = false;
+                }
+            };
+        }
+
+    } else {
+        window.location.href = "login.html";
+    }
 });
