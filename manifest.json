@@ -2,7 +2,7 @@
   "name": "TeknikZeka",
   "short_name": "TeknikZeka",
   "description": "Yapay Zeka Destekli Teknik Servis Platformu",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#4f46e5",
