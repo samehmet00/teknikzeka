@@ -448,6 +448,7 @@ onAuthStateChanged(auth, async (user) => {
                                 <span><strong>✅ Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> servisine ${data.acceptedPrice.toLocaleString('tr-TR')} ₺'ye satıldı!</strong></span>
                                 ${cargoHtml}
                                 <a href="track.html?id=${ticketId}" style="align-self:flex-start; margin-top: 10px; padding:8px 20px; background: linear-gradient(135deg, #10B981, #059669); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 15px rgba(16,185,129,0.3);">Süreci Takip Et 🚚</a>
+                                <a href="chat.html?ticketId=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: transparent; border: 1px solid #10B981; color: #10B981; text-decoration: none; border-radius: 8px; font-weight: bold;">💬 Mesajlaş</a>
                             </div>`;
                         } else {
                             bidHtml = `<div class="info-box-dynamic"><strong>₺ Servislerden Gelen Fiyat Teklifleri:</strong><br>`;
@@ -473,6 +474,7 @@ onAuthStateChanged(auth, async (user) => {
                                 <span><strong>✅ Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> isimli servise yönlendirildi.</strong></span>
                                 ${cargoHtml}
                                 <a href="track.html?id=${ticketId}" style="align-self:flex-start; margin-top: 10px; padding:8px 20px; background: linear-gradient(135deg, var(--primary), #4338ca); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);">Süreci Takip Et 🚚</a>
+                                <a href="chat.html?ticketId=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: transparent; border: 1px solid #10B981; color: #10B981; text-decoration: none; border-radius: 8px; font-weight: bold;">💬 Mesajlaş</a>
                             </div>`; 
                         } 
                         else if (data.interestedServices && data.interestedServices.length > 0) {

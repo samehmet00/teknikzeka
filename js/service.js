@@ -195,6 +195,7 @@ function renderTickets() {
                     <div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:10px;">
                         <span>🎉 Teklifiniz Kabul Edildi! Müşteri İletişim: <strong>${data.userEmail}</strong></span>
                         <a href="track.html?id=${data.id}" style="align-self:flex-start; padding:8px 20px; background: var(--primary); color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Süreci Yönet ⚙️</a>
+                        <a href="chat.html?ticketId=${data.id}" style="flex:1; text-align:center; padding:8px 10px; background: transparent; border: 1px solid var(--primary); color: var(--primary); text-decoration: none; border-radius: 8px; font-weight: bold;">💬 Mesajlaş</a>
                     </div>`;
                 } else {
                     techActionHtml = `<div class="error-box-dynamic">❌ Cihaz başka bir servise satıldı.</div>`;
@@ -234,6 +235,7 @@ function renderTickets() {
                 <div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:10px;">
                     <span>✅ Müşteri sizi seçti! Mail: <strong>${data.userEmail}</strong></span>
                     <a href="track.html?id=${data.id}" style="align-self:flex-start; padding:8px 20px; background: var(--primary); color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Süreci Yönet ⚙️</a>
+                    <a href="chat.html?ticketId=${data.id}" style="flex:1; text-align:center; padding:8px 10px; background: transparent; border: 1px solid var(--primary); color: var(--primary); text-decoration: none; border-radius: 8px; font-weight: bold;">💬 Mesajlaş</a>
                 </div>`; 
             } 
             else if (data.assignedService) { techActionHtml = `<div class="error-box-dynamic">❌ Müşteri başka servisi seçti.</div>`; } 

@@ -1,0 +1,158 @@
+/* SOHBET EKRANI TASARIMI */
+body { overflow: hidden; /* Dış sayfanın kaymasını engelle, sadece sohbet kaysın */ }
+
+.chat-container {
+    max-width: 800px;
+    margin: 80px auto 0; /* Mobilde daralmaması için padding-top yerine margin kullandık */
+    height: calc(100vh - 80px); /* Ekranın tamamını kaplasın */
+    display: flex;
+    flex-direction: column;
+    background: var(--card-bg);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+.chat-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    border-radius: 16px 16px 0 0;
+    z-index: 10;
+}
+
+.chat-header-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: rgba(0,0,0,0.01);
+    scroll-behavior: smooth;
+}
+
+/* Mesaj Balonları */
+.msg-bubble {
+    max-width: 75%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.msg-time {
+    display: block;
+    font-size: 0.7rem;
+    margin-top: 5px;
+    opacity: 0.7;
+    text-align: right;
+}
+
+/* Gönderen Bizsek (Sağda) */
+.msg-me {
+    align-self: flex-end;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+}
+
+/* Karşı Taraf Gönderdiyse (Solda) */
+.msg-other {
+    align-self: flex-start;
+    background: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 4px;
+}
+
+.chat-input-area {
+    padding: 15px;
+    background: var(--card-bg);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.chat-input {
+    flex: 1; /* Genişliği tamamen doldurmasını sağlar */
+    padding: 15px 20px; /* Kutuyu daha ferah ve büyük yaptık */
+    border-radius: 25px; /* Daha modern bir yuvarlaklık */
+    border: 1px solid var(--border-color);
+    background: rgba(0,0,0,0.03); /* Gözü yormayan hafif bir arka plan */
+    color: var(--text-main);
+    font-size: 1rem; /* Yazı tipini biraz daha belirginleştirdik */
+    outline: none;
+    transition: 0.3s;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+body.dark-mode .chat-input { background: rgba(255,255,255,0.05); }
+
+.chat-input:focus {
+    border-color: var(--primary);
+    background: transparent;
+}
+
+.chat-send-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 38px; /* Butonu 45px'den 38px'e küçülttük */
+    height: 38px; 
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    flex-shrink: 0; /* Butonun ekran küçülünce ezilmesini engeller */
+}
+
+.chat-send-btn:hover {
+    transform: scale(1.05);
+    background: var(--accent);
+}
+
+.chat-send-btn svg { 
+    width: 16px; /* İkonu da butona uygun olarak küçülttük */
+    height: 16px; 
+    transform: translateX(-1px); 
+}
+
+@media (max-width: 768px) {
+    .chat-container {
+        height: calc(100vh - 60px); /* Navbar mobilde daha dar olabilir */
+        margin-top: 60px;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+    .chat-header { border-radius: 0; }
+}
