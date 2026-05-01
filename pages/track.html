@@ -2,28 +2,17 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Mobil Uygulama (PWA) Etiketleri -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TeknikZeka">
+    <link rel="manifest" href="../manifest.json">
+
     <title>Süreç Takibi - TeknikZeka</title>
     <link rel="stylesheet" href="../css/app.css">
-    <style>
-        .track-container { max-width: 800px; margin: 100px auto 50px; padding: 2rem; background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .device-header { display: flex; align-items: center; gap: 15px; padding-bottom: 20px; border-bottom: 1px dashed var(--border-color); margin-bottom: 30px; }
-        
-        /* Zaman Çizelgesi (Timeline) CSS */
-        .timeline { position: relative; padding-left: 30px; margin-bottom: 30px; }
-        .timeline::before { content: ''; position: absolute; left: 7px; top: 0; height: 100%; width: 2px; background: var(--border-color); }
-        .step { position: relative; padding-bottom: 30px; }
-        .step:last-child { padding-bottom: 0; }
-        .step::before { content: ''; position: absolute; left: -29.5px; top: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--border-color); z-index: 1; transition: 0.3s; }
-        .step.completed::before { background: #10B981; border-color: #10B981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
-        .step.active::before { border-color: var(--primary); background: var(--primary); box-shadow: 0 0 15px rgba(79, 70, 229, 0.6); }
-        
-        .step-content h4 { margin: 0 0 5px; color: var(--text-main); font-size: 1.1rem; }
-        .step-content p { margin: 0; color: var(--gray-light); font-size: 0.9rem; }
-        
-        .cargo-box { background: rgba(79, 70, 229, 0.05); border: 1px solid rgba(79, 70, 229, 0.2); padding: 15px; border-radius: 12px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .service-controls { margin-top: 30px; padding-top: 20px; border-top: 1px dashed var(--border-color); display: none; }
-    </style>
 </head>
 <body class="light-mode">
 

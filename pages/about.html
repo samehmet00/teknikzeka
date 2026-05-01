@@ -2,121 +2,19 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Mobil Uygulama (PWA) Etiketleri -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TeknikZeka">
+    <link rel="manifest" href="../manifest.json">
+
     <title>Hakkımızda - TeknikZeka</title>
     <link rel="stylesheet" href="../css/style.css">
     
-    <style>
-        /* KURUMSAL VE FERAH TASARIM */
-        .about-hero { 
-            padding: 9rem 5% 4rem; 
-            text-align: center; 
-            background: linear-gradient(180deg, rgba(79, 70, 229, 0.05) 0%, transparent 100%);
-        }
-        .about-hero h1 { 
-            font-size: 3.5rem; 
-            color: var(--text-main); 
-            margin-bottom: 1.5rem; 
-            font-weight: 800;
-            letter-spacing: -1px;
-        }
-        .about-hero p { 
-            font-size: 1.15rem; 
-            color: var(--text-muted); 
-            max-width: 650px; 
-            margin: 0 auto; 
-            line-height: 1.6;
-        }
-
-        .about-container { 
-            max-width: 1100px; 
-            margin: 0 auto 6rem; 
-            padding: 0 5%;
-            display: flex;
-            flex-direction: column;
-            gap: 2.5rem;
-        }
-
-        /* Yanyana Kart Dizilimi (İç içe girmeyi önler) */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2.5rem;
-        }
-
-        .info-card {
-            background: var(--card-bg);
-            padding: 3rem 2.5rem;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .info-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-            border-color: rgba(79, 70, 229, 0.4);
-        }
-
-        .info-icon {
-            font-size: 2.2rem;
-            margin-bottom: 1.5rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 70px;
-            height: 70px;
-            background: rgba(79, 70, 229, 0.1);
-            border-radius: 16px;
-            color: var(--primary);
-        }
-
-        .info-card h2 { 
-            color: var(--text-main); 
-            margin-bottom: 1rem; 
-            font-size: 1.4rem; 
-            font-weight: 700;
-        }
-        .info-card p { 
-            color: var(--text-muted); 
-            font-size: 1.05rem; 
-            line-height: 1.7; 
-        }
-
-        /* Yatay Geliştirici Kartı */
-        .dev-card {
-            background: var(--card-bg);
-            padding: 3rem;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 2.5rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        }
-        .dev-icon {
-            font-size: 4.5rem;
-            background: rgba(16, 185, 129, 0.1);
-            padding: 20px;
-            border-radius: 50%;
-        }
-        .dev-info h3 {
-            font-size: 1.5rem;
-            color: var(--text-main);
-            margin-bottom: 0.8rem;
-        }
-        .dev-info p {
-            color: var(--text-muted);
-            line-height: 1.6;
-            font-size: 1.05rem;
-        }
-
-        @media (max-width: 768px) {
-            .about-hero h1 { font-size: 2.5rem; }
-            .about-grid { grid-template-columns: 1fr; }
-            .dev-card { flex-direction: column; text-align: center; padding: 2rem; }
-        }
-    </style>
+    
 </head>
 <body>
 

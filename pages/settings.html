@@ -2,39 +2,18 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Mobil Uygulama (PWA) Etiketleri -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TeknikZeka">
+    <link rel="manifest" href="../manifest.json">
+
     <title>Ayarlar - TeknikZeka</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/app.css">
-    <style>
-        .settings-container { max-width: 600px; margin: 100px auto 50px; background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .setting-group { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px dashed var(--border-color); }
-        .setting-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .setting-title { font-size: 1.1rem; color: var(--text-main); font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        
-        .toggle-switch { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-        .toggle-switch label { color: var(--text-main); font-size: 0.95rem; font-weight: 500; }
-        
-        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input:checked + .slider { background-color: #10B981; }
-        input:checked + .slider:before { transform: translateX(24px); }
-
-        .theme-options { display: flex; gap: 10px; }
-        .theme-card { flex: 1; text-align: center; padding: 15px 10px; border: 2px solid var(--border-color); border-radius: 12px; cursor: pointer; transition: 0.3s; font-weight: 600; color: var(--gray-light); font-size: 0.9rem; }
-        .theme-card:hover { border-color: var(--text-muted); background: rgba(0,0,0,0.02); }
-        .theme-card.active { border-color: var(--primary); background: rgba(79, 70, 229, 0.05); color: var(--primary); }
-        .theme-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; }
-        
-        .premium-input { width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main); font-size: 1rem; outline: none; transition: 0.3s; }
-        .premium-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
-        
-        .msg-box { margin-top: 10px; font-size: 0.9rem; font-weight: bold; padding: 8px 12px; border-radius: 8px; display: none; }
-        .msg-error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
-        .msg-success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
-    </style>
 </head>
 <body class="light-mode">
 

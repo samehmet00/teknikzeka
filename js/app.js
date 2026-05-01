@@ -4,6 +4,10 @@ import { collection, addDoc, serverTimestamp, query, where, onSnapshot, doc, upd
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { deviceData } from './deviceData.js';
 
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('../sw.js').then(() => console.log("PWA Aktif!"));
+}
+
 // --- GROQ API ANAHTARI ---
 const keyPart1 = "gsk_FrBvhp1olAlq5nrdZ1IqWGdyb"; 
 const keyPart2 = "3FYPc8T04HcYnTBDJWMbjkTbFMF";

@@ -2,7 +2,15 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Mobil Uygulama (PWA) Etiketleri -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TeknikZeka">
+    <link rel="manifest" href="../manifest.json">
+
     <title>Sisteme Giriş - TeknikZeka</title>
     <link rel="stylesheet" href="../css/app.css"> 
     <link rel="stylesheet" href="../css/style.css"> 
@@ -20,37 +28,6 @@
         <div id="auth-container" class="auth-box">
             <h2 id="auth-title">Sisteme Giriş</h2>
             <form id="auth-form">
-                
-                <style>
-                    .acc-group { display: flex; gap: 12px; margin-top: 8px; }
-                    .acc-option { flex: 1; position: relative; }
-                    .acc-option input[type="radio"] { display: none; /* Standart yuvarlağı gizle */ }
-                    
-                    .acc-card {
-                        display: flex; flex-direction: column; align-items: center; justify-content: center;
-                        padding: 15px 5px; border: 2px solid var(--border-color); border-radius: 12px;
-                        cursor: pointer; transition: 0.3s ease; color: var(--gray-light);
-                        font-weight: 600; font-size: 0.95rem; background: transparent;
-                    }
-                    .acc-card:hover { border-color: var(--text-muted); background: rgba(0,0,0,0.02); }
-                    .acc-icon { font-size: 1.8rem; margin-bottom: 8px; transition: 0.3s ease; transform: scale(1); }
-
-                    /* Müşteri Seçildiğinde (Mor Tema) */
-                    .acc-option input[value="musteri"]:checked + .acc-card {
-                        border-color: var(--primary);
-                        background: rgba(79, 70, 229, 0.05);
-                        color: var(--primary);
-                    }
-                    .acc-option input[value="musteri"]:checked + .acc-card .acc-icon { transform: scale(1.15); }
-
-                    /* Servis Seçildiğinde (Yeşil Tema) */
-                    .acc-option input[value="servis"]:checked + .acc-card {
-                        border-color: #10B981;
-                        background: rgba(16, 185, 129, 0.05);
-                        color: #10B981;
-                    }
-                    .acc-option input[value="servis"]:checked + .acc-card .acc-icon { transform: scale(1.15); }
-                </style>
 
                 <div id="account-type-container" style="display: none; margin-bottom: 20px; text-align: left;">
                     <p style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 5px; font-weight: bold;">Hesap Türünüzü Seçin</p>
