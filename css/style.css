@@ -240,73 +240,114 @@ body.light-mode .icon-moon { display: block; } body.light-mode .icon-sun { displ
     .dev-card { flex-direction: column; text-align: center; padding: 2rem; }
 }
 
-/* --- MOBİL UYGULAMA (PWA) OPTİMİZASYONU --- */
-body {
-    overscroll-behavior-y: none; /* Mobilde sayfayı aşağı çekince yenilenme efektini kapatır (App hissi) */
-    overflow-x: hidden; /* Sağa sola istenmeyen kaymaları engeller */
+/* =========================================================
+   MOBİL VE SWIPE (KAYDIRMA) KUSURSUZLAŞTIRMA GÜNCELLEMESİ 
+   ========================================================= */
+
+/* 1. KIRMIZI SİL BUTONUNUN TAŞMASINI ENGELLEME */
+.ticket-wrapper {
+    position: relative;
+    overflow: hidden; /* Dışarı taşan kırmızılığı jilet gibi keser */
+    border-radius: 12px;
+    margin-bottom: 15px !important; /* Boşluğu dış kutuya verdik */
+    background: #EF4444; /* Sadece kaydırınca görünen arka plan */
 }
 
+.modern-ticket-card, .service-list-bar {
+    margin-bottom: 0 !important; /* İç kartın boşluğunu sıfırladık (Kırmızı sırıtmayı önler) */
+    position: relative;
+    z-index: 2; /* Sil butonunun üstünde durmasını sağlar */
+    background: var(--card-bg) !important; /* Kartın arkasını tamamen kapatır */
+    border-radius: 12px;
+    width: 100%;
+}
+
+.delete-action-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    background: #EF4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    z-index: 1; /* Kartın bir tık arkasında bekler */
+    cursor: pointer;
+}
+
+/* 2. MOBİL EKRANLAR İÇİN HER ŞEYİ KÜÇÜLTME VE HİZALAMA */
 @media (max-width: 768px) {
-/* Konteyner boşluklarını daralt */
+/* SİHİRLİ DOKUNUŞ: Mobilde her şeyi orantılı olarak %15 küçültür! */
+html {
+    font-size: 14px !important; 
+}
+
+/* Navbar'ı Daralt ve Sığdır */
+.navbar {
+    padding: 8px 10px !important;
+    gap: 5px;
+}
+
+.navbar .logo {
+    font-size: 1.1rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 110px; /* Çok uzun isimleri (...) yapar */
+}
+
+/* Profil İsmini Sığdır */
+.user-name-text {
+    font-size: 0.9rem !important;
+    max-width: 75px; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+/* İkonları Küçült */
+.nav-icon-btn, .logout-icon-btn, .three-dots-btn {
+    padding: 4px !important;
+    font-size: 1.1rem !important;
+}
+
+/* Konteyner Boşluklarını Mobilde Daralt */
 .app-container, .service-container, .noti-container {
-    padding-top: 80px !important;
+    padding-top: 75px !important; 
     padding-left: 10px !important;
     padding-right: 10px !important;
 }
 
-/* Kartların devasa iç boşluklarını mobilde küçült */
-.ticket-box, .modern-ticket-card, .noti-item {
-    padding: 15px !important;
-    border-radius: 12px;
-    margin-bottom: 15px !important;
+.ticket-box {
+    padding: 15px !important; /* Form etrafındaki devasa boşlukları kısar */
+    margin-bottom: 1.5rem !important;
 }
 
-/* Navbar'ı mobilde hizala */
-.navbar {
-    padding: 10px 15px;
+.modern-ticket-header {
+    flex-wrap: nowrap; /* Mobilde başlık ve durum butonunun alt alta inmesini engeller */
 }
 
-.navbar .logo {
-    font-size: 1.2rem;
-}
-
-/* Grid (Yan yana Duran) Yapıları Alt Alta Al */
+/* Grid Formları Tek Sütuna İndir */
 .premium-form-grid {
-    grid-template-columns: 1fr !important; /* Formları 3 kolon yerine 1 kolon yapar */
-    gap: 10px;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
 }
 
-/* Tab (Sekme) butonlarını telefona sığdır */
+/* Sekmeleri (Tüm Kayıtlar / Aktif) Kaydırılabilir Yap */
 .tab-container {
     flex-wrap: nowrap;
-    overflow-x: auto; /* Sekmeler çoksa yana kaydırılabilir yap */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 5px;
-    -webkit-overflow-scrolling: touch; /* iOS'ta akıcı kaydırma */
 }
 
 .tab-btn {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     padding: 8px 12px;
-    white-space: nowrap; /* Yazıların alt satıra inip bozulmasını önler */
-}
-
-/* Yapay Zeka Kutularındaki metinleri küçült */
-.premium-ai-box {
-    padding: 12px;
-}
-.ai-detail-row {
-    gap: 10px;
-}
-.ai-detail-icon {
-    font-size: 1.2rem;
-    width: 35px;
-    height: 35px;
-}
-
-/* Sürükleme Efekti (Swipe) için ekstra alan */
-.ticket-wrapper {
-    position: relative;
-    overflow: hidden; /* Sürükleyince dışarı taşanları gizler */
-    border-radius: 12px;
+    white-space: nowrap; /* Yazıların iki satıra bölünmesini engeller */
 }
 }
