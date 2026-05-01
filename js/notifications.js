@@ -32,13 +32,11 @@ onAuthStateChanged(auth, (user) => {
                     dateStr = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', hour: '2-digit', minute:'2-digit' });
                 }
 
-                // GÜVENLİK: Eğer metinde yanlışlıkla $ sembolü kalmışsa, zorla ₺'ye çevir.
-                let safeMessage = noti.message.replace(/\$/g, '₺');
 
                 // Bildirim ikonunu mesajın içeriğine göre dinamik yapalım
                 let icon = "💬";
                 if(safeMessage.includes("🎉")) icon = "🎉";
-                if(safeMessage.includes("₺") || safeMessage.includes("💸") || safeMessage.includes("🤝")) icon = "💸";
+                if(safeMessage.includes("₺") || safeMessage.includes("🤝")) icon = "₺";
                 if(safeMessage.includes("📦") || safeMessage.includes("kargo")) icon = "📦";
 
                 const div = document.createElement('div');

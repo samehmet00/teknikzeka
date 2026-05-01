@@ -244,20 +244,20 @@ body.light-mode .icon-moon { display: block; } body.light-mode .icon-sun { displ
    MOBİL VE SWIPE (KAYDIRMA) KUSURSUZLAŞTIRMA GÜNCELLEMESİ 
    ========================================================= */
 
-/* 1. KIRMIZI SİL BUTONUNUN TAŞMASINI ENGELLEME */
+/* 1. SİL BUTONU KIRMIZI TAŞMASINI ENGELLER */
 .ticket-wrapper {
     position: relative;
-    overflow: hidden; /* Dışarı taşan kırmızılığı jilet gibi keser */
+    overflow: hidden !important; /* Dışarı taşan kırmızılığı kesin olarak keser */
     border-radius: 12px;
-    margin-bottom: 15px !important; /* Boşluğu dış kutuya verdik */
-    background: #EF4444; /* Sadece kaydırınca görünen arka plan */
+    margin-bottom: 15px !important;
+    background: #EF4444; 
 }
 
 .modern-ticket-card, .service-list-bar {
-    margin-bottom: 0 !important; /* İç kartın boşluğunu sıfırladık (Kırmızı sırıtmayı önler) */
+    margin-bottom: 0 !important;
     position: relative;
     z-index: 2; /* Sil butonunun üstünde durmasını sağlar */
-    background: var(--card-bg) !important; /* Kartın arkasını tamamen kapatır */
+    background: var(--card-bg) !important;
     border-radius: 12px;
     width: 100%;
 }
@@ -274,80 +274,36 @@ body.light-mode .icon-moon { display: block; } body.light-mode .icon-sun { displ
     justify-content: center;
     color: white;
     z-index: 1; /* Kartın bir tık arkasında bekler */
-    cursor: pointer;
 }
 
 /* 2. MOBİL EKRANLAR İÇİN HER ŞEYİ KÜÇÜLTME VE HİZALAMA */
 @media (max-width: 768px) {
-/* SİHİRLİ DOKUNUŞ: Mobilde her şeyi orantılı olarak %15 küçültür! */
-html {
-    font-size: 14px !important; 
-}
+    /* Mobilde her şeyi orantılı olarak küçültür */
+    html { font-size: 14px !important; }
 
-/* Navbar'ı Daralt ve Sığdır */
-.navbar {
-    padding: 8px 10px !important;
-    gap: 5px;
-}
+    /* Navbar'ı Daralt ve Sığdır */
+    .navbar { padding: 8px 10px !important; gap: 5px; }
 
-.navbar .logo {
-    font-size: 1.1rem !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 110px; /* Çok uzun isimleri (...) yapar */
-}
+    /* Logo ve İsmi Sığdır, Uzunsa Nokta Nokta (...) Yap */
+    .navbar .logo { font-size: 1.1rem !important; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-name-text { font-size: 0.9rem !important; max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; }
 
-/* Profil İsmini Sığdır */
-.user-name-text {
-    font-size: 0.9rem !important;
-    max-width: 75px; 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline-block;
-}
+    /* Navbar İkonlarını Küçült */
+    .nav-actions-pill { padding: 4px 8px !important; }
+    .nav-icon-btn, .logout-icon-btn, .three-dots-btn { padding: 5px !important; font-size: 1.1rem !important; }
 
-/* İkonları Küçült */
-.nav-icon-btn, .logout-icon-btn, .three-dots-btn {
-    padding: 4px !important;
-    font-size: 1.1rem !important;
-}
+    /* Konteyner Boşluklarını Mobilde Daralt */
+    .app-container, .service-container, .noti-container { padding-top: 75px !important; padding-left: 10px !important; padding-right: 10px !important; }
+    .ticket-box { padding: 15px !important; margin-bottom: 1.5rem !important; }
+    .modern-ticket-header { flex-wrap: nowrap !important; }
 
-/* Konteyner Boşluklarını Mobilde Daralt */
-.app-container, .service-container, .noti-container {
-    padding-top: 75px !important; 
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-}
+    /* Grid Formları Tek Sütuna İndir */
+    .premium-form-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
 
-.ticket-box {
-    padding: 15px !important; /* Form etrafındaki devasa boşlukları kısar */
-    margin-bottom: 1.5rem !important;
-}
-
-.modern-ticket-header {
-    flex-wrap: nowrap; /* Mobilde başlık ve durum butonunun alt alta inmesini engeller */
-}
-
-/* Grid Formları Tek Sütuna İndir */
-.premium-form-grid {
-    grid-template-columns: 1fr !important;
-    gap: 10px !important;
-}
-
-/* Sekmeleri (Tüm Kayıtlar / Aktif) Kaydırılabilir Yap */
-.tab-container {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 5px;
-}
-
-.tab-btn {
-    font-size: 0.95rem;
-    padding: 8px 12px;
-    white-space: nowrap; /* Yazıların iki satıra bölünmesini engeller */
-}
+    /* Sekmeleri (Tüm Kayıtlar / Aktif) Kaydırılabilir Yap */
+    .tab-container { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 5px; }
+    .tab-btn { font-size: 0.95rem; padding: 8px 12px; white-space: nowrap; }
+    
+    /* Mesajlaşma Ekranı Mobil Hiza */
+    .chat-container { margin-top: 65px; height: calc(100vh - 65px); border-radius: 0; }
 }

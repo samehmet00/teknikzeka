@@ -334,7 +334,7 @@ window.makeOffer = async (ticketId, customerEmail, event) => {
             
             await updateDoc(ticketRef, { offers: currentOffers });
             
-            await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: `💸 Cihazınız için ${price.toLocaleString('tr-TR')} ₺ yeni bir teklif geldi!`, link: "dashboard.html", read: false, createdAt: serverTimestamp() });
+            await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: `🤝 Cihazınız için ${price.toLocaleString('tr-TR')} ₺ yeni bir teklif geldi!`, link: "dashboard.html", read: false, createdAt: serverTimestamp() });
             
             sendEmailNotification(
                 customerEmail, 
