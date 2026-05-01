@@ -399,17 +399,3 @@ input:checked + .slider:before { transform: translateX(24px); }
 .service-controls { margin-top: 30px; padding-top: 20px; border-top: 1px dashed var(--border-color); display: none; }
 
 
-/* --- MOBİL OPTİMİZASYON (GÜVENLİ) --- */
-html, body {
-    overflow-x: hidden; /* Sadece sağa/sola taşmaları engeller, orjinal tasarıma dokunmaz */
-}
-
-@media (max-width: 768px) {
-    .chat-container {
-        margin-top: 65px;
-        height: calc(100vh - 65px);
-        border-radius: 0;
-        border-left: none;
-        border-right: none;
-    }
-}
