@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4f46e5">
+    <title>Mesajlarım - TeknikZeka</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/app.css">
+    
+    <style>
+        .chat-list-container {
+            max-width: 800px;
+            margin: 100px auto 50px;
+            padding: 0 15px;
+        }
+        
+        .chat-list-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        
+        .chat-list-item:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .chat-list-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+    <nav class="navbar">
+        <a href="javascript:history.back()" class="logo" style="text-decoration: none; font-size: 1.2rem;">⬅️ Geri</a>
+        <span style="font-weight: bold; color: var(--text-main); font-size: 1.2rem;">Mesajlarım</span>
+    </nav>
+
+    <div class="chat-list-container">
+        <div id="chats-list">
+            <!-- Cache'ten veri gelene kadar gösterilecek temiz yazı -->
+            <p style="text-align: center; color: var(--gray-light); margin-top: 50px;">Sohbetleriniz kontrol ediliyor...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db, auth } from '../js/firebase-config.js';
+        import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        const chatsListEl = document.getElementById('chats-list');
+
+        // ÖNBELLEK: Önceki sohbetleri anında ekrana bas
+        const cachedChats = localStorage.getItem('tz_chats_list_cache');
+        if (cachedChats) {
+            chatsListEl.innerHTML = cachedChats;
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) return window.location.href = "login.html";
+
+            const q = query(collection(db, "tickets"), where("assignedService", "!=", ""));
+
+            onSnapshot(q, (snapshot) => {
+                let myChatsHtml = "";
+                let hasChat = false;
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    
+                    if (data.userEmail === user.email || data.assignedService === user.email) {
+                        hasChat = true;
+                        
+                        const isCustomer = user.email === data.userEmail;
+                        const partnerEmail = isCustomer ? data.assignedService : data.userEmail;
+                        const partnerName = partnerEmail.split('@')[0];
+                        const avatarLetter = partnerName.charAt(0).toUpperCase();
+                        
+                        myChatsHtml += `
+                            <a href="chat.html?ticketId=${doc.id}" class="chat-list-item">
+                                <div class="chat-list-avatar">${avatarLetter}</div>
+                                <div style="flex: 1; overflow: hidden;">
+                                    <h3 style="margin: 0; color: var(--text-main); font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${partnerName}</h3>
+                                    <p style="margin: 5px 0 0 0; color: var(--gray-light); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        📱 ${data.deviceBrand} ${data.deviceModel} İşlemi
+                                    </p>
+                                </div>
+                                <span style="color: var(--primary);">►</span>
+                            </a>
+                        `;
+                    }
+                });
+
+                if (hasChat) {
+                    chatsListEl.innerHTML = myChatsHtml;
+                    // Arka planda gelen son listeyi hafızaya kaydet
+                    localStorage.setItem('tz_chats_list_cache', myChatsHtml);
+                } else {
+                    const noChatHtml = `<p style="text-align: center; color: var(--gray-light); margin-top: 50px;">Henüz aktif bir sohbetiniz bulunmuyor.</p>`;
+                    chatsListEl.innerHTML = noChatHtml;
+                    localStorage.setItem('tz_chats_list_cache', noChatHtml);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

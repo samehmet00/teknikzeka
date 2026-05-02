@@ -18,16 +18,23 @@ const cargoInput = document.getElementById('cargo-input');
 let currentTicket = null;
 let currentUserEmail = "";
 
-
-
 if (!ticketId) {
     alert("Geçersiz takip numarası!");
     window.location.href = "dashboard.html";
 }
 
+// --- ÖNBELLEK: Yüklenme ekranını atla ---
+const cachedTicket = JSON.parse(localStorage.getItem(`tz_track_${ticketId}`));
+if (cachedTicket) {
+    currentTicket = cachedTicket;
+    currentUserEmail = localStorage.getItem('tz_track_email') || "";
+    renderUI();
+}
+
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUserEmail = user.email;
+        localStorage.setItem('tz_track_email', user.email);
         startTracking();
     } else {
         window.location.href = "login.html";
@@ -39,77 +46,62 @@ function startTracking() {
     onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
             currentTicket = docSnap.data();
+            localStorage.setItem(`tz_track_${ticketId}`, JSON.stringify(currentTicket));
             renderUI();
         } else {
-            alert("Böyle bir kayıt bulunamadı.");
+            if(!cachedTicket) alert("Böyle bir kayıt bulunamadı.");
         }
     });
 }
 
 function renderUI() {
-    // 1. Üst Bilgileri Doldur
     deviceTitle.innerText = `${currentTicket.deviceBrand} ${currentTicket.deviceModel}`;
     ticketIdDisplay.innerText = `Kayıt ID: #${ticketId.slice(0,8).toUpperCase()}`;
     statusBadge.innerText = currentTicket.isForSale ? "Satış İşlemi" : "Tamir İşlemi";
     statusBadge.style.backgroundColor = currentTicket.isForSale ? "#10B981" : "var(--primary)";
 
-    // 2. Kargo Kodu
     if (currentTicket.cargoCode) {
         cargoDisplayBox.style.display = "flex";
         cargoCodeText.innerText = currentTicket.cargoCode;
-        cargoInput.value = currentTicket.cargoCode;
+        if(cargoInput) cargoInput.value = currentTicket.cargoCode;
     }
 
-    // 3. Zaman Çizelgesi (Timeline) Mantığı
-    let steps = [];
+    let steps = currentTicket.isForSale 
+        ? ["Kargo Bekleniyor", "Cihaz Teslim Alındı & İnceleniyor", "Ödeme Müşteriye Aktarıldı", "İşlem Tamamlandı"] 
+        : ["Kargo Bekleniyor", "Cihaz Teslim Alındı", "Onarım Aşamasında", "Onarım Bitti & Kargolandı"];
+
     let currentStepIndex = currentTicket.processStep || 0;
-
-    if (currentTicket.isForSale) {
-        steps = ["Kargo Bekleniyor", "Cihaz Teslim Alındı & İnceleniyor", "Ödeme Müşteriye Aktarıldı", "İşlem Tamamlandı"];
-    } else {
-        steps = ["Kargo Bekleniyor", "Cihaz Teslim Alındı", "Onarım Aşamasında", "Onarım Bitti & Kargolandı"];
-    }
 
     timelineContainer.innerHTML = '';
     steps.forEach((stepText, index) => {
-        let statusClass = "";
-        let desc = "";
+        let statusClass = ""; let desc = "";
         if (index < currentStepIndex) { statusClass = "completed"; desc = "Aşama tamamlandı."; } 
         else if (index === currentStepIndex) { statusClass = "active"; desc = "Şu an bu aşamada..."; } 
         else { desc = "Bekliyor..."; }
 
         timelineContainer.innerHTML += `
             <div class="step ${statusClass}">
-                <div class="step-content">
-                    <h4>${stepText}</h4>
-                    <p>${desc}</p>
-                </div>
-            </div>
-        `;
+                <div class="step-content"><h4>${stepText}</h4><p>${desc}</p></div>
+            </div>`;
     });
 
-    // 4. Servis Kontrollerini Göster/Gizle
-    if (currentUserEmail === currentTicket.assignedService) {
+    if (currentUserEmail === currentTicket.assignedService && serviceControls) {
         serviceControls.style.display = "block";
-        
         const advanceBtn = document.getElementById('advance-step-btn');
+        
         if (currentStepIndex >= steps.length - 1) {
-            advanceBtn.innerText = "Süreç Tamamlandı 🎉";
-            advanceBtn.disabled = true;
-            advanceBtn.style.opacity = "0.5";
+            advanceBtn.innerText = "Süreç Tamamlandı 🎉"; advanceBtn.disabled = true; advanceBtn.style.opacity = "0.5";
         } else {
             advanceBtn.innerText = `Sonraki Aşama: ${steps[currentStepIndex + 1]} 🚀`;
-            advanceBtn.onclick = async () => {
-                await updateDoc(doc(db, "tickets", ticketId), { processStep: currentStepIndex + 1 });
-            };
+            advanceBtn.onclick = async () => await updateDoc(doc(db, "tickets", ticketId), { processStep: currentStepIndex + 1 });
         }
 
-        document.getElementById('save-cargo-btn').onclick = async () => {
-            const code = cargoInput.value.trim();
-            if (code) {
-                await updateDoc(doc(db, "tickets", ticketId), { cargoCode: code });
-                alert("Kargo kodu başarıyla eklendi!");
-            }
-        };
+        const saveCargoBtn = document.getElementById('save-cargo-btn');
+        if(saveCargoBtn) {
+            saveCargoBtn.onclick = async () => {
+                const code = cargoInput.value.trim();
+                if (code) { await updateDoc(doc(db, "tickets", ticketId), { cargoCode: code }); alert("Kargo kodu eklendi!"); }
+            };
+        }
     }
 }

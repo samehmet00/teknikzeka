@@ -49,3 +49,80 @@ body.light-mode .bar-details { background-color: #F8FAFC; }
 .tab-btn.active { color: var(--primary); }
 .tab-btn.active::after { content: ''; position: absolute; bottom: -12px; left: 0; width: 100%; height: 3px; background: var(--primary); border-radius: 3px 3px 0 0; }
 .tab-badge { background: #EF4444; color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; margin-left: 5px; vertical-align: top; }
+
+ /* YENİ SABİT (STICKY) DÜZEN VE SAYFALAMA TASARIMI */
+body { background-color: var(--bg-main); }
+
+.service-layout {
+    display: flex;
+    gap: 25px;
+    max-width: 100%; /* 1400px yerine 98% yaptık, ekranı tamamen kaplar */
+    margin: 95px auto 30px;
+    padding: 0 1%; /* Sağdan soldan boşluğu iyice kıstık */
+    align-items: flex-start; /* Sabitlik için kritik */
+}
+
+/* 1. Sol Menü (Filtreler) Sabitleme */
+.sticky-sidebar {
+    width: 400px; 
+    flex-shrink: 0;
+    position: sticky;
+    top: 90px; /* Sabit duracağı yükseklik */
+    height: calc(100vh - 110px);
+    overflow-y: auto;
+    border-radius: 12px;
+}
+
+/* Scrollbar Gizleme (Sadece filtre menüsü için) */
+.sticky-sidebar::-webkit-scrollbar { width: 5px; }
+.sticky-sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+body.dark-mode .sticky-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+
+/* 2. Sağ İçerik Alanı */
+.content-area {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 3. Başlık ve Sekmeleri Sabitleme */
+.sticky-header {
+    position: sticky;
+    top: 75px; /* Navbar'ın tam bittiği yer (Navbar 75px olduğu için) */
+    background: var(--bg-main);
+    z-index: 20;
+    padding: 15px 0 5px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    transition: background 0.4s ease;
+}
+
+.header-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.header-top-row h2 { color: var(--text-main); font-size: 1.5rem; margin: 0; }
+#ticket-count { background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+
+/* TAB TASARIMLARI (Servis) */
+.tab-container { display: flex; gap: 10px; }
+.tab-btn { background: transparent; border: none; padding: 10px 20px; font-size: 1.05rem; font-weight: 600; color: var(--gray-light); cursor: pointer; position: relative; transition: 0.3s; border-radius: 8px 8px 0 0; }
+.tab-btn:hover { color: var(--text-main); background: rgba(0,0,0,0.02); }
+.tab-btn.active { color: var(--primary); }
+.tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background: var(--primary); border-radius: 3px 3px 0 0; }
+.tab-badge { background: #EF4444; color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; margin-left: 5px; vertical-align: top; }
+
+/* 4. Sayfalama (Pagination) Butonları */
+.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 30px; padding-bottom: 20px; }
+.page-btn { padding: 8px 14px; border-radius: 8px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); font-weight: 600; cursor: pointer; transition: 0.2s; }
+.page-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+.page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (max-width: 992px) {
+    .service-layout { flex-direction: column; }
+    .sticky-sidebar { width: 100%; position: static; height: auto; margin-bottom: 15px; }
+    .sticky-header { top: 60px; } /* Mobilde navbar daha dar */
+}

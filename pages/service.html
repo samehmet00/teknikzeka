@@ -2,10 +2,9 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    
-    <!-- Mobil Uygulama (PWA) Etiketleri -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4f46e5">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TeknikZeka">
@@ -20,68 +19,65 @@
 
     <nav class="navbar">
         <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span> <span style="font-size: 0.9rem; color: #EF4444;">(Servis)</span></a>
-        
         <div style="display: flex; gap: 15px; align-items: center; margin-left: auto;">
-            
             <a href="notifications.html" class="nav-icon-btn" style="position:relative; text-decoration:none; font-size: 1.4rem; padding-top: 5px;" title="Bildirimler">
                 🔔
                 <span id="noti-badge" style="position:absolute; top:0px; right:-5px; background:#EF4444; color:white; border-radius:50%; width: 18px; height: 18px; font-size:0.75rem; font-weight:bold; display:none; align-items:center; justify-content:center;">0</span>
             </a>
-
-            <div class="nav-actions-pill" id="nav-auth-menu">
-                </div>
-            
+            <div class="nav-actions-pill" id="nav-auth-menu"></div>
         </div>
     </nav>
 
-    <section class="service-container" style="margin-top: 100px;">
+    <!-- YENİ DÜZEN: service-layout -->
+    <section class="service-layout">
         
-        <aside class="filter-sidebar ticket-box">
-            <h3 style="margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">Filtrele</h3>
+        <!-- SOL MENÜ: SABİTLENDİ -->
+        <aside class="sticky-sidebar ticket-box" style="margin-bottom: 0;">
+            <h3 style="margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; color: var(--text-main);">Filtrele</h3>
             
             <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light);">Kategori</label>
-            <select id="filter-type">
-                <option value="Tümü">Tümü</option>
-            </select>
+            <select id="filter-type" class="premium-input" style="width: 100%; margin-bottom: 15px; padding: 10px;"><option value="Tümü">Tümü</option></select>
 
             <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light);">Marka</label>
-            <select id="filter-brand" disabled>
-                <option value="Tümü">Önce Kategori Seçin</option>
-            </select>
+            <select id="filter-brand" disabled class="premium-input" style="width: 100%; margin-bottom: 15px; padding: 10px;"><option value="Tümü">Önce Kategori Seçin</option></select>
 
             <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light);">Model</label>
-            <select id="filter-model" disabled>
-                <option value="Tümü">Önce Marka Seçin</option>
-            </select>
+            <select id="filter-model" disabled class="premium-input" style="width: 100%; margin-bottom: 15px; padding: 10px;"><option value="Tümü">Önce Marka Seçin</option></select>
 
-            <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light); margin-top: 1rem;">İşlem Tipi</label>
-            <select id="filter-sale">
+            <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light);">İşlem Tipi</label>
+            <select id="filter-sale" class="premium-input" style="width: 100%; margin-bottom: 15px; padding: 10px;">
                 <option value="Tümü">Tümü (Tamir ve Satış)</option>
                 <option value="Sadece Satılık">Sadece Satılık Cihazlar</option>
                 <option value="Sadece Tamir">Sadece Tamir Talepleri</option>
             </select>
 
-            <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light); margin-top: 1rem;">Tarih Sıralaması</label>
-            <select id="filter-date">
+            <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light);">Tarih Sıralaması</label>
+            <select id="filter-date" class="premium-input" style="width: 100%; padding: 10px;">
                 <option value="newest">En Yeni Eklenenler</option>
                 <option value="oldest">En Eski Eklenenler</option>
             </select>
         </aside>
 
-        <main class="grid-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2 style="color: var(--text-main);">Güncel Arıza Kayıtları</h2>
-                <span id="ticket-count" style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold;">0 Kayıt</span>
+        <!-- SAĞ İÇERİK -->
+        <main class="content-area">
+            
+            <!-- BAŞLIK VE SEKME: SABİTLENDİ -->
+            <div class="sticky-header">
+                <div class="header-top-row">
+                    <h2>Güncel Arıza Kayıtları</h2>
+                    <span id="ticket-count">0 Kayıt</span>
+                </div>
+                <div class="tab-container">
+                    <button class="tab-btn active" onclick="switchServiceTab('havuz', event)">Tüm Kayıtlar</button>
+                    <button class="tab-btn" onclick="switchServiceTab('aktif', event)">Aktif İşlerim <span class="tab-badge" id="service-active-badge" style="display:none;">0</span></button>
+                </div>
             </div>
             
-            <!-- YENİ SEKMELİ YAPI (Servis) -->
-            <div class="tab-container" style="margin-bottom: 10px;">
-                <button class="tab-btn active" onclick="switchServiceTab('havuz', event)">Tüm Kayıtlar</button>
-                <button class="tab-btn" onclick="switchServiceTab('aktif', event)">Aktif İşlerim <span class="tab-badge" id="service-active-badge" style="display:none;">0</span></button>
-            </div>
-            
+            <!-- KAYITLARIN LİSTELENDİĞİ ALAN -->
             <div id="service-ticket-list" class="ticket-list-view">
+                <!-- Kayıtlar buraya gelecek -->
             </div>
+            
         </main>
 
     </section>
@@ -89,30 +85,5 @@
     <script type="module" src="../js/firebase-config.js"></script>
     <script type="module" src="../js/service.js"></script>
     <script type="module" src="../js/theme-manager.js"></script>
-
-    <!-- SERVİS İÇİN TAB SCRİPTİ -->
-    <script>
-        window.currentServiceTab = 'havuz'; 
-        
-        window.switchServiceTab = (tabName, event) => {
-            window.currentServiceTab = tabName;
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            if(event) event.target.classList.add('active');
-            
-            const allTickets = document.querySelectorAll('.ticket-wrapper');
-            allTickets.forEach(wrapper => {
-                const htmlContent = wrapper.innerHTML;
-                // Eğer kartta "Bana Atandı" gibi bir ifade veya buton gizlenmişse, bu aktif bir iştir
-                const isMyActiveJob = htmlContent.includes('track.html') || htmlContent.includes('Süreci Yönet');
-                
-                if (tabName === 'aktif') {
-                    wrapper.style.display = isMyActiveJob ? 'block' : 'none';
-                } else {
-                    wrapper.style.display = 'block'; 
-                }
-            });
-        };
-    </script>
 </body>
 </html>

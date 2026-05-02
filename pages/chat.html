@@ -23,15 +23,15 @@
             <div class="chat-header-info">
                 <div class="chat-avatar" id="chat-avatar-letter">?</div>
                 <div>
-                    <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);" id="chat-partner-name">Yükleniyor...</h3>
-                    <span style="font-size: 0.8rem; color: var(--gray-light);" id="chat-ticket-info">...</span>
+                    <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);" id="chat-partner-name">Bağlanıyor...</h3>
+                    <span style="font-size: 0.8rem; color: var(--gray-light);" id="chat-ticket-info">Bekleyiniz</span>
                 </div>
             </div>
         </div>
 
         <!-- Mesajların Geleceği Alan -->
         <div class="chat-messages" id="chat-messages">
-            <!-- Mesajlar JS ile buraya basılacak -->
+            <!-- JS veya Cache'ten buraya basılacak -->
         </div>
 
         <!-- Mesaj Yazma Alanı -->
@@ -42,6 +42,33 @@
             </button>
         </form>
     </div>
+
+    <!-- HIZLI YÜKLEME VE KULLANICI ARAYÜZÜ (CACHE) -->
+    <script>
+        // URL'den Arıza/İhale ID'sini al
+        const urlParams = new URLSearchParams(window.location.search);
+        const ticketId = urlParams.get('ticketId');
+        
+        // Cache verilerini anında ekrana bas
+        if (ticketId) {
+            const cachedPartnerName = localStorage.getItem(`tz_chat_partner_${ticketId}`);
+            const cachedTicketInfo = localStorage.getItem(`tz_chat_info_${ticketId}`);
+            const cachedAvatar = localStorage.getItem(`tz_chat_avatar_${ticketId}`);
+            const cachedMessagesHtml = localStorage.getItem(`tz_chat_msgs_${ticketId}`);
+            
+            if (cachedPartnerName) document.getElementById('chat-partner-name').innerText = cachedPartnerName;
+            if (cachedTicketInfo) document.getElementById('chat-ticket-info').innerText = cachedTicketInfo;
+            if (cachedAvatar) document.getElementById('chat-avatar-letter').innerText = cachedAvatar;
+            
+            const chatMessagesBox = document.getElementById('chat-messages');
+            if (cachedMessagesHtml) {
+                chatMessagesBox.innerHTML = cachedMessagesHtml;
+                chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+            } else {
+                chatMessagesBox.innerHTML = '<div style="text-align:center; color:var(--gray-light); margin-top:20px; font-size:0.9rem;">Sohbet yükleniyor... ⏳</div>';
+            }
+        }
+    </script>
 
     <script type="module" src="../js/firebase-config.js"></script>
     <script type="module" src="../js/chat.js"></script>

@@ -10,7 +10,6 @@ const partnerNameEl = document.getElementById('chat-partner-name');
 const ticketInfoEl = document.getElementById('chat-ticket-info');
 const avatarLetterEl = document.getElementById('chat-avatar-letter');
 
-// URL'den Arıza/İhale ID'sini al (Örn: chat.html?ticketId=xyz123)
 const urlParams = new URLSearchParams(window.location.search);
 const ticketId = urlParams.get('ticketId');
 
@@ -27,52 +26,62 @@ onAuthStateChanged(auth, async (user) => {
             return;
         }
 
-        // Cihaz (Ticket) Bilgilerini Çek
+        loadTicketInfo(); 
+    } else {
+        window.location.href = "login.html";
+    }
+});
+
+async function loadTicketInfo() {
+    try {
         const ticketRef = doc(db, "tickets", ticketId);
         const ticketSnap = await getDoc(ticketRef);
         
         if (ticketSnap.exists()) {
             currentTicket = ticketSnap.data();
             
-            // Eğer ben Müşteriysem karşımdaki Servistir.
-            // Eğer ben Servissem karşımdaki Müşteridir.
             const isCustomer = currentUser.email === currentTicket.userEmail;
             const partnerEmail = isCustomer ? currentTicket.assignedService : currentTicket.userEmail;
             
-            // Üst Bilgileri Doldur
-            partnerNameEl.innerText = partnerEmail.split('@')[0]; // İsim olarak mailin ilk kısmını al
-            avatarLetterEl.innerText = partnerEmail.charAt(0).toUpperCase();
-            ticketInfoEl.innerText = `${currentTicket.deviceBrand} ${currentTicket.deviceModel} İşlemi`;
+            const partnerName = partnerEmail.split('@')[0];
+            const avatarL = partnerEmail.charAt(0).toUpperCase();
+            const tInfo = `${currentTicket.deviceBrand} ${currentTicket.deviceModel} İşlemi`;
 
-            // Gerçek Zamanlı Mesaj Dinleyici (Realtime)
+            partnerNameEl.innerText = partnerName;
+            avatarLetterEl.innerText = avatarL;
+            ticketInfoEl.innerText = tInfo;
+
+            // Header bilgisini hafızaya al ki bir dahaki girişte anında çıksın
+            localStorage.setItem(`tz_chat_partner_${ticketId}`, partnerName);
+            localStorage.setItem(`tz_chat_info_${ticketId}`, tInfo);
+            localStorage.setItem(`tz_chat_avatar_${ticketId}`, avatarL);
+
             listenForMessages();
-        } else {
-            alert("Cihaz kaydı bulunamadı.");
         }
-    } else {
-        window.location.href = "login.html";
+    } catch (e) {
+        console.log("Bağlantı hatası:", e);
     }
-});
+}
 
 function listenForMessages() {
-    // Sadece bu ticketId'ye ait mesajları, tarihe göre sıralı çek
     const q = query(
         collection(db, "messages"), 
         where("ticketId", "==", ticketId),
-        orderBy("createdAt", "asc") // Eskiden yeniye sırala
+        orderBy("createdAt", "asc")
     );
 
     onSnapshot(q, (snapshot) => {
-        chatMessagesBox.innerHTML = ''; // Temizle
+        chatMessagesBox.innerHTML = ''; 
         
         if (snapshot.empty) {
             chatMessagesBox.innerHTML = '<div style="text-align:center; color:var(--gray-light); margin-top:20px; font-size:0.9rem;">Mesajlaşma başlatıldı. İlk mesajı siz gönderin! 👋</div>';
             return;
         }
 
+        let allHtml = "";
+
         snapshot.forEach((doc) => {
             const msgData = doc.data();
-            // Mesaj benden mi başkasından mı?
             const isMe = msgData.senderEmail === currentUser.email;
             
             let timeStr = "";
@@ -81,51 +90,44 @@ function listenForMessages() {
                 timeStr = date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
             }
 
-            const div = document.createElement('div');
-            div.className = `msg-bubble ${isMe ? 'msg-me' : 'msg-other'}`;
-            div.innerHTML = `
-                ${msgData.text}
-                <span class="msg-time">${timeStr}</span>
+            allHtml += `
+                <div class="msg-bubble ${isMe ? 'msg-me' : 'msg-other'}">
+                    ${msgData.text}
+                    <span class="msg-time">${timeStr}</span>
+                </div>
             `;
-            chatMessagesBox.appendChild(div);
         });
 
-        // Yeni mesaj gelince otomatik en alta kaydır
+        chatMessagesBox.innerHTML = allHtml;
         chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+        
+        // Mesaj geçmişini hafızaya al (Cache)
+        localStorage.setItem(`tz_chat_msgs_${ticketId}`, allHtml);
     });
 }
 
-// Mesaj Gönderme
 chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const text = msgInput.value.trim();
     if (!text || !currentUser || !currentTicket) return;
 
-    msgInput.value = ''; // Kutuyu hemen boşalt
+    msgInput.value = ''; 
     msgInput.focus();
 
     try {
-        await addDoc(collection(db, "messages"), {
-            ticketId: ticketId,
-            senderEmail: currentUser.email,
-            text: text,
-            createdAt: serverTimestamp()
-        });
+        await addDoc(collection(db, "messages"), { ticketId: ticketId, senderEmail: currentUser.email, text: text, createdAt: serverTimestamp() });
         
-        // Karşı Tarafa Firebase Bildirimi de Gönderelim! (Zile düşsün)
         const isCustomer = currentUser.email === currentTicket.userEmail;
         const receiverEmail = isCustomer ? currentTicket.assignedService : currentTicket.userEmail;
         
         await addDoc(collection(db, "notifications"), { 
             userEmail: receiverEmail, 
-            message: `💬 Yeni bir mesajınız var: "${text.substring(0, 20)}..."`, 
+            message: `💬 Yeni mesaj: "${text.substring(0, 20)}..."`, 
             link: `chat.html?ticketId=${ticketId}`, 
             read: false, 
             createdAt: serverTimestamp() 
         });
-
     } catch (error) {
-        console.error("Mesaj gönderilirken hata:", error);
         alert("Mesaj gönderilemedi, lütfen internetinizi kontrol edin.");
     }
 });
