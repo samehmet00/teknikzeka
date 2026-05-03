@@ -4,10 +4,6 @@ import { collection, addDoc, serverTimestamp, query, where, onSnapshot, doc, upd
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { deviceData } from './deviceData.js';
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('../sw.js').then(() => console.log("PWA Aktif!"));
-}
-
 const keyPart1 = "gsk_FrBvhp1olAlq5nrdZ1IqWGdyb"; 
 const keyPart2 = "3FYPc8T04HcYnTBDJWMbjkTbFMF";
 const GROQ_API_KEY = keyPart1+keyPart2; 
@@ -21,16 +17,57 @@ const ticketMsg = document.getElementById('ticket-msg');
 const ticketList = document.getElementById('ticket-list');
 const navAuthMenu = document.getElementById('nav-auth-menu');
 
-// --- MOBİL MENÜ ---
-const menuBtn = document.getElementById('left-menu-btn');
-const sidebar = document.getElementById('left-sidebar');
-if (menuBtn && sidebar) {
-    menuBtn.addEventListener('click', (e) => { e.stopPropagation(); sidebar.classList.toggle('open'); });
-}
-document.addEventListener('click', (e) => {
-    if (sidebar && sidebar.classList.contains('open') && !sidebar.contains(e.target)) sidebar.classList.remove('open'); 
-});
+// --- 1. MENÜ ÇİZİM FONKSİYONU (Hem Cache Hem Firebase kullanır) ---
+const renderAuthMenu = (username) => {
+    if (!navAuthMenu) return;
+    
+    navAuthMenu.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="profile-dropdown" id="profile-dropdown-container">
+                <span class="user-name-text" style="color: var(--text-main); font-weight: bold; font-size: 1rem;">👤 ${username}</span>
+                <button class="three-dots-btn" title="Menü">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+                </button>
+                
+                <div class="profile-dropdown-content">
+                    <a href="dashboard.html">Müşteri Paneli</a>
+                    <a href="profile.html">Profilim</a>
+                    <a href="settings.html">Ayarlar</a>
+                    <a href="chats.html">Mesajlar</a>
+                </div>
+            </div>
+            
+            <button id="home-logout-btn" class="logout-icon-btn" title="Sistemden Çıkış">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </button>
+        </div>
+    `;
 
+    // Dropdown olayları
+    const dropdownContainer = document.getElementById('profile-dropdown-container');
+    if (dropdownContainer) dropdownContainer.addEventListener('click', (e) => { e.stopPropagation(); dropdownContainer.classList.toggle('open'); });
+    document.addEventListener('click', () => { if (dropdownContainer) dropdownContainer.classList.remove('open'); });
+
+    // Çıkış Yapma
+    const logoutBtn = document.getElementById('home-logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => { 
+            e.stopPropagation(); 
+            localStorage.removeItem('tz_customer_cache');
+            localStorage.removeItem('tz_customer_tickets_cache');
+            signOut(auth).then(() => { window.location.href = "login.html"; }); 
+        });
+    }
+};
+
+// --- 2. HIZLI YÜKLEME (CACHE) TETİKLEYİCİSİ ---
+// Sayfa açılır açılmaz hafızadaki kullanıcı adını alıp menüyü çizer
+const cachedUser = JSON.parse(localStorage.getItem('tz_customer_cache'));
+if (cachedUser && cachedUser.username) {
+    renderAuthMenu(cachedUser.username);
+}
+
+// --- KATEGORİ SİSTEMİ ---
 const initCategories = () => {
     if(!deviceTypeInput) return;
     deviceTypeInput.innerHTML = '<option value="">Cihaz Kategorisi Seçin</option>';
@@ -85,6 +122,7 @@ function formatAIReport(aiText) {
     `;
 }
 
+// --- YENİ KAYIT ---
 if(ticketForm) {
     ticketForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -198,16 +236,6 @@ window.deleteTicket = async (ticketId, event) => {
     }
 };
 
-window.clearNotifications = async () => {
-    if(!confirm("Tüm bildirim geçmişinizi kalıcı olarak silmek istediğinize emin misiniz?")) return;
-    try {
-        const q = query(collection(db, "notifications"), where("userEmail", "==", auth.currentUser.email));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach(async (document) => await deleteDoc(doc(db, "notifications", document.id)));
-        alert("Tüm bildirimler başarıyla temizlendi!");
-    } catch (error) { alert("Bir hata oluştu."); }
-};
-
 window.selectService = async (ticketId, serviceEmail, event) => {
     if(event) event.stopPropagation();
     const cargoCode = generateCargoCode();
@@ -234,28 +262,40 @@ window.acceptOffer = async (ticketId, serviceEmail, price, event) => {
     }
 };
 
-// --- MÜŞTERİ PANELİ AUTH ---
+// --- FİREBASE AUTH VE VERİ YÜKLEME ---
 onAuthStateChanged(auth, async (user) => {
     if (user) {
+        // Gerçek kullanıcı adını Firebase'den al
+        const username = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+        
+        // Rol Kontrolü
         const userDoc = await getDoc(doc(db, "users", user.uid));
-        if(userDoc.exists() && userDoc.data().role === "servis") { window.location.href = "service.html"; return; }
+        if(userDoc.exists() && userDoc.data().role === "servis") { 
+            window.location.href = "service.html"; 
+            return; 
+        }
 
+        // Cache'i gerçek isimle güncelle ve menüyü yeniden çiz
+        localStorage.setItem('tz_customer_cache', JSON.stringify({ username }));
+        renderAuthMenu(username);
+
+        // Bildirim Kontrolü
         const notiQ = query(collection(db, "notifications"), where("userEmail", "==", user.email), where("read", "==", false));
         onSnapshot(notiQ, (snapshot) => {
             const badge = document.getElementById('noti-badge');
             if(badge) { if(snapshot.empty) badge.style.display = 'none'; else { badge.style.display = 'flex'; badge.innerText = snapshot.size; } }
         });
 
+        // Kayıtları (Biletleri) Çekme
         if(ticketList) {
             const q = query(collection(db, "tickets"), where("userEmail", "==", user.email));
             onSnapshot(q, (querySnapshot) => {
-                ticketList.innerHTML = ''; 
+                let generatedHtml = ''; 
                 
                 if(querySnapshot.empty) { 
-                    const emptyMsg = '<p style="color: var(--gray-light); text-align:center;">Henüz bir arıza kaydınız bulunmuyor.</p>';
-                    ticketList.innerHTML = emptyMsg; 
-                    // BOŞ DURUMU HAFIZAYA KAYDET
-                    localStorage.setItem('tz_customer_tickets_cache', emptyMsg);
+                    generatedHtml = '<p style="color: var(--gray-light); text-align:center;">Henüz bir arıza kaydınız bulunmuyor.</p>';
+                    ticketList.innerHTML = generatedHtml; 
+                    localStorage.setItem('tz_customer_tickets_cache', generatedHtml);
                     return; 
                 }
 
@@ -335,32 +375,35 @@ onAuthStateChanged(auth, async (user) => {
                     }
 
                     const statusClass = data.status === 'Bekliyor' ? 'status-bekliyor' : 'status-onaylandi';
-                    const ticketWrapper = document.createElement('div');
-                    ticketWrapper.className = 'ticket-wrapper';
-
-                    ticketWrapper.innerHTML = `
-                        <div class="delete-action-btn" onclick="window.deleteTicket('${ticketId}', event)" title="Kaydı Sil"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></div>
-                        <div class="modern-ticket-card" onclick="window.toggleSwipe(event, this)">
-                            <div class="modern-ticket-header">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <span style="font-size: 1.8rem; background: rgba(79, 70, 229, 0.1); border-radius: 12px; padding: 5px;">📱</span>
-                                    <div>
-                                        <h4 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">${deviceInfo}</h4>
-                                        <span style="font-size: 0.8rem; color: #94A3B8;">📅 ${dateStr} | Kayıt ID: #${ticketId.slice(0,6).toUpperCase()}</span>
+                    
+                    // ÖNEMLİ: ticketWrapper yapısı içindeki her kart HTML'e dönüşmeli ki Cache'e düz metin olarak kaydedilebilsin.
+                    generatedHtml += `
+                        <div class="ticket-wrapper">
+                            <div class="delete-action-btn" onclick="window.deleteTicket('${ticketId}', event)" title="Kaydı Sil"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></div>
+                            <div class="modern-ticket-card" onclick="window.toggleSwipe(event, this)">
+                                <div class="modern-ticket-header">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-size: 1.8rem; background: rgba(79, 70, 229, 0.1); border-radius: 12px; padding: 5px;">📱</span>
+                                        <div>
+                                            <h4 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">${deviceInfo}</h4>
+                                            <span style="font-size: 0.8rem; color: #94A3B8;">📅 ${dateStr} | Kayıt ID: #${ticketId.slice(0,6).toUpperCase()}</span>
+                                        </div>
                                     </div>
+                                    <span class="status-pill ${statusClass}">${data.status}</span>
                                 </div>
-                                <span class="status-pill ${statusClass}">${data.status}</span>
+                                <div><p style="color: var(--text-main); font-size: 0.95rem;"><strong>Şikayet Özeti:</strong> ${data.description}</p></div>
+                                ${formatAIReport(data.aiReport)}
+                                ${bidHtml}
                             </div>
-                            <div><p style="color: var(--text-main); font-size: 0.95rem;"><strong>Şikayet Özeti:</strong> ${data.description}</p></div>
-                            ${formatAIReport(data.aiReport)}
-                            ${bidHtml}
                         </div>
                     `;
-                    ticketList.appendChild(ticketWrapper);
                 });
                 
-                // === YENİ EKLENEN KISIM: TÜM BİLETLERİ HAFIZAYA KAYDET ===
-                localStorage.setItem('tz_customer_tickets_cache', ticketList.innerHTML);
+                // HTML'i Ekrana Bas
+                ticketList.innerHTML = generatedHtml;
+                
+                // HTML'i Önbelleğe (Cache) Kaydet
+                localStorage.setItem('tz_customer_tickets_cache', generatedHtml);
 
                 let activeCount = myTickets.filter(t => t.assignedService !== "").length;
                 const activeBadge = document.getElementById('active-badge');
@@ -373,6 +416,8 @@ onAuthStateChanged(auth, async (user) => {
             });
         }
     } else {
+        localStorage.removeItem('tz_customer_cache');
+        localStorage.removeItem('tz_customer_tickets_cache');
         window.location.href = "login.html";
     }
 });

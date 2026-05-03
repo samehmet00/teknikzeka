@@ -3,6 +3,12 @@ import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+// --- GLOBAL BUTON DEĞİŞKENLERİ ---
+const authMenu = document.getElementById('dynamic-auth-menu');
+const heroBtnAuth = document.getElementById('hero-action-btn');
+const fabBtnAuth = document.getElementById('fab-action-btn');
+const sellBtnAuth = document.getElementById('sell-action-btn'); // BUNU EKLEDİM!
+
 document.addEventListener("DOMContentLoaded", function() {
     // Mobil Menü
     const mobileBtn = document.getElementById('mobile-menu-btn');
@@ -27,10 +33,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // --- SİNEMATİK YAZI VE EMOJİ ANİMASYON MOTORU (Çakışma Giderildi) ---
+    // --- SİNEMATİK YAZI ANİMASYONU ---
     const sentences = document.querySelectorAll(".cinematic-sentence");
     const triggers = document.querySelectorAll(".trigger");
-    
     const centerObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             const stepIndex = entry.target.getAttribute("data-step"); 
@@ -50,10 +55,8 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }, { root: null, rootMargin: "-45% 0px -45% 0px", threshold: 0 });
-    
     triggers.forEach(trigger => centerObserver.observe(trigger));
 
-    // Normal Kutu Açılma Efektleri
     const reveals = document.querySelectorAll(".reveal");
     const revealObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => { 
@@ -63,24 +66,19 @@ document.addEventListener("DOMContentLoaded", function() {
             } 
         });
     }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
-    
     reveals.forEach(reveal => revealObserver.observe(reveal));
 
-    // --- SAYAÇ (COUNTER) ANİMASYON MOTORU ---
+    // --- SAYAÇ (COUNTER) ANİMASYONU ---
     const counters = document.querySelectorAll('.counter-number');
     let counted = false;
-
     const counterObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting && !counted) {
-                counted = true; // Sadece bir kere saysın diye
-                
+                counted = true; 
                 counters.forEach(counter => {
                     const updateCount = () => {
                         const target = +counter.getAttribute('data-target');
                         const count = +counter.innerText;
-                        
-                        // Artış hızını belirler (Sayı büyüdükçe daha hızlı artar)
                         const inc = target / 50; 
                         
                         if (count < target) {
@@ -94,18 +92,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             }
         });
-    }, { threshold: 0.5 }); // Kutu ekranda yarı yarıya göründüğünde başlar
-
+    }, { threshold: 0.5 }); 
     const sellSection = document.getElementById('sell-device');
     if(sellSection) counterObserver.observe(sellSection);
 });
 
-// --- AUTH (GİRİŞ/ÇIKIŞ VE MENÜ) İŞLEMLERİ ---
-const authMenu = document.getElementById('dynamic-auth-menu');
-const heroBtnAuth = document.getElementById('hero-action-btn');
-const fabBtnAuth = document.getElementById('fab-action-btn');
 
-// YENİ: Ekranda yavaş yüklenmeyi engellemek için LocalStorage'dan anında okuma
+// --- AUTH (GİRİŞ/ÇIKIŞ VE YÖNLENDİRME) İŞLEMLERİ ---
+
+// YENİ: Ekranda yavaş yüklenmeyi engellemek için LocalStorage'dan okuma
 const cachedUser = JSON.parse(localStorage.getItem('tz_index_cache'));
 if (cachedUser) {
     renderAuthUI(cachedUser.username, cachedUser.isTech);
@@ -114,18 +109,12 @@ if (cachedUser) {
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         const username = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]; 
-        
-        // Veritabanından rolü çek
         const userDoc = await getDoc(doc(db, "users", user.uid));
         const isTech = userDoc.exists() && userDoc.data().role === "servis";
         
-        // Yeni bilgileri hafızaya kaydet
         localStorage.setItem('tz_index_cache', JSON.stringify({ username, isTech }));
-        
-        // Arayüzü güncelle
         renderAuthUI(username, isTech);
     } else {
-        // Çıkış yapılmışsa hafızayı temizle ve standart butonları göster
         localStorage.removeItem('tz_index_cache');
         renderGuestUI();
     }
@@ -158,9 +147,7 @@ function renderAuthUI(username, isTech) {
         `;
         
         const dropdownContainer = document.getElementById('profile-dropdown-container');
-        if (dropdownContainer) {
-            dropdownContainer.addEventListener('click', (e) => { e.stopPropagation(); dropdownContainer.classList.toggle('open'); });
-        }
+        if (dropdownContainer) dropdownContainer.addEventListener('click', (e) => { e.stopPropagation(); dropdownContainer.classList.toggle('open'); });
         document.addEventListener('click', () => { if (dropdownContainer) dropdownContainer.classList.remove('open'); });
 
         const logoutBtn = document.getElementById('home-logout-btn');
@@ -173,6 +160,7 @@ function renderAuthUI(username, isTech) {
         }
     }
 
+    // 1. Ana Butonların (Hero ve Fab) Giriş Yapmış Hali
     const btnContent = `
         <div class="btn-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
@@ -182,11 +170,27 @@ function renderAuthUI(username, isTech) {
             <span class="btn-subtitle">Panelinize güvenli erişim</span>
         </div>
     `;
-    if (heroBtnAuth) { heroBtnAuth.innerHTML = btnContent; heroBtnAuth.href = targetPage; heroBtnAuth.className = "modern-dual-btn btn-blue"; }
+    if (heroBtnAuth) { heroBtnAuth.innerHTML = btnContent; heroBtnAuth.href = targetPage; }
+
+    // 2. Cihaz Sat Butonunun Giriş Yapmış Hali
+    if (sellBtnAuth) { 
+        sellBtnAuth.href = targetPage; 
+        sellBtnAuth.innerHTML = `
+            <div class="btn-icon">
+                <span style="font-size: 1.5rem; font-weight: 800;">₺</span>
+            </div>
+            <div class="btn-text-wrapper">
+                <span class="btn-title">Panelden İlan Ver</span>
+                <span class="btn-subtitle">İşlemlerinize giderek satışı başlatın</span>
+            </div>
+        `;
+    }
 }
 
 function renderGuestUI() {
     if (authMenu) authMenu.innerHTML = `<a href="pages/login.html" class="nav-login-btn">Giriş Yap</a>`;
+    
+    // 1. Ana Butonların (Hero ve Fab) Çıkış Yapmış Hali
     const defaultContent = `
         <div class="btn-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
@@ -196,5 +200,19 @@ function renderGuestUI() {
             <span class="btn-subtitle">Yapay zekâ ile anında teşhis</span>
         </div>
     `;
-    if (heroBtnAuth) { heroBtnAuth.innerHTML = defaultContent; heroBtnAuth.href = "pages/login.html"; heroBtnAuth.className = "modern-dual-btn btn-blue"; }
+    if (heroBtnAuth) { heroBtnAuth.innerHTML = defaultContent; heroBtnAuth.href = "pages/login.html"; }
+
+    // 2. Cihaz Sat Butonunun Çıkış Yapmış Hali
+    if (sellBtnAuth) {
+        sellBtnAuth.href = "pages/login.html";
+        sellBtnAuth.innerHTML = `
+            <div class="btn-icon">
+                <span style="font-size: 1.5rem; font-weight: 800;">₺</span>
+            </div>
+            <div class="btn-text-wrapper">
+                <span class="btn-title">Cihazıma Fiyat Al</span>
+                <span class="btn-subtitle">Servislerden anında nakit teklifi</span>
+            </div>
+        `;
+    }
 }
