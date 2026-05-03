@@ -7,7 +7,7 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-
 const authMenu = document.getElementById('dynamic-auth-menu');
 const heroBtnAuth = document.getElementById('hero-action-btn');
 const fabBtnAuth = document.getElementById('fab-action-btn');
-const sellBtnAuth = document.getElementById('sell-action-btn'); // BUNU EKLEDİM!
+const sellBtnAuth = document.getElementById('sell-action-btn');
 
 document.addEventListener("DOMContentLoaded", function() {
     // Mobil Menü
@@ -97,10 +97,9 @@ document.addEventListener("DOMContentLoaded", function() {
     if(sellSection) counterObserver.observe(sellSection);
 });
 
-
 // --- AUTH (GİRİŞ/ÇIKIŞ VE YÖNLENDİRME) İŞLEMLERİ ---
 
-// YENİ: Ekranda yavaş yüklenmeyi engellemek için LocalStorage'dan okuma
+// Ekranda yavaş yüklenmeyi engellemek için LocalStorage'dan okuma
 const cachedUser = JSON.parse(localStorage.getItem('tz_index_cache'));
 if (cachedUser) {
     renderAuthUI(cachedUser.username, cachedUser.isTech);
@@ -120,9 +119,11 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+// GİRİŞ YAPILMIŞ HALİ (Müşteri veya Servis)
 function renderAuthUI(username, isTech) {
     const targetPage = isTech ? "pages/service.html" : "pages/dashboard.html"; 
     
+    // Navbar Profil Menüsü
     if (authMenu) {
         authMenu.innerHTML = `
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -160,19 +161,30 @@ function renderAuthUI(username, isTech) {
         }
     }
 
-    // 1. Ana Butonların (Hero ve Fab) Giriş Yapmış Hali
-    const btnContent = `
-        <div class="btn-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        </div>
-        <div class="btn-text-wrapper">
-            <span class="btn-title">İşlemlerime Git</span>
-            <span class="btn-subtitle">Panelinize güvenli erişim</span>
-        </div>
-    `;
-    if (heroBtnAuth) { heroBtnAuth.innerHTML = btnContent; heroBtnAuth.href = targetPage; }
+    // 1. Ana Hero Butonu
+    if (heroBtnAuth) { 
+        heroBtnAuth.href = targetPage; 
+        heroBtnAuth.innerHTML = `
+            <div class="btn-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <div class="btn-text-wrapper">
+                <span class="btn-title">İşlemlerime Git</span>
+                <span class="btn-subtitle">Panelinize güvenli erişim</span>
+            </div>
+        `;
+    }
 
-    // 2. Cihaz Sat Butonunun Giriş Yapmış Hali
+    // 2. Kayan Buton (FAB) YENİ EKLENDİ!
+    if (fabBtnAuth) {
+        fabBtnAuth.href = targetPage;
+        fabBtnAuth.innerHTML = `
+            <span class="btn-text">İşlemlerime Git</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        `;
+    }
+
+    // 3. Cihaz Sat Butonu
     if (sellBtnAuth) { 
         sellBtnAuth.href = targetPage; 
         sellBtnAuth.innerHTML = `
@@ -187,22 +199,34 @@ function renderAuthUI(username, isTech) {
     }
 }
 
+// ÇIKIŞ YAPILMIŞ HALİ (Misafir Ekranı)
 function renderGuestUI() {
     if (authMenu) authMenu.innerHTML = `<a href="pages/login.html" class="nav-login-btn">Giriş Yap</a>`;
     
-    // 1. Ana Butonların (Hero ve Fab) Çıkış Yapmış Hali
-    const defaultContent = `
-        <div class="btn-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        </div>
-        <div class="btn-text-wrapper">
-            <span class="btn-title">Arıza Kaydı Oluştur</span>
-            <span class="btn-subtitle">Yapay zekâ ile anında teşhis</span>
-        </div>
-    `;
-    if (heroBtnAuth) { heroBtnAuth.innerHTML = defaultContent; heroBtnAuth.href = "pages/login.html"; }
+    // 1. Ana Hero Butonu
+    if (heroBtnAuth) { 
+        heroBtnAuth.href = "pages/login.html"; 
+        heroBtnAuth.innerHTML = `
+            <div class="btn-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </div>
+            <div class="btn-text-wrapper">
+                <span class="btn-title">Arıza Kaydı Oluştur</span>
+                <span class="btn-subtitle">Yapay zekâ ile anında teşhis</span>
+            </div>
+        `;
+    }
 
-    // 2. Cihaz Sat Butonunun Çıkış Yapmış Hali
+    // 2. Kayan Buton (FAB) YENİ EKLENDİ!
+    if (fabBtnAuth) {
+        fabBtnAuth.href = "pages/login.html";
+        fabBtnAuth.innerHTML = `
+            <span class="btn-text">Hemen Arıza Kaydı Oluştur</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        `;
+    }
+
+    // 3. Cihaz Sat Butonu
     if (sellBtnAuth) {
         sellBtnAuth.href = "pages/login.html";
         sellBtnAuth.innerHTML = `
