@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    
+    <!-- Mobil Uygulama (PWA) Etiketleri -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TeknikZeka">
+    <link rel="manifest" href="../manifest.json">
+
+    <title>Geçmiş Arıza Kayıtlarım - TeknikZeka</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/app.css"> 
+</head>
+<body class="light-mode">
+
+    <nav class="navbar">
+        <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
+        
+        <div style="display: flex; gap: 15px; align-items: center; margin-left: auto;">
+            <a href="dashboard.html" class="nav-icon-btn" title="Yeni Kayıt Oluştur" style="font-size: 1.2rem; display:flex; align-items:center; justify-content:center; text-decoration:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </a>
+            <a href="notifications.html" class="nav-icon-btn" style="position:relative; text-decoration:none; font-size: 1.2rem; display:flex; align-items:center; justify-content:center;" title="Bildirimler">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span id="noti-badge" style="position:absolute; top:-5px; right:-5px; background:#EF4444; color:white; border-radius:50%; width: 18px; height: 18px; font-size:0.75rem; font-weight:bold; display:none; align-items:center; justify-content:center;">0</span>
+            </a>
+            
+            <div class="nav-actions-pill" id="nav-auth-menu"></div>
+        </div>
+    </nav>
+
+    <section class="app-container" style="padding-top: 100px; padding-bottom: 50px;">
+        <div class="app-wrapper">
+            <div class="premium-form-header" style="margin-bottom: 2rem;">
+                <div class="icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.4rem; color: var(--text-main); margin-bottom:0;">Geçmiş Arıza Kayıtlarım</h3>
+                    <p style="color: var(--gray-light); font-size: 0.9rem; margin:0;">Taleplerinizi ve servislerden gelen teklifleri buradan yönetebilirsiniz.</p>
+                </div>
+            </div>
+
+            <div class="ticket-list-container">
+                <div class="tab-container">
+                    <button class="tab-btn active" onclick="switchTab('all', event)">Tüm Kayıtlarım</button>
+                    <button class="tab-btn" onclick="switchTab('active', event)">Aktif İşlemlerim <span class="tab-badge" id="active-badge" style="display:none;">0</span></button>
+                </div>
+                
+                <div id="ticket-list">
+                    <!-- Kayıtlar buraya gelecek -->
+                </div>
+            </div>
+        </div>
+    <!-- RATING MODAL -->
+    <div id="rating-modal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index:9999; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:var(--card-bg); padding:2rem; border-radius:16px; width:90%; max-width:400px; box-shadow:0 10px 40px rgba(0,0,0,0.2); border: 1px solid var(--border-color);">
+            <h3 style="margin-top:0; color:var(--text-main);">Servisi Değerlendir</h3>
+            <p id="rating-service-name" style="color:var(--gray-light); font-size:0.9rem;">Bu servis deneyiminizi nasıl puanlarsınız?</p>
+            <div id="star-rating" style="display:flex; gap:10px; font-size:2.5rem; color:#ccc; cursor:pointer; margin:1rem 0; justify-content: center;">
+                <span data-val="1">★</span><span data-val="2">★</span><span data-val="3">★</span><span data-val="4">★</span><span data-val="5">★</span>
+            </div>
+            <textarea id="rating-comment" class="premium-input" placeholder="Deneyiminizi anlatın... (İsteğe bağlı)" style="width:100%; height:80px; margin-bottom:15px; resize:none; padding:10px; border-radius:8px; box-sizing: border-box;"></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button onclick="document.getElementById('rating-modal').style.display='none'" style="padding:8px 15px; background:transparent; border:1px solid var(--border-color); color:var(--text-main); border-radius:8px; cursor:pointer; font-weight:600;">İptal</button>
+                <button id="submit-rating-btn" style="padding:8px 15px; background:var(--primary); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">Gönder</button>
+            </div>
+        </div>
+    </div>
+
+    </section>
+
+    <!-- CACHE: Hızlı Yükleme Scripti -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const ticketList = document.getElementById('ticket-list');
+            const cachedTickets = localStorage.getItem('tz_customer_tickets_cache');
+            if (cachedTickets && ticketList) {
+                ticketList.innerHTML = cachedTickets;
+            } else if (ticketList) {
+                ticketList.innerHTML = '<p style="color: var(--gray-light); text-align: center; padding: 2rem;">Kayıtlarınız yükleniyor... ⏳</p>';
+            }
+        });
+    </script>
+
+    <!-- Ana Motorlar -->
+    <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/app.js"></script>
+    <script type="module" src="../js/tickets.js"></script>
+    <script type="module" src="../js/theme-manager.js"></script>
+</body>
+</html>

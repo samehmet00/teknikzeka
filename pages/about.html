@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4f46e5">
-    <meta name="mobile-web-app-capable" content="yes"> 
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TeknikZeka">
     <link rel="manifest" href="../manifest.json">
@@ -12,14 +13,21 @@
     <title>Hakkımızda - TeknikZeka</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
 
     <nav class="navbar">
         <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
-        
+
         <div class="nav-actions-pill">
-            <a href="../index.html" style="color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 5px;" title="Ana Sayfa">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <a href="../index.html"
+                style="color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 5px;"
+                title="Ana Sayfa">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
             </a>
             <div class="nav-divider"></div>
             <!-- Giriş yapılmışsa bu div'in içi JS ile dolacak -->
@@ -29,36 +37,51 @@
         </div>
     </nav>
 
-    <header class="about-hero">
-        <h1>Geleceğin Servis Ağı</h1>
-        <p>Yapay zekâ ve dijital dönüşümü bir araya getirerek, teknik onarım sektöründe şeffaf, hızlı ve güvenilir bir köprü inşa ediyoruz.</p>
+    <header class="about-hero" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(16, 185, 129, 0.08)); padding: 8rem 5% 5rem; text-align: center; border-radius: 0 0 50px 50px; margin-bottom: 4rem; border-bottom: 1px solid rgba(79, 70, 229, 0.1);">
+        <h1 style="font-size: 3.5rem; color: var(--text-main); margin-bottom: 1rem; font-weight: 800; letter-spacing: -1px;">Geleceğin <span style="color: var(--primary);">Servis Ağı</span></h1>
+        <p style="font-size: 1.25rem; color: var(--gray-light); max-width: 800px; margin: 0 auto; line-height: 1.6;">Yapay zekâ ve dijital dönüşümü bir araya getirerek, teknik onarım sektöründe şeffaf, hızlı ve güvenilir bir köprü inşa ediyoruz.</p>
     </header>
 
     <section class="about-container">
-        
+
         <div class="about-grid">
-            <div class="info-card">
-                <div class="info-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <div class="info-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 2.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='var(--primary)';" onmouseout="this.style.transform='none'; this.style.borderColor='var(--border-color)';">
+                <div class="info-icon" style="width: 60px; height: 60px; border-radius: 16px; background: rgba(79, 70, 229, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
                 </div>
-                <h2>Projenin Vizyonu</h2>
-                <p>TeknikZeka, geleneksel teknik servis süreçlerindeki zaman kaybını ve iletişim eksikliğini ortadan kaldırmak amacıyla tasarlanmış yenilikçi bir platformdur. Kullanıcıların teknik arızalarını kendi kelimeleriyle ifade etmesini sağlar ve <strong>Google Gemini AI</strong> modelini kullanarak saniyeler içinde donanımsal ön teşhis koyar.</p>
+                <h2 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">Projenin Vizyonu</h2>
+                <p style="color: var(--gray-light); line-height: 1.7;">TeknikZeka, geleneksel teknik servis süreçlerindeki zaman kaybını ve iletişim eksikliğini ortadan kaldırmak amacıyla tasarlanmış yenilikçi bir platformdur. Kullanıcıların teknik arızalarını kendi kelimeleriyle ifade etmesini sağlar ve <strong>Llama 3 70B (Groq AI)</strong> modelini kullanarak saniyeler içinde donanımsal ön teşhis koyar.</p>
             </div>
 
-            <div class="info-card">
-                <div class="info-icon" style="color: #10B981; background: rgba(16, 185, 129, 0.1);">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <div class="info-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 2.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.borderColor='#10B981';" onmouseout="this.style.transform='none'; this.style.borderColor='var(--border-color)';">
+                <div class="info-icon" style="width: 60px; height: 60px; border-radius: 16px; color: #10B981; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
                 </div>
-                <h2>Sistem Nasıl Çalışır?</h2>
-                <p>Oluşturulan yapay zekâ destekli biletler (tickets), sistemdeki yerel teknik servislere anında düşer. Servisler; arıza tipine, cihaz modeline ve onarım zorluğuna göre bu talepleri inceler. Onarabilecekleri veya satın alabilecekleri cihazlar için müşteriye doğrudan fiyat teklifi gönderirler. İhale usulü ile çalışan bu yapı, müşteriyi en hızlı ve şeffaf çözüme ulaştırır.</p>
+                <h2 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 1rem;">Sistem Nasıl Çalışır?</h2>
+                <p style="color: var(--gray-light); line-height: 1.7;">Oluşturulan yapay zekâ destekli biletler (tickets), sistemdeki yerel teknik servislere anında düşer. Servisler; arıza tipine, cihaz modeline ve onarım zorluğuna göre bu talepleri inceler. Onarabilecekleri veya satın alabilecekleri cihazlar için müşteriye doğrudan fiyat teklifi gönderirler. İhale usulü ile çalışan bu yapı, müşteriyi en hızlı ve şeffaf çözüme ulaştırır.</p>
             </div>
         </div>
 
-        <div class="dev-card">
-            <div class="dev-icon">🎓</div>
+        <div class="dev-card" style="margin-top: 3rem; background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), transparent); border: 1px solid var(--border-color); border-radius: 20px; padding: 3rem; display: flex; gap: 2rem; align-items: center;">
+            <div class="dev-icon" style="width: 80px; height: 80px; border-radius: 20px; background: linear-gradient(135deg, var(--primary), #818cf8); color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                </svg>
+            </div>
             <div class="dev-info">
-                <h3>Akademik Altyapı ve Geliştirici</h3>
-                <p>Bu platform, modern web teknolojileri (HTML5, CSS3, ES6 JavaScript) ve BaaS (Firebase) mimarisi kullanılarak sıfırdan kodlanmıştır. İnönü Üniversitesi Bilgisayar Mühendisliği Bölümü <strong>İnternet Programcılığı</strong> dersi projesi kapsamında, profesyonel standartlara (Production-Level) uygun olarak hayata geçirilmiştir.</p>
+                <h3 style="font-size: 1.8rem; color: var(--text-main); margin-bottom: 0.5rem; margin-top: 0;">Akademik Altyapı ve Geliştirici</h3>
+                <p style="color: var(--gray-light); line-height: 1.7; margin: 0;">Bu platform, modern web teknolojileri (HTML5, CSS3, ES6 JavaScript) ve BaaS (Firebase) mimarisi kullanılarak sıfırdan kodlanmıştır. İnönü Üniversitesi Bilgisayar Mühendisliği Bölümü <strong>İnternet Programcılığı</strong> dersi projesi kapsamında, profesyonel standartlara uygun olarak hayata geçirilmiştir.</p>
             </div>
         </div>
 
@@ -81,10 +104,10 @@
         // FİREBASE ARKA PLAN KONTROLÜ
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const username = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]; 
+                const username = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 const isTech = userDoc.exists() && userDoc.data().role === "servis";
-                
+
                 localStorage.setItem('tz_index_cache', JSON.stringify({ username, isTech }));
                 renderAuthUI(username, isTech);
             } else {
@@ -98,7 +121,7 @@
                 authMenu.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div class="profile-dropdown" id="profile-dropdown-container">
-                            <span class="user-name-text" style="color: var(--text-main); font-weight: bold; font-size: 1rem;">&nbsp;&nbsp;👤 ${username}</span>
+                            <span class="user-name-text" style="color: var(--text-main); font-weight: bold; font-size: 1rem; display: flex; align-items: center; gap: 5px;">&nbsp;&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${username}</span>
                             <button class="three-dots-btn" title="Menü">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                             </button>
@@ -115,17 +138,19 @@
                         </button>
                     </div>
                 `;
-                
+
                 const dropdownContainer = document.getElementById('profile-dropdown-container');
                 if (dropdownContainer) dropdownContainer.addEventListener('click', (e) => { e.stopPropagation(); dropdownContainer.classList.toggle('open'); });
                 document.addEventListener('click', () => { if (dropdownContainer) dropdownContainer.classList.remove('open'); });
 
                 const logoutBtn = document.getElementById('home-logout-btn');
-                if (logoutBtn) logoutBtn.addEventListener('click', (e) => { 
-                    e.stopPropagation(); localStorage.removeItem('tz_index_cache'); signOut(auth).then(() => { window.location.reload(); }); 
+                if (logoutBtn) logoutBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); localStorage.removeItem('tz_index_cache'); signOut(auth).then(() => { window.location.reload(); });
                 });
             }
         }
     </script>
+    <script type="module" src="../js/theme-manager.js"></script>
 </body>
+
 </html>

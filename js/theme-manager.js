@@ -8,21 +8,29 @@ window.applyGlobalTheme = function() {
     const currentPath = window.location.pathname;
     const isHomePage = currentPath.endsWith('index.html') || currentPath === '/' || currentPath.endsWith('teknikzeka/'); // Anasayfada mı?
 
+    // Remove all possible theme classes first
+    document.body.classList.remove('light-mode', 'theme-ocean', 'theme-forest', 'theme-sunset');
+
     // 3. Mantığı İşlet
     if (userPref === 'dark') {
-        // Her yerde koyu
-        document.body.classList.remove('light-mode');
+        // Zaten default dark, class eklemeye gerek yok
     } 
     else if (userPref === 'light') {
-        // Her yerde açık
         document.body.classList.add('light-mode');
     } 
+    else if (userPref === 'ocean') {
+        document.body.classList.add('theme-ocean');
+    }
+    else if (userPref === 'forest') {
+        document.body.classList.add('theme-forest');
+    }
+    else if (userPref === 'sunset') {
+        document.body.classList.add('theme-sunset');
+    }
     else {
         // SMART (Akıllı) MOD: Anasayfa koyu, diğer sayfalar açık
-        if (isHomePage) {
-            document.body.classList.remove('light-mode'); // Koyu
-        } else {
-            document.body.classList.add('light-mode'); // Açık (Paneller)
+        if (!isHomePage) {
+            document.body.classList.add('light-mode'); 
         }
     }
 };

@@ -3,6 +3,7 @@ import { db, auth } from './firebase-config.js';
 import { collection, query, onSnapshot, doc, updateDoc, arrayUnion, addDoc, serverTimestamp, where, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { deviceData } from './deviceData.js';
+import { icons } from './icons.js';
 
 async function sendEmailNotification(toEmail, subject, message) {
     try {
@@ -55,9 +56,9 @@ function formatAIReport(aiText) {
                 <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H4a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2zM9 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
                 AI Ön Teşhis Raporu
             </h4>
-            <div class="ai-detail-row"><span class="ai-detail-icon">🔍</span><div><span style="font-size: 0.85rem; color: var(--gray-light);">Olası Durum</span><br><strong style="color: var(--text-main);">${ariza}</strong></div></div>
-            <div class="ai-detail-row"><span class="ai-detail-icon">⚙️</span><div style="width: 100%;"><div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray-light);"><span>Zorluk/Risk</span><strong>${zorluk}/10</strong></div><div class="difficulty-track"><div class="difficulty-fill" style="width: ${zorluk * 10}%; background-color: ${barColor};"></div></div></div></div>
-            <div class="ai-detail-row"><span class="ai-detail-icon">💡</span><div><span style="font-size: 0.85rem; color: var(--gray-light);">Tavsiye</span><br><span style="color: var(--text-main); font-size: 0.95rem;">${cozum}</span></div></div>
+            <div class="ai-detail-row"><span class="ai-detail-icon">${icons.search}</span><div><span style="font-size: 0.85rem; color: var(--gray-light);">Olası Durum</span><br><strong style="color: var(--text-main);">${ariza}</strong></div></div>
+            <div class="ai-detail-row"><span class="ai-detail-icon">${icons.gear}</span><div style="width: 100%;"><div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray-light);"><span>Zorluk/Risk</span><strong>${zorluk}/10</strong></div><div class="difficulty-track"><div class="difficulty-fill" style="width: ${zorluk * 10}%; background-color: ${barColor};"></div></div></div></div>
+            <div class="ai-detail-row"><span class="ai-detail-icon">${icons.lightbulb}</span><div><span style="font-size: 0.85rem; color: var(--gray-light);">Tavsiye</span><br><span style="color: var(--text-main); font-size: 0.95rem;">${cozum}</span></div></div>
         </div>
     `;
 }
@@ -105,7 +106,7 @@ onAuthStateChanged(auth, async (user) => {
 function renderServiceAuthUI(companyName) {
     navAuthMenu.innerHTML = `
         <div class="profile-dropdown" id="profile-dropdown-container">
-            <span class="user-name-text" style="color: var(--text-main); font-weight: bold; font-size: 1rem;">&nbsp;&nbsp;🛠️ ${companyName}</span>
+            <span class="user-name-text" style="color: var(--text-main); font-weight: bold; font-size: 1rem; display:inline-flex; align-items:center; gap:5px;">&nbsp;&nbsp;${icons.tool} ${companyName}</span>
             <button class="three-dots-btn" title="Menü"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></button>
             <div class="profile-dropdown-content">
                 <a href="../index.html">Ana Sayfa</a>
@@ -215,13 +216,13 @@ function renderTickets() {
             window.highestBids[data.id] = highestBid; 
 
             saleBadge = `<span style="color:#10B981; border:1px solid #10B981; padding:2px 6px; border-radius:4px; font-size:0.75rem;">SATILIK</span>`;
-            if(highestBid > 0) saleBadge += `<span class="highest-bid-badge">💰 Teklif: ${highestBid.toLocaleString('tr-TR')} ₺</span>`;
+            if(highestBid > 0) saleBadge += `<span class="highest-bid-badge" style="display:flex;align-items:center;gap:3px;">${icons.money} Teklif: ${highestBid.toLocaleString('tr-TR')} ₺</span>`;
             else saleBadge += `<span class="highest-bid-badge" style="background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px dashed #10B981; box-shadow: none;">Bekleniyor</span>`;
 
             if (data.status === "Satıldı") {
                 if (data.assignedService === window.currentServiceEmail) {
-                    techActionHtml = `<div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:10px;"><span>🎉 Teklifiniz Kabul Edildi! Müşteri İletişim: <strong>${data.userEmail}</strong></span><div style="display:flex; gap:10px;"><a href="track.html?id=${data.id}" style="flex:1; text-align:center; padding:8px 10px; background: var(--primary); color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Süreci Yönet ⚙️</a><a href="chat.html?ticketId=${data.id}" style="flex:1; text-align:center; padding:8px 10px; border: 1px solid var(--primary); color: var(--primary); text-decoration: none; border-radius: 8px; font-weight: bold;">💬 Mesajlaş</a></div></div>`;
-                } else techActionHtml = `<div class="error-box-dynamic">❌ Cihaz başka bir servise satıldı.</div>`;
+                    techActionHtml = `<div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:10px;"><span style="display:flex;align-items:center;gap:5px;">${icons.party} Teklifiniz Kabul Edildi! Müşteri İletişim: <strong>${data.userEmail}</strong></span><div style="display:flex; gap:10px;"><a href="track.html?id=${data.id}" style="flex:1; text-align:center; padding:8px 10px; background: var(--primary); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">Süreci Yönet ${icons.gear}</a><a href="chat.html?ticketId=${data.id}" style="flex:1; text-align:center; padding:8px 10px; border: 1px solid var(--primary); color: var(--primary); text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">${icons.chat} Mesajlaş</a></div></div>`;
+                } else techActionHtml = `<div class="error-box-dynamic" style="display:flex;align-items:center;gap:5px;">${icons.cross} Cihaz başka bir servise satıldı.</div>`;
             } else {
                 let myOfferRaw = data.offers ? data.offers[window.currentServiceEmail] : null;
                 let myOffer = (typeof myOfferRaw === 'object' && myOfferRaw !== null) ? Number(myOfferRaw.price) : Number(myOfferRaw); if (isNaN(myOffer)) myOffer = 0;
@@ -230,21 +231,21 @@ function renderTickets() {
                 const offerInputHtml = `<div style="display:flex; align-items:center; gap:10px; margin-top:10px; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px; border: 1px dashed #10B981;"><span style="font-weight: 800; color: #10B981; font-size: 1.2rem;">₺</span><input type="text" id="offer-input-${data.id}" oninput="window.formatPrice(this)" placeholder="Teklif (Örn: ${minOfferAllowed})" value="${myOffer ? myOffer.toLocaleString('tr-TR') : ''}" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); outline:none;" onclick="event.stopPropagation();"><button onclick="window.makeOffer('${data.id}', '${data.userEmail}', event)" style="background:#10B981; color:white; padding:8px 20px; font-weight:bold; border:none; border-radius:6px; cursor:pointer;">${myOffer ? 'Güncelle' : 'Teklif Gönder'}</button></div>`;
 
                 if (myOffer) {
-                    techActionHtml = `<div id="offer-display-${data.id}" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-top:10px;"><span style="color: var(--text-main);">✅ <strong>${myOffer.toLocaleString('tr-TR')} ₺</strong> teklif verdiniz.</span><button onclick="event.stopPropagation(); document.getElementById('offer-display-${data.id}').style.display='none'; document.getElementById('offer-edit-${data.id}').style.display='block';" style="background: transparent; border: 1px solid #10B981; color: #10B981; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Değiştir</button></div><div id="offer-edit-${data.id}" style="display: none;">${offerInputHtml}</div>`;
+                    techActionHtml = `<div id="offer-display-${data.id}" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-top:10px;"><span style="color: var(--text-main); display:flex;align-items:center;gap:5px;">${icons.check} <strong>${myOffer.toLocaleString('tr-TR')} ₺</strong> teklif verdiniz.</span><button onclick="event.stopPropagation(); document.getElementById('offer-display-${data.id}').style.display='none'; document.getElementById('offer-edit-${data.id}').style.display='block';" style="background: transparent; border: 1px solid #10B981; color: #10B981; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Değiştir</button></div><div id="offer-edit-${data.id}" style="display: none;">${offerInputHtml}</div>`;
                 } else techActionHtml = offerInputHtml;
             }
         } else {
             saleBadge = `<span style="color:var(--primary); border:1px solid var(--primary); padding:2px 6px; border-radius:4px; font-size:0.75rem;">TAMİR</span>`;
             if (data.assignedService === window.currentServiceEmail) { 
-                techActionHtml = `<div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:10px;"><span>✅ Müşteri sizi seçti! Mail: <strong>${data.userEmail}</strong></span><div style="display:flex; gap:10px;"><a href="track.html?id=${data.id}" style="flex:1; text-align:center; padding:8px 10px; background: var(--primary); color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">Süreci Yönet ⚙️</a><a href="chat.html?ticketId=${data.id}" style="flex:1; text-align:center; padding:8px 10px; border: 1px solid var(--primary); color: var(--primary); text-decoration: none; border-radius: 8px; font-weight: bold;">💬 Mesajlaş</a></div></div>`; 
-            } else if (data.assignedService) { techActionHtml = `<div class="error-box-dynamic">❌ Müşteri başka servisi seçti.</div>`; } else if (data.interestedServices && data.interestedServices.includes(window.currentServiceEmail)) { techActionHtml = `<div class="info-box-dynamic">⏳ Müşterinin seçimi bekleniyor...</div>`; } else { techActionHtml = `<button onclick="window.approveTicket('${data.id}', '${data.userEmail}', event)" style="background: var(--primary); color: white; padding: 10px 20px; font-weight: 600; font-size: 1rem; border:none; border-radius: 8px; cursor: pointer;">Ben Yapabilirim 🛠️</button>`; }
+                techActionHtml = `<div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:10px;"><span style="display:flex;align-items:center;gap:5px;">${icons.check} Müşteri sizi seçti! Mail: <strong>${data.userEmail}</strong></span><div style="display:flex; gap:10px;"><a href="track.html?id=${data.id}" style="flex:1; text-align:center; padding:8px 10px; background: var(--primary); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">Süreci Yönet ${icons.gear}</a><a href="chat.html?ticketId=${data.id}" style="flex:1; text-align:center; padding:8px 10px; border: 1px solid var(--primary); color: var(--primary); text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">${icons.chat} Mesajlaş</a></div></div>`; 
+            } else if (data.assignedService) { techActionHtml = `<div class="error-box-dynamic" style="display:flex;align-items:center;gap:5px;">${icons.cross} Müşteri başka servisi seçti.</div>`; } else if (data.interestedServices && data.interestedServices.includes(window.currentServiceEmail)) { techActionHtml = `<div class="info-box-dynamic" style="display:flex;align-items:center;gap:5px;">${icons.clock} Müşterinin seçimi bekleniyor...</div>`; } else { techActionHtml = `<button onclick="window.approveTicket('${data.id}', '${data.userEmail}', event)" style="background: var(--primary); color: white; padding: 10px 20px; font-weight: 600; font-size: 1rem; border:none; border-radius: 8px; cursor: pointer; display:flex;align-items:center;justify-content:center;gap:5px;">Ben Yapabilirim ${icons.tool}</button>`; }
         }
 
         const bar = document.createElement('div');
         bar.className = 'service-list-bar ticket-wrapper';
         bar.innerHTML = `
             <div class="bar-header" onclick="this.parentElement.classList.toggle('expanded')">
-                <div style="display: flex; align-items: flex-start; gap: 15px; flex-grow: 1; overflow: hidden;"><span style="font-size: 1.8rem;">📱</span><div style="overflow: hidden; width: 100%;"><div class="bar-title">${deviceInfo} ${saleBadge}</div><div class="bar-summary"><span class="ticket-date-badge">📅 ${dateStr}</span><span class="ticket-desc-text">${data.description.substring(0, 50)}${data.description.length > 50 ? '...' : ''}</span></div></div></div>
+                <div style="display: flex; align-items: flex-start; gap: 15px; flex-grow: 1; overflow: hidden;"><span style="font-size: 1.8rem; display:inline-flex; align-items:center; justify-content:center;">${icons.phone}</span><div style="overflow: hidden; width: 100%;"><div class="bar-title">${deviceInfo} ${saleBadge}</div><div class="bar-summary"><span class="ticket-date-badge" style="display:flex; align-items:center; gap:3px;">${icons.calendar} ${dateStr}</span><span class="ticket-desc-text">${data.description.substring(0, 50)}${data.description.length > 50 ? '...' : ''}</span></div></div></div>
                 <div style="display: flex; align-items: center; gap: 20px;"><span style="font-size: 0.85rem; color: ${data.status === 'Bekliyor' ? '#F59E0B' : '#10B981'}; font-weight: bold; background: rgba(0,0,0,0.05); padding: 4px 10px; border-radius: 20px; white-space: nowrap;">${data.status}</span><span class="expand-icon">▼</span></div>
             </div>
             <div class="bar-details"><div style="display: flex; flex-direction: column; gap: 15px; padding-bottom: 10px;"><div><span style="color: var(--gray-light); font-size: 0.9rem;">Müşteri E-Posta:</span><br><strong>${data.userEmail}</strong></div><div><span style="color: var(--gray-light); font-size: 0.9rem;">Detaylı Şikayet:</span><br><span>${data.description}</span></div>${formatAIReport(data.aiReport)}<div style="margin-top: 10px; border-top: 1px dashed var(--border-color); padding-top: 15px;">${techActionHtml}</div></div></div>
@@ -265,6 +266,8 @@ function renderTickets() {
     let activeCount = allTickets.filter(t => t.assignedService === window.currentServiceEmail).length;
     const activeBadge = document.getElementById('service-active-badge');
     if(activeBadge) { if(activeCount > 0) { activeBadge.style.display = 'inline-block'; activeBadge.innerText = activeCount; } else { activeBadge.style.display = 'none'; } }
+
+    localStorage.setItem('tz_service_tickets_cache', listContainer.innerHTML);
 }
 
 window.approveTicket = async (ticketId, customerEmail, event) => {

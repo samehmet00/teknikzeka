@@ -11,47 +11,88 @@
     <style>
         .chat-list-container {
             max-width: 800px;
-            margin: 100px auto 50px;
+            margin: 80px auto 30px;
             padding: 0 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
         
         .chat-list-item {
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 15px;
+            padding: 16px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            margin-bottom: 10px;
+            border-radius: 16px;
             text-decoration: none;
-            transition: 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chat-list-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--primary);
+            opacity: 0;
+            transition: 0.3s;
         }
         
         .chat-list-item:hover {
             border-color: var(--primary);
-            transform: translateX(5px);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
+        
+        .chat-list-item:hover::before { opacity: 1; }
 
         .chat-list-avatar {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
-            background: rgba(79, 70, 229, 0.1);
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
             font-weight: bold;
             flex-shrink: 0;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+        }
+        
+        .status-dot {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 14px;
+            height: 14px;
+            background: #10B981;
+            border: 2px solid var(--card-bg);
+            border-radius: 50%;
+        }
+
+        .chat-arrow {
+            color: #94A3B8;
+            transition: 0.3s;
+        }
+        .chat-list-item:hover .chat-arrow {
+            color: var(--primary);
+            transform: translateX(4px);
         }
     </style>
 </head>
 <body class="light-mode">
 
     <nav class="navbar">
-        <a href="javascript:history.back()" class="logo" style="text-decoration: none; font-size: 1.2rem;">⬅️ Geri</a>
+        <a href="javascript:history.back()" class="logo" style="text-decoration: none; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            Geri
+        </a>
         <span style="font-weight: bold; color: var(--text-main); font-size: 1.2rem;">Mesajlarım</span>
     </nav>
 
@@ -97,14 +138,24 @@
                         
                         myChatsHtml += `
                             <a href="chat.html?ticketId=${doc.id}" class="chat-list-item">
-                                <div class="chat-list-avatar">${avatarLetter}</div>
+                                <div class="chat-list-avatar">
+                                    ${avatarLetter}
+                                    <div class="status-dot"></div>
+                                </div>
                                 <div style="flex: 1; overflow: hidden;">
-                                    <h3 style="margin: 0; color: var(--text-main); font-size: 1.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${partnerName}</h3>
-                                    <p style="margin: 5px 0 0 0; color: var(--gray-light); font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                        📱 ${data.deviceBrand} ${data.deviceModel} İşlemi
+                                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                        <h3 style="margin: 0; color: var(--text-main); font-size: 1.15rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${partnerName}</h3>
+                                        <span style="font-size: 0.75rem; color: #94A3B8;">#${doc.id.slice(0,6).toUpperCase()}</span>
+                                    </div>
+                                    <p style="margin: 2px 0 0 0; color: var(--primary); font-size: 0.8rem; font-weight: 600;">${partnerEmail}</p>
+                                    <p style="margin: 4px 0 0 0; color: var(--gray-light); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                                        ${data.deviceBrand} ${data.deviceModel} İşlemi
                                     </p>
                                 </div>
-                                <span style="color: var(--primary);">►</span>
+                                <div class="chat-arrow">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                                </div>
                             </a>
                         `;
                     }

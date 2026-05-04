@@ -121,8 +121,16 @@ body.dark-mode .sticky-sidebar::-webkit-scrollbar-thumb { background: rgba(255,2
 .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+.mobile-filter-header { display: none; }
 @media (max-width: 992px) {
     .service-layout { flex-direction: column; }
     .sticky-sidebar { width: 100%; position: static; height: auto; margin-bottom: 15px; }
     .sticky-header { top: 60px; } /* Mobilde navbar daha dar */
+    
+    .mobile-filter-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 0; background: var(--card-bg); border-radius: 8px; padding: 10px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .desktop-filter-header { display: none; }
+    .filter-content { display: none; margin-top: 15px; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end; }
+    .sticky-sidebar.open .filter-content { display: grid; }
+    .sticky-sidebar.open .mobile-filter-header svg { transform: rotate(180deg); }
+    .sticky-sidebar.open .mobile-filter-header { border-bottom: none; margin-bottom: 0; }
 }

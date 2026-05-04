@@ -121,20 +121,21 @@ onAuthStateChanged(auth, async (user) => {
 
 // GİRİŞ YAPILMIŞ HALİ (Müşteri veya Servis)
 function renderAuthUI(username, isTech) {
-    const targetPage = isTech ? "pages/service.html" : "pages/dashboard.html"; 
+    const targetPage = isTech ? "pages/service.html" : "pages/tickets.html"; 
     
     // Navbar Profil Menüsü
     if (authMenu) {
         authMenu.innerHTML = `
             <div style="display: flex; align-items: center; gap: 10px;">
                 <div class="profile-dropdown" id="profile-dropdown-container">
-                    <span class="user-name-text" style="color: var(--text-main); font-weight: bold; font-size: 1rem;">&nbsp;&nbsp;👤 ${username}</span>
+                    <span class="user-name-text" style="color: var(--text-main); font-weight: bold; font-size: 1rem; display: flex; align-items: center; gap: 5px;">&nbsp;&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${username}</span>
                     <button class="three-dots-btn" title="Menü">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                     </button>
                     
                     <div class="profile-dropdown-content">
-                        ${!isTech ? `<a href="pages/dashboard.html">Müşteri Paneli</a>` : `<a href="pages/service.html">Servis Paneli</a>`}
+                        <a href="index.html">Ana Sayfa</a>
+                        ${!isTech ? `<a href="pages/dashboard.html">Yeni Kayıt Oluştur</a><a href="pages/tickets.html">Geçmiş Kayıtlarım</a>` : `<a href="pages/service.html">Servis Paneli</a>`}
                         <a href="pages/chats.html">Mesajlarım</a>
                         <a href="pages/profile.html">Profilim</a>
                         <a href="pages/settings.html">Ayarlar</a>
@@ -159,6 +160,12 @@ function renderAuthUI(username, isTech) {
                 signOut(auth).then(() => { window.location.reload(); }); 
             });
         }
+    }
+
+    const navRecordsLink = document.getElementById('nav-records-link');
+    if (navRecordsLink) {
+        navRecordsLink.href = isTech ? "pages/service.html" : "pages/tickets.html";
+        navRecordsLink.innerText = isTech ? "Servis İşlemlerim" : "Geçmiş Kayıtlarım";
     }
 
     // 1. Ana Hero Butonu
@@ -203,6 +210,12 @@ function renderAuthUI(username, isTech) {
 function renderGuestUI() {
     if (authMenu) authMenu.innerHTML = `<a href="pages/login.html" class="nav-login-btn">Giriş Yap</a>`;
     
+    const navRecordsLink = document.getElementById('nav-records-link');
+    if (navRecordsLink) {
+        navRecordsLink.href = "pages/login.html";
+        navRecordsLink.innerText = "Kayıt Sorgula";
+    }
+
     // 1. Ana Hero Butonu
     if (heroBtnAuth) { 
         heroBtnAuth.href = "pages/login.html"; 
