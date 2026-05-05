@@ -103,24 +103,66 @@ if(deviceTypeInput) {
 
 function formatAIReport(aiText) {
     if (!aiText) return '';
-    let cleanText = aiText.replace(/\*/g, ''); 
-    let ariza = "Bilinmiyor", zorluk = 5, cozum = "Belirtilmedi";
+    let cleanText = aiText.replace(/\*/g, '');
+    let ariza = "Bilinmiyor", zorluk = 5, sure = "—", aciliyet = "Orta", cozum = "Belirtilmedi";
     cleanText.split('\n').forEach(line => {
-        if(line.toLowerCase().includes('arıza:')) ariza = line.split(':')[1]?.trim();
-        if(line.toLowerCase().includes('zorluk:')) zorluk = parseInt(line.split(':')[1]?.trim().replace(/\D/g,'')) || 5;
-        if(line.toLowerCase().includes('çözüm:')) cozum = line.split(':')[1]?.trim();
+        const lower = line.toLowerCase();
+        if (lower.includes('ariza:') || lower.includes('arıza:')) ariza = line.split(':').slice(1).join(':').trim();
+        if (lower.includes('zorluk:')) zorluk = parseInt(line.split(':').slice(1).join(':').trim().replace(/\D/g,'')) || 5;
+        if (lower.includes('sure:') || lower.includes('süre:')) sure = line.split(':').slice(1).join(':').trim();
+        if (lower.includes('aciliyet:')) aciliyet = line.split(':').slice(1).join(':').trim();
+        if (lower.includes('cozum:') || lower.includes('çözüm:')) cozum = line.split(':').slice(1).join(':').trim();
     });
-    let barColor = "#10B981"; if(zorluk >= 4 && zorluk <= 7) barColor = "#F59E0B"; if(zorluk >= 8) barColor = "#EF4444"; 
+
+    const diffColor = zorluk <= 3 ? '#10B981' : zorluk <= 6 ? '#F59E0B' : '#EF4444';
+    const diffLabel = zorluk <= 3 ? 'Kolay' : zorluk <= 6 ? 'Orta' : 'Zor';
+    const diffBg   = zorluk <= 3 ? 'rgba(16,185,129,0.12)' : zorluk <= 6 ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)';
+    const aciColor = aciliyet.toLowerCase().includes('yüksek') || aciliyet.toLowerCase().includes('yuksek') ? '#EF4444'
+                   : aciliyet.toLowerCase().includes('orta') ? '#F59E0B' : '#10B981';
+    const diffPct  = zorluk * 10;
 
     return `
-        <div class="premium-ai-box">
-            <h4 style="color: #3B82F6; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H4a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2zM9 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
-                AI Ön Teşhis Raporu
-            </h4>
-            <div class="ai-detail-row"><span class="ai-detail-icon">${icons.search}</span><div><span style="font-size: 0.85rem; color: var(--gray-light);">Olası Durum</span><br><strong style="color: var(--text-main);">${ariza}</strong></div></div>
-            <div class="ai-detail-row"><span class="ai-detail-icon">${icons.gear}</span><div style="width: 100%;"><div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--gray-light);"><span>Zorluk Derecesi / Risk</span><strong>${zorluk}/10</strong></div><div class="difficulty-track"><div class="difficulty-fill" style="width: ${zorluk * 10}%; background-color: ${barColor};"></div></div></div></div>
-            <div class="ai-detail-row"><span class="ai-detail-icon">${icons.lightbulb}</span><div><span style="font-size: 0.85rem; color: var(--gray-light);">Tavsiye</span><br><span style="color: var(--text-main); font-size: 0.95rem;">${cozum}</span></div></div>
+        <div class="ai-diag-card">
+            <div class="ai-diag-header">
+                <div class="ai-diag-icon-wrap">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 10 4a2 2 0 0 1 2-2zM9 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
+                </div>
+                <span class="ai-diag-title">Yapay Zeka Ön Teşhis Raporu</span>
+                <span class="ai-diag-chip" style="background:${diffBg}; color:${diffColor};">${diffLabel}</span>
+            </div>
+
+            <div class="ai-diag-ariza">${ariza}</div>
+
+            <div class="ai-diag-metrics">
+                <div class="ai-metric">
+                    <div class="ai-metric-label">Onarım Zorluğu</div>
+                    <div class="ai-metric-bar-wrap">
+                        <div class="ai-metric-bar-track">
+                            <div class="ai-metric-bar-fill" style="width:${diffPct}%; background:linear-gradient(90deg,${diffColor}88,${diffColor});"></div>
+                        </div>
+                        <span class="ai-metric-val" style="color:${diffColor}">${zorluk}/10</span>
+                    </div>
+                </div>
+                <div class="ai-metric">
+                    <div class="ai-metric-label">Tahmini Süre</div>
+                    <div class="ai-metric-info">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        ${sure}
+                    </div>
+                </div>
+                <div class="ai-metric">
+                    <div class="ai-metric-label">Aciliyet</div>
+                    <div class="ai-metric-info" style="color:${aciColor}">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        ${aciliyet}
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-diag-solution">
+                <div class="ai-diag-sol-label">Çözüm Önerisi</div>
+                <div class="ai-diag-sol-text">${cozum}</div>
+            </div>
         </div>
     `;
 }
@@ -143,8 +185,8 @@ if(ticketForm) {
             let aiAnalysis = "";
             if (!skipAi) {
                 let prompt = isForSale 
-                    ? `Sen bir ikinci el cihaz eksperisin. Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. Arızası: "${issueDescInput.value}". SADECE 3 satır ve maksimum 15 kelime kullanarak şu formatta cevap ver: \nArıza: [Sadece arızanın adı]\nZorluk: [1-10 arası rakam]\nÇözüm: [Kısa satış tavsiyesi]` 
-                    : `Sen uzman bir teknik servissin. Şikayet: "${issueDescInput.value}". Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. SADECE şu formatta cevap ver: \nArıza: [Kısa Tahmin]\nZorluk: [1-10]\nÇözüm: [Tek cümlelik tavsiye]`;
+                    ? `Sen bir ikinci el cihaz eksperisin. Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. Arızası: "${issueDescInput.value}". SADECE su formatta yanit ver (baska hicbir sey yazma):\nAriza: [ariza adi]\nZorluk: [1-10]\nSure: [tahmini sure, orn: 30-60 dk]\nAciliyet: [Dusuk / Orta / Yuksek]\nCozum: [kisa satis tavsiyesi]`
+                    : `Sen uzman bir teknik servissin. Sikayet: "${issueDescInput.value}". Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. SADECE su formatta yanit ver (baska hicbir sey yazma):\nAriza: [kisa ariza tahmini]\nZorluk: [1-10]\nSure: [tahmini onarim suresi, orn: 2-3 saat]\nAciliyet: [Dusuk / Orta / Yuksek]\nCozum: [tek cumle tavsiye]`;
 
                 const response = await fetch(`https://api.groq.com/openai/v1/chat/completions`, {
                     method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${GROQ_API_KEY}` },

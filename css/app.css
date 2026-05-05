@@ -20,6 +20,8 @@
     --success-box-text: #A7F3D0;
     --error-box-bg: rgba(239, 68, 68, 0.1);
     --error-box-text: #FECACA;
+    --gray-light: #94A3B8;
+    --text-muted: #64748B;
 }
 
 /* --- AÇIK TEMA (LIGHT MODE) DEĞİŞKENLERİ --- */
@@ -39,6 +41,8 @@ body.light-mode {
     --success-box-text: #064E3B;
     --error-box-bg: #FEF2F2;
     --error-box-text: #991B1B;
+    --gray-light: #64748B;
+    --text-muted: #94A3B8;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
@@ -134,52 +138,156 @@ textarea.premium-input { min-height: 140px; resize: vertical; cursor: text; }
 .status-bekliyor { background: rgba(245, 158, 11, 0.1); color: #F59E0B; }
 .status-onaylandi { background: rgba(16, 185, 129, 0.1); color: #10B981; }
 
-.delete-action-btn { position: absolute; top: 0; right: 0; height: 100%; width: 80px; background-color: #EF4444; color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1; }
-.delete-action-btn:hover { background-color: #DC2626; }
-.delete-action-btn svg { width: 24px; height: 24px; }
-
-/* --- PREMIUM YAPAY ZEKA RAPORU KARTI --- */
-.premium-ai-box {
-    background: linear-gradient(145deg, rgba(59, 130, 246, 0.05), rgba(6, 182, 212, 0.05));
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-top: 1rem;
-}
-
-body.light-mode .premium-ai-box { background: linear-gradient(145deg, #EFF6FF, #ECFEFF); }
-
-.ai-detail-row {
+/* Silme butonu — her zaman görünür, sağ üst köşe */
+.delete-action-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    background: rgba(239,68,68,0.1);
+    color: #EF4444;
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 50%;
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 15px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.2s, transform 0.15s;
 }
-.ai-detail-row:last-child { margin-bottom: 0; }
+.delete-action-btn:hover { background: #EF4444; color: white; transform: scale(1.1); }
+.delete-action-btn svg { width: 15px; height: 15px; }
 
-.ai-detail-icon {
-    font-size: 1.2rem;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 6px 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+/* ======================================
+   YAPAY ZEKA TEŞHİS KARTI (YENİ SİSTEM)
+   ====================================== */
+@keyframes barSlide {
+    from { width: 0; }
 }
 
-.difficulty-track {
-    width: 100%;
-    height: 8px;
-    background: var(--input-bg);
-    border-radius: 10px;
-    margin-top: 6px;
+.ai-diag-card {
+    margin-top: 1.2rem;
+    border-radius: 16px;
     overflow: hidden;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(79,70,229,0.18);
+    background: var(--card-bg);
+    box-shadow: 0 4px 20px rgba(79,70,229,0.07);
 }
 
-.difficulty-fill {
+.ai-diag-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(79,70,229,0.07), rgba(129,140,248,0.04));
+    border-bottom: 1px solid rgba(79,70,229,0.1);
+}
+.ai-diag-icon-wrap {
+    width: 30px; height: 30px;
+    border-radius: 9px;
+    background: rgba(79,70,229,0.13);
+    color: #4F46E5;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.ai-diag-title {
+    flex: 1;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #4F46E5;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.ai-diag-chip {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.ai-diag-ariza {
+    padding: 14px 16px 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.4;
+}
+
+.ai-diag-metrics {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 12px;
+    padding: 10px 16px 14px;
+}
+
+.ai-metric-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--gray-light);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+}
+.ai-metric-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ai-metric-bar-track {
+    flex: 1;
+    height: 7px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 10px;
+    overflow: hidden;
+}
+body.light-mode .ai-metric-bar-track { background: rgba(0,0,0,0.06); }
+
+.ai-metric-bar-fill {
     height: 100%;
     border-radius: 10px;
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: barSlide 1.2s cubic-bezier(0.4,0,0.2,1) both;
+}
+.ai-metric-val {
+    font-size: 0.78rem;
+    font-weight: 800;
+    min-width: 28px;
+    text-align: right;
+}
+.ai-metric-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.ai-diag-solution {
+    margin: 0 16px 14px;
+    padding: 10px 14px;
+    background: rgba(79,70,229,0.04);
+    border-left: 3px solid #4F46E5;
+    border-radius: 0 10px 10px 0;
+}
+.ai-diag-sol-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--gray-light);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+}
+.ai-diag-sol-text {
+    font-size: 0.88rem;
+    color: var(--text-main);
+    line-height: 1.55;
+}
+
+@media (max-width: 500px) {
+    .ai-diag-metrics { grid-template-columns: 1fr 1fr; }
+    .ai-metric:first-child { grid-column: 1 / -1; }
 }
 
 /* --- KAPSÜL (PILL) KULLANICI MENÜSÜ TASARIMI --- */
@@ -263,13 +371,15 @@ body.light-mode .user-profile-pill {
 .sell-card-wrapper { margin-bottom: 1.2rem; position: relative; }
 .sell-card-wrapper input[type="checkbox"] { display: none; }
 .sell-card { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 12px; border: 2px solid var(--border-color); cursor: pointer; transition: all 0.3s ease; }
-.sell-card:hover { background: rgba(0,0,0,0.02); }
+.sell-card:hover { background: rgba(16,185,129,0.03); border-color: rgba(16,185,129,0.3); }
 .sell-icon { font-size: 1.8rem; transition: 0.3s; filter: grayscale(1); opacity: 0.6; }
+.sell-card-icon-wrap { width: 44px; height: 44px; border-radius: 10px; background: rgba(16,185,129,0.1); display: flex; align-items: center; justify-content: center; color: #10B981; flex-shrink: 0; transition: 0.3s; opacity: 0.65; }
 .sell-text h4 { margin: 0 0 4px 0; color: var(--text-main); font-size: 1.05rem; }
 .sell-text p { margin: 0; color: var(--gray-light); font-size: 0.85rem; line-height: 1.3; }
 
 .sell-card-wrapper input:checked + .sell-card { border-color: #10B981; background: rgba(16, 185, 129, 0.05); }
 .sell-card-wrapper input:checked + .sell-card .sell-icon { filter: grayscale(0); opacity: 1; transform: scale(1.1); }
+.sell-card-wrapper input:checked + .sell-card .sell-card-icon-wrap { opacity: 1; background: #10B981; color: white; transform: scale(1.05); }
 .sell-card-wrapper input:checked + .sell-card .sell-text h4 { color: #10B981; }
 
 /* HIZLI GÖNDER (SKIP AI) ALANI */
@@ -379,27 +489,49 @@ input:checked + .slider:before { transform: translateX(24px); }
 .premium-input { width: 100%; padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main); font-size: 1rem; outline: none; transition: 0.3s; }
 .premium-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
 
+/* track TASARIMLARI */
+
+.track-container {
+    max-width: 780px;
+    margin: 90px auto 50px;
+    padding: 1.5rem;
+    background: transparent;
+}
+.device-header { display: flex; align-items: center; gap: 15px; padding-bottom: 16px; border-bottom: 1px dashed var(--border-color); margin-bottom: 24px; }
+
+/* Zaman Çizelgesi (Timeline) */
+.timeline { position: relative; padding-left: 30px; margin-bottom: 20px; }
+.timeline::before { content: ''; position: absolute; left: 7px; top: 0; height: 100%; width: 2px; background: var(--border-color); border-radius: 2px; }
+.step { position: relative; padding-bottom: 24px; padding-left: 6px; }
+.step:last-child { padding-bottom: 0; }
+/* step-node yaklaşımı — ::before devre dışı */
+.step::before { display: none !important; }
+
+.step-node {
+    position: absolute;
+    left: -29.5px; top: 2px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s ease;
+}
+.step.completed .step-node { background: #10B981; border-color: #10B981; box-shadow: 0 0 12px rgba(16,185,129,0.4); }
+.step.active .step-node { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 16px rgba(79,70,229,0.5); }
+
+.step-content h4 { margin: 0 0 3px; color: var(--text-main); font-size: 1rem; }
+.step-content p { margin: 0; color: var(--gray-light); font-size: 0.87rem; }
+.step.completed .step-content h4 { color: #10B981; }
+.step.active .step-content h4 { color: var(--primary); font-weight: 700; }
+
+.cargo-box { background: rgba(79, 70, 229, 0.05); border: 1px solid rgba(79, 70, 229, 0.2); padding: 14px 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.service-controls { margin-top: 24px; padding-top: 20px; border-top: 1px dashed var(--border-color); display: none; }
+
+.error-box-dynamic { background-color: var(--error-box-bg); color: var(--error-box-text); padding: 12px; border-left: 4px solid #EF4444; border-radius: 8px; margin-top: 10px; font-size: 0.92rem; }
+
 .msg-box { margin-top: 10px; font-size: 0.9rem; font-weight: bold; padding: 8px 12px; border-radius: 8px; display: none; }
 .msg-error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
 .msg-success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); }
-
-/* track TASARIMLARI */
-.track-container { max-width: 800px; margin: 100px auto 50px; padding: 2rem; background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-.device-header { display: flex; align-items: center; gap: 15px; padding-bottom: 20px; border-bottom: 1px dashed var(--border-color); margin-bottom: 30px; }
-
-/* Zaman Çizelgesi (Timeline) CSS */
-.timeline { position: relative; padding-left: 30px; margin-bottom: 30px; }
-.timeline::before { content: ''; position: absolute; left: 7px; top: 0; height: 100%; width: 2px; background: var(--border-color); }
-.step { position: relative; padding-bottom: 30px; }
-.step:last-child { padding-bottom: 0; }
-.step::before { content: ''; position: absolute; left: -29.5px; top: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--border-color); z-index: 1; transition: 0.3s; }
-.step.completed::before { background: #10B981; border-color: #10B981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
-.step.active::before { border-color: var(--primary); background: var(--primary); box-shadow: 0 0 15px rgba(79, 70, 229, 0.6); }
-
-.step-content h4 { margin: 0 0 5px; color: var(--text-main); font-size: 1.1rem; }
-.step-content p { margin: 0; color: var(--gray-light); font-size: 0.9rem; }
-
-.cargo-box { background: rgba(79, 70, 229, 0.05); border: 1px solid rgba(79, 70, 229, 0.2); padding: 15px; border-radius: 12px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
-.service-controls { margin-top: 30px; padding-top: 20px; border-top: 1px dashed var(--border-color); display: none; }
-
 

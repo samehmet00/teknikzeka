@@ -177,7 +177,7 @@ onAuthStateChanged(auth, async (user) => {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if(userDoc.exists()) {
             if (userDoc.data().role === "servis") { window.location.href = "service.html"; } 
-            else { window.location.href = "dashboard.html"; }
+            else { window.location.href = "tickets.html"; }
         }
     } 
 });

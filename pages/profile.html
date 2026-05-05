@@ -2,133 +2,38 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    
-    <!-- Mobil Uygulama (PWA) Etiketleri -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4f46e5">
-    <meta name="mobile-web-app-capable" content="yes"> 
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TeknikZeka">
     <link rel="manifest" href="../manifest.json">
-
     <title>Profilim - TeknikZeka</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/profile.css">
 </head>
 <body class="light-mode">
 
     <nav class="navbar">
-        <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
-        <div class="nav-actions" style="display: flex; gap:15px; align-items:center;">
-            <a href="javascript:history.back()" class="nav-icon-btn" title="Geri Dön" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        <a href="../index.html" class="logo" style="text-decoration:none;">Teknik<span>Zeka</span></a>
+        <div style="display:flex; gap:12px; align-items:center; margin-left:auto;">
+            <a href="javascript:history.back()" class="nav-icon-btn" title="Geri Dön" style="display:flex; align-items:center; justify-content:center; text-decoration:none;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
             </a>
-            <a href="../index.html" class="nav-icon-btn" title="Ana Sayfaya Dön"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a>
         </div>
     </nav>
 
-    <section class="profile-container">
-        <div class="profile-card" id="profile-content">
-            <p>Kullanıcı bilgileri yükleniyor...</p>
+    <section class="profile-page-container">
+        <div class="profile-main-card" id="profile-main-card">
+            <!-- profile.js dolduracak -->
+            <div style="padding:3rem; text-align:center; color:var(--gray-light);">
+                <div style="width:60px; height:60px; border-radius:50%; background:var(--border-color); margin:0 auto 1rem; animation:shimmer 1.5s infinite;"></div>
+                Profil yükleniyor...
+            </div>
         </div>
     </section>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const profileContent = document.getElementById('profile-content');
-            const cachedProfile = localStorage.getItem('tz_profile_cache');
-            if (cachedProfile && profileContent) {
-                profileContent.innerHTML = cachedProfile;
-            }
-        });
-    </script>
-
-    <script type="module">
-        // DÜZELTME 1: JS klasörüne ulaşmak için bir üst klasöre (../) çıkıldı
-        import { auth, db } from '../js/firebase-config.js';
-        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-        // Profil Verisi Çekme
-        const profileContent = document.getElementById('profile-content');
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const username = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                const isTech = userDoc.exists() && userDoc.data().role === "servis";
-                const role = isTech ? "Yetkili Teknik Servis" : "Standart Müşteri";
-                const roleColor = isTech ? "#10B981" : "#4F46E5";
-                
-                profileContent.innerHTML = `
-                    <div style="text-align: center; margin-bottom: 2rem;">
-                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, ${roleColor}, #818cf8); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; margin: 0 auto 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-                            ${username.charAt(0).toUpperCase()}
-                        </div>
-                        <h2 style="color: var(--text-main); margin-bottom: 5px; font-size: 1.8rem;">${username}</h2>
-                        <p style="color: var(--gray-light); font-size: 1rem; margin-bottom: 10px;">${user.email}</p>
-                        <span style="background: rgba(${isTech ? '16, 185, 129' : '79, 70, 229'}, 0.1); color: ${roleColor}; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; border: 1px solid rgba(${isTech ? '16, 185, 129' : '79, 70, 229'}, 0.2);">${role}</span>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
-                        <div style="background: var(--bg-main); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: center;">
-                            <span style="font-size: 1.5rem; font-weight: bold; color: var(--text-main); display: block; margin-bottom: 5px;">${isTech ? '24' : '3'}</span>
-                            <span style="font-size: 0.85rem; color: var(--gray-light);">${isTech ? 'Tamamlanan İş' : 'Kayıtlı Cihaz'}</span>
-                        </div>
-                        <div style="background: var(--bg-main); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: center;">
-                            <span style="font-size: 1.5rem; font-weight: bold; color: var(--text-main); display: block; margin-bottom: 5px;">${isTech ? '4.8' : '0'}</span>
-                            <span style="font-size: 0.85rem; color: var(--gray-light);">${isTech ? 'Ort. Puan' : 'Aktif Talep'}</span>
-                        </div>
-                    </div>
-
-                    <div style="margin-bottom: 30px;">
-                        <h3 style="font-size: 1.1rem; color: var(--text-main); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">Hesap Ayarları</h3>
-                        <a href="settings.html" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; text-decoration: none; color: var(--text-main); background: var(--bg-main); border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border-color);">
-                            <span style="display: flex; align-items: center; gap: 10px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-                                Profil Düzenle
-                            </span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                        </a>
-                        <a href="notifications.html" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; text-decoration: none; color: var(--text-main); background: var(--bg-main); border-radius: 8px; border: 1px solid var(--border-color);">
-                            <span style="display: flex; align-items: center; gap: 10px;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                                Bildirim Tercihleri
-                            </span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                        </a>
-                    </div>
-
-                    <button id="profile-logout-btn" style="background: transparent; border: 1px solid #EF4444; color: #EF4444; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; display: flex; justify-content: center; gap: 8px; align-items: center;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                        Sistemden Çıkış Yap
-                    </button>
-                `;
-
-                localStorage.setItem('tz_profile_cache', profileContent.innerHTML);
-
-                document.getElementById('profile-logout-btn').addEventListener('click', () => {
-                    signOut(auth).then(() => { window.location.href = "login.html"; });
-                });
-                
-                document.getElementById('profile-logout-btn').addEventListener('mouseover', function() {
-                    this.style.background = '#EF4444';
-                    this.style.color = 'white';
-                });
-                document.getElementById('profile-logout-btn').addEventListener('mouseout', function() {
-                    this.style.background = 'transparent';
-                    this.style.color = '#EF4444';
-                });
-
-            } else {
-                profileContent.innerHTML = `
-                    <div class="profile-avatar" style="background: rgba(239, 68, 68, 0.1); color: #EF4444;"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></div>
-                    <h2 style="color: var(--text-main);">Oturum Açılmamış</h2>
-                    <p style="color: var(--gray-light); margin-bottom: 20px;">Lütfen profilinizi görüntülemek için giriş yapın.</p>
-                    <a href="login.html" style="display: inline-block; background: var(--primary); color: white; text-decoration: none; padding: 12px 30px; border-radius: 8px; font-weight: bold;">Giriş Sayfasına Git</a>
-                `;
-            }
-        });
-    </script>
+    <script type="module" src="../js/profile.js"></script>
     <script type="module" src="../js/theme-manager.js"></script>
 </body>
 </html>

@@ -2,71 +2,115 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    
-    <!-- Mobil Uygulama (PWA) Etiketleri -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4f46e5">
-    <meta name="mobile-web-app-capable" content="yes"> 
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TeknikZeka">
     <link rel="manifest" href="../manifest.json">
-
     <title>Süreç Takibi - TeknikZeka</title>
     <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/track.css">
+
 </head>
 <body class="light-mode">
 
     <nav class="navbar">
-        <a href="javascript:history.back()" class="logo" style="text-decoration: none; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        <a href="javascript:history.back()" class="logo" style="text-decoration:none; font-size:0.95rem; display:flex; align-items:center; gap:6px; font-weight:600;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             Geri Dön
         </a>
+        <span id="status-badge" style="margin-left:auto; background:var(--primary); color:white; padding:4px 14px; border-radius:20px; font-weight:700; font-size:0.82rem; letter-spacing:0.3px;">...</span>
     </nav>
 
     <section class="track-container">
-        <div class="device-header">
-            <span style="font-size: 3rem; background: rgba(79, 70, 229, 0.1); border-radius: 16px; padding: 10px;">📦</span>
-            <div>
-                <h2 id="device-title" style="margin:0; color:var(--text-main);">Yükleniyor...</h2>
-                <span id="ticket-id-display" style="color:var(--gray-light); font-size:0.9rem;">ID: Bekleniyor</span>
+
+        <!-- Cihaz Başlık Kartı -->
+        <div class="track-header-card">
+            <div class="device-header" style="border:none; margin-bottom:0; padding-bottom:0;">
+                <div class="device-icon-wrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                </div>
+                <div>
+                    <h2 id="device-title" style="margin:0; color:var(--text-main); font-size:1.25rem; font-weight:800;">Yükleniyor...</h2>
+                    <span id="ticket-id-display" style="color:var(--gray-light); font-size:0.82rem;">ID: Bekleniyor</span>
+                </div>
             </div>
-            <span id="status-badge" style="margin-left:auto; background:var(--primary); color:white; padding:5px 15px; border-radius:20px; font-weight:bold; font-size:0.9rem;">...</span>
         </div>
 
-        <div class="timeline" id="timeline-container">
-            </div>
-
-        <div class="cargo-box" id="cargo-display-box" style="display: none;">
-            <div>
-                <span style="font-size: 0.85rem; color: var(--gray-light);">Kargo Takip Numarası</span><br>
-                <strong id="cargo-code-text" style="font-size: 1.2rem; color: var(--text-main); letter-spacing: 1px;">Girildiğinde Görünecek</strong>
-            </div>
-            <button onclick="copyCargoCode()" style="background:var(--card-bg); border:1px solid var(--border-color); color:var(--text-main); padding:8px 15px; border-radius:8px; cursor:pointer;">Kopyala</button>
+        <!-- Servis Puan Kutusu (JS dolduracak) -->
+        <div class="service-rating-display" id="service-rating-box">
+            <span class="rating-label">Seçilen Servis</span>
         </div>
 
-        <div class="service-controls" id="service-controls">
-            <h3 style="color: var(--text-main); margin-bottom: 15px;">⚙️ Servis Yönetim Paneli</h3>
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <input type="text" id="cargo-input" placeholder="Kargo Kodu Girin" style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--border-color); background:transparent; color:var(--text-main);">
-                <button id="save-cargo-btn" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">Kaydet</button>
+        <!-- Kargo Kodu Göster -->
+        <div class="cargo-box" id="cargo-display-box" style="display:none;">
+            <div>
+                <span class="cargo-label">Kargo Takip Numarası</span>
+                <strong id="cargo-code-text" class="cargo-code">Girildiğinde Görünecek</strong>
             </div>
-            <button id="advance-step-btn" style="width: 100%; background: #10B981; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.2s;">
-                Sonraki Aşamaya Geç 🚀
+            <button onclick="copyCargoCode()" class="cargo-copy-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Kopyala
             </button>
         </div>
+
+        <!-- Süreç Zaman Çizelgesi -->
+        <div class="timeline-card">
+            <h3 class="timeline-card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Süreç Takibi
+            </h3>
+            <div class="timeline" id="timeline-container"></div>
+        </div>
+
+        <!-- Müşteri Tamamlandı Mesajı -->
+        <div class="completion-notice" id="customer-completion-msg"></div>
+
+        <!-- Servis Yönetim Paneli (sadece servis kullanıcısına görünür) -->
+        <div class="service-controls" id="service-controls">
+            <div class="service-controls-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                <h3>Servis Yönetim Paneli</h3>
+            </div>
+
+            <label style="font-size:0.82rem; font-weight:700; color:var(--gray-light); display:block; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Kargo / Takip Kodu</label>
+            <div class="cargo-input-row">
+                <input type="text" id="cargo-input" placeholder="Kargo kodu girin...">
+                <button id="save-cargo-btn" class="cargo-save-btn">Kaydet</button>
+            </div>
+
+            <button id="advance-step-btn" class="advance-btn" style="display:none;">
+                Sonraki Aşamaya Geç
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <button id="process-complete-btn" class="complete-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Süreci Tamamla ve Müşteriyi Bilgilendir
+            </button>
+        </div>
+
     </section>
 
     <script type="module" src="../js/firebase-config.js"></script>
     <script type="module" src="../js/track.js"></script>
+    <script type="module" src="../js/theme-manager.js"></script>
     <script>
         function copyCargoCode() {
             const text = document.getElementById('cargo-code-text').innerText;
-            if(text && text !== "Girildiğinde Görünecek") {
-                navigator.clipboard.writeText(text);
-                alert("Kargo kodu kopyalandı!");
+            if (text && text !== 'Girildiğinde Görünecek') {
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = event.currentTarget;
+                    const orig = btn.innerHTML;
+                    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Kopyalandı!';
+                    btn.style.color = '#10B981';
+                    btn.style.borderColor = '#10B981';
+                    setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; btn.style.borderColor = ''; }, 1500);
+                });
             }
         }
     </script>
-    <script type="module" src="../js/theme-manager.js"></script>
 </body>
 </html>

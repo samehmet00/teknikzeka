@@ -1,136 +1,352 @@
-/* css/service.css - Sadece Servis Paneli İçin (app.css'i içeri aktarır) */
+/* css/service.css — Servis Paneli (app.css temel olarak HTML'de yüklenir) */
 
-@import url('app.css'); /* Temel renkleri ve navbarı app.css'ten alır */
-
-/* --- TEKNİK SERVİS YENİ LİSTE TASARIMI (AKORDİYON) --- */
-.service-container { display: flex; gap: 2rem; padding: 6rem 5% 4rem; max-width: 1400px; margin: 0 auto; align-items: flex-start; }
-.filter-sidebar { width: 320px; flex-shrink: 0; position: sticky; top: 6rem; }
-.grid-content { flex-grow: 1; width: 100%; }
-
-.filter-sidebar label { display: block; margin-bottom: 5px; margin-top: 15px; }
-.filter-sidebar select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); }
-
-.ticket-list-view { display: flex; flex-direction: column; gap: 1rem; }
-
-.service-list-bar { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
-.service-list-bar:hover { border-color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-
-.bar-header { padding: 1.2rem 1.5rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background-color: transparent; }
-.bar-title { font-weight: 700; color: var(--text-main); font-size: 1.1rem; margin-bottom: 3px; }
-.bar-summary { color: #94A3B8; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 450px; }
-.expand-icon { transition: transform 0.3s ease; color: #94A3B8; font-size: 1.2rem; }
-
-.bar-details { padding: 0 1.5rem; max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); background-color: rgba(0,0,0,0.02); }
-body.light-mode .bar-details { background-color: #F8FAFC; }
-
-.service-list-bar.expanded .bar-details { padding: 1.5rem; max-height: 1000px; opacity: 1; border-top: 1px solid var(--border-color); }
-.service-list-bar.expanded .expand-icon { transform: rotate(180deg); color: var(--primary); }
-
-@media (max-width: 900px) {
-    .service-container { flex-direction: column; }
-    .filter-sidebar { width: 100%; position: relative; top: 0; }
-    .bar-summary { max-width: 200px; }
-}
-
-.service-list-bar .bar-title { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-weight: bold; color: var(--text-main); font-size: 1.1rem; }
-.service-list-bar .bar-summary { display: flex; flex-direction: column; gap: 4px; margin-top: 5px; }
-
-/* Tarih Rozeti Daraltıldı */
-.ticket-date-badge { display: inline-flex; align-items: center; width: fit-content; background: rgba(79, 70, 229, 0.1); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; border: 1px solid rgba(79, 70, 229, 0.2); }
-.ticket-desc-text { color: var(--gray-light); font-size: 0.9rem; }
-
-/* En Yüksek Teklif Rozeti */
-.highest-bid-badge { background: linear-gradient(135deg, #10B981, #047857); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3); }
-
-/* TAB TASARIMLARI (Servis) */
-.tab-container { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
-.tab-btn { background: transparent; border: none; padding: 10px 20px; font-size: 1.05rem; font-weight: 600; color: var(--gray-light); cursor: pointer; position: relative; transition: 0.3s; border-radius: 8px 8px 0 0; }
-.tab-btn:hover { color: var(--text-main); background: rgba(0,0,0,0.02); }
-.tab-btn.active { color: var(--primary); }
-.tab-btn.active::after { content: ''; position: absolute; bottom: -12px; left: 0; width: 100%; height: 3px; background: var(--primary); border-radius: 3px 3px 0 0; }
-.tab-badge { background: #EF4444; color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; margin-left: 5px; vertical-align: top; }
-
- /* YENİ SABİT (STICKY) DÜZEN VE SAYFALAMA TASARIMI */
-body { background-color: var(--bg-main); }
+body { background-color: var(--bg-dark, #F8FAFC); }
 
 .service-layout {
     display: flex;
-    gap: 25px;
-    max-width: 100%; /* 1400px yerine 98% yaptık, ekranı tamamen kaplar */
-    margin: 95px auto 30px;
-    padding: 0 1%; /* Sağdan soldan boşluğu iyice kıstık */
-    align-items: flex-start; /* Sabitlik için kritik */
+    gap: 20px;
+    max-width: 100%;
+    margin: 85px auto 30px;
+    padding: 0 1.5%;
+    align-items: flex-start;
 }
 
-/* 1. Sol Menü (Filtreler) Sabitleme */
+/* --- SOL MENÜ (FİLTRE SİDEBAR) --- */
 .sticky-sidebar {
-    width: 400px; 
+    width: 260px;
     flex-shrink: 0;
     position: sticky;
-    top: 90px; /* Sabit duracağı yükseklik */
-    height: calc(100vh - 110px);
+    top: 85px;
+    height: calc(100vh - 105px);
     overflow-y: auto;
-    border-radius: 12px;
+    border-radius: 14px;
 }
-
-/* Scrollbar Gizleme (Sadece filtre menüsü için) */
-.sticky-sidebar::-webkit-scrollbar { width: 5px; }
+.sticky-sidebar::-webkit-scrollbar { width: 4px; }
 .sticky-sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
-body.dark-mode .sticky-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
 
-/* 2. Sağ İçerik Alanı */
-.content-area {
-    flex: 1;
-    min-width: 0;
+/* Filtre içeriği */
+.filter-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--gray-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.filter-content select.premium-input {
+    margin-bottom: 12px !important;
+    padding: 9px 12px !important;
+    font-size: 0.88rem !important;
+    border-radius: 10px !important;
 }
 
-/* 3. Başlık ve Sekmeleri Sabitleme */
+/* Mobil Filtre Header */
+.mobile-filter-header {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: 0.2s;
+}
+.mobile-filter-header:hover { border-color: var(--primary); }
+.mobile-filter-header h3 { margin: 0; font-size: 0.95rem; color: var(--text-main); }
+.mobile-filter-header svg { transition: transform 0.3s; color: var(--gray-light); }
+.sticky-sidebar.open .mobile-filter-header svg { transform: rotate(180deg); }
+
+.desktop-filter-header {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.desktop-filter-header svg { color: var(--primary); }
+
+/* --- SAĞ İÇERİK --- */
+.content-area { flex: 1; min-width: 0; }
+
+/* --- SABİT BAŞLIK --- */
 .sticky-header {
     position: sticky;
-    top: 75px; /* Navbar'ın tam bittiği yer (Navbar 75px olduğu için) */
-    background: var(--bg-main);
+    top: 75px;
+    background: var(--bg-dark, #F8FAFC);
     z-index: 20;
-    padding: 15px 0 5px;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 20px;
-    transition: background 0.4s ease;
+    padding: 12px 0 8px;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 18px;
+    transition: background 0.3s;
 }
-
 .header-top-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
+}
+.header-top-row h2 {
+    color: var(--text-main);
+    font-size: 1.3rem;
+    margin: 0;
+    font-weight: 800;
+}
+#ticket-count {
+    background: linear-gradient(135deg, var(--primary), #6366f1);
+    color: white;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.3px;
 }
 
-.header-top-row h2 { color: var(--text-main); font-size: 1.5rem; margin: 0; }
-#ticket-count { background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
-
-/* TAB TASARIMLARI (Servis) */
-.tab-container { display: flex; gap: 10px; }
-.tab-btn { background: transparent; border: none; padding: 10px 20px; font-size: 1.05rem; font-weight: 600; color: var(--gray-light); cursor: pointer; position: relative; transition: 0.3s; border-radius: 8px 8px 0 0; }
-.tab-btn:hover { color: var(--text-main); background: rgba(0,0,0,0.02); }
+/* --- TAB TASARIMI --- */
+.tab-container {
+    display: flex;
+    gap: 6px;
+}
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 8px 16px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--gray-light);
+    cursor: pointer;
+    position: relative;
+    transition: 0.25s;
+    border-radius: 8px 8px 0 0;
+    white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text-main); }
 .tab-btn.active { color: var(--primary); }
-.tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px; background: var(--primary); border-radius: 3px 3px 0 0; }
-.tab-badge { background: #EF4444; color: white; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; margin-left: 5px; vertical-align: top; }
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px; left: 0;
+    width: 100%; height: 2px;
+    background: var(--primary);
+    border-radius: 2px 2px 0 0;
+}
+.tab-badge {
+    background: #EF4444;
+    color: white;
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    border-radius: 10px;
+    margin-left: 4px;
+    vertical-align: middle;
+}
 
-/* 4. Sayfalama (Pagination) Butonları */
-.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 30px; padding-bottom: 20px; }
-.page-btn { padding: 8px 14px; border-radius: 8px; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); font-weight: 600; cursor: pointer; transition: 0.2s; }
+/* --- TİCKET LİSTESİ --- */
+.ticket-list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* --- AKORDİYON BAR KARTI --- */
+.service-list-bar {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+    border-left: 3px solid transparent;
+}
+.service-list-bar:hover {
+    border-left-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    transform: translateY(-1px);
+}
+.service-list-bar.expanded {
+    border-left-color: var(--primary);
+    box-shadow: 0 6px 24px rgba(79,70,229,0.08);
+}
+
+.bar-header {
+    padding: 1rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    gap: 12px;
+}
+.bar-title {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 0.98rem;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    overflow: hidden;
+}
+.bar-summary {
+    color: var(--gray-light);
+    font-size: 0.82rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 3px;
+    min-width: 0;
+}
+.expand-icon {
+    transition: transform 0.3s ease;
+    color: var(--gray-light);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+.service-list-bar.expanded .expand-icon {
+    transform: rotate(180deg);
+    color: var(--primary);
+}
+
+.bar-details {
+    padding: 0 1.2rem;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(0,0,0,0.015);
+}
+body.light-mode .bar-details { background: #FAFBFF; }
+.service-list-bar.expanded .bar-details {
+    padding: 1.2rem;
+    max-height: 1200px;
+    opacity: 1;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- ROZETLER --- */
+.ticket-date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(79,70,229,0.08);
+    color: var(--primary);
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border: 1px solid rgba(79,70,229,0.15);
+    white-space: nowrap;
+    width: fit-content;
+    max-width: fit-content;
+    align-self: flex-start;
+}
+.ticket-desc-text {
+    color: var(--gray-light);
+    font-size: 0.82rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.highest-bid-badge {
+    background: linear-gradient(135deg, #10B981, #047857);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+/* --- SAYFALAMA --- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 24px;
+    padding-bottom: 20px;
+    flex-wrap: wrap;
+}
+.page-btn {
+    padding: 7px 13px;
+    border-radius: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.88rem;
+}
 .page-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
 .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.mobile-filter-header { display: none; }
+/* --- MOBİL DÜZELTMELER --- */
 @media (max-width: 992px) {
-    .service-layout { flex-direction: column; }
-    .sticky-sidebar { width: 100%; position: static; height: auto; margin-bottom: 15px; }
-    .sticky-header { top: 60px; } /* Mobilde navbar daha dar */
-    
-    .mobile-filter-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 0; background: var(--card-bg); border-radius: 8px; padding: 10px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .service-layout {
+        flex-direction: column;
+        margin: 70px auto 20px;
+        padding: 0 3%;
+        gap: 12px;
+    }
+    .sticky-sidebar {
+        width: 100%;
+        position: static;
+        height: auto;
+    }
+    .sticky-header { top: 60px; padding: 8px 0 6px; }
+    .mobile-filter-header { display: flex; }
     .desktop-filter-header { display: none; }
-    .filter-content { display: none; margin-top: 15px; grid-template-columns: 1fr 1fr; gap: 10px; align-items: end; }
+    .filter-content {
+        display: none;
+        margin-top: 12px;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        align-items: end;
+    }
     .sticky-sidebar.open .filter-content { display: grid; }
-    .sticky-sidebar.open .mobile-filter-header svg { transform: rotate(180deg); }
-    .sticky-sidebar.open .mobile-filter-header { border-bottom: none; margin-bottom: 0; }
+}
+
+@media (max-width: 768px) {
+    /* Servis paneli mobil font ve boşluk küçültme */
+    .header-top-row h2 { font-size: 1.05rem; }
+    #ticket-count { font-size: 0.75rem; padding: 2px 9px; }
+    .tab-btn { font-size: 0.82rem; padding: 6px 10px; }
+
+    /* Bar kartları kompakt */
+    .bar-header { padding: 0.8rem 0.9rem; gap: 8px; }
+    .bar-title { font-size: 0.88rem; gap: 4px; }
+    .bar-summary { font-size: 0.77rem; }
+    .ticket-date-badge { font-size: 0.68rem; padding: 1px 5px; }
+    .ticket-desc-text { font-size: 0.77rem; max-width: 100%; }
+    .bar-details { }
+    .service-list-bar.expanded .bar-details { padding: 0.9rem; }
+
+    /* Aksiyon butonları mobilde stack */
+    .service-list-bar .bar-details div[style*="display:flex"] {
+        flex-wrap: wrap;
+    }
+
+    /* Sayfalama */
+    .pagination { gap: 4px; }
+    .page-btn { padding: 5px 10px; font-size: 0.82rem; }
+
+    /* Teklif input alanı */
+    .service-list-bar input[type="text"] { font-size: 0.88rem; padding: 7px 10px; }
+}
+
+@media (max-width: 480px) {
+    .service-layout { padding: 0 2%; }
+    .bar-title { font-size: 0.82rem; }
+    .bar-summary { font-size: 0.72rem; }
+    .expand-icon { font-size: 0.85rem; }
+    /* İkon boyutu küçült */
+    .bar-header span[style*="font-size: 1.8rem"] { font-size: 1.3rem !important; }
 }

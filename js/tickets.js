@@ -20,65 +20,116 @@ async function sendEmailNotification(toEmail, subject, message) {
     }
 }
 
+
 function formatAIReport(reportString) {
     if (!reportString) return '';
     try {
-        const parts = reportString.split('Zorluk:');
-        let issue = parts[0].replace('Arıza:', '').trim();
-        let difficultyPart = parts[1].split('Öneri:');
-        let difficulty = difficultyPart[0].trim();
-        let solution = difficultyPart[1].trim();
+        let cleanText = reportString.replace(/\*/g, '');
+        let ariza = '', zorluk = 5, sure = '—', aciliyet = 'Orta', cozum = '';
+        cleanText.split('\n').forEach(line => {
+            const lower = line.toLowerCase();
+            if (lower.includes('ariza:') || lower.includes('arıza:')) ariza = line.split(':').slice(1).join(':').trim();
+            if (lower.includes('zorluk:')) zorluk = parseInt(line.split(':').slice(1).join(':').trim().replace(/\D/g,'')) || 5;
+            if (lower.includes('sure:') || lower.includes('süre:')) sure = line.split(':').slice(1).join(':').trim();
+            if (lower.includes('aciliyet:')) aciliyet = line.split(':').slice(1).join(':').trim();
+            if (lower.includes('cozum:') || lower.includes('çözüm:') || lower.includes('öneri:')) cozum = line.split(':').slice(1).join(':').trim();
+        });
+        // Eski format fallback (Arıza: ... Zorluk: ... Öneri:)
+        if (!ariza || !cozum) {
+            const p = reportString.split('Zorluk:');
+            if (p.length >= 2) {
+                ariza = ariza || p[0].replace('Arıza:', '').trim();
+                const rest = p[1].split(/Öneri:|Çözüm:|Cozum:/i);
+                zorluk = parseInt(rest[0].trim()) || zorluk;
+                cozum = cozum || (rest[1] || '').trim();
+            }
+        }
+        if (!ariza) ariza = 'Analiz ediliyor...';
 
-        let diffColor = '#10B981';
-        let diffNum = parseInt(difficulty) || 1;
-        if (diffNum > 4 && diffNum < 8) diffColor = '#F59E0B';
-        if (diffNum >= 8) diffColor = '#EF4444';
-        let diffPct = (diffNum / 10) * 100;
+        const diffColor = zorluk <= 3 ? '#10B981' : zorluk <= 6 ? '#F59E0B' : '#EF4444';
+        const diffLabel = zorluk <= 3 ? 'Kolay' : zorluk <= 6 ? 'Orta' : 'Zor';
+        const diffBg    = zorluk <= 3 ? 'rgba(16,185,129,0.12)' : zorluk <= 6 ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)';
+        const aciColor  = aciliyet.toLowerCase().includes('yüksek') || aciliyet.toLowerCase().includes('yuksek') ? '#EF4444'
+                        : aciliyet.toLowerCase().includes('orta') ? '#F59E0B' : '#10B981';
+        const diffPct   = zorluk * 10;
 
         return `
-        <div class="premium-ai-box" style="margin-top: 1.5rem; border-left: 4px solid var(--primary); padding-left: 1.2rem;">
-            <h4 style="margin: 0 0 1rem 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--primary); display: flex; align-items: center; gap: 6px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg> Yapay Zekâ Ön Teşhisi
-            </h4>
-            <div class="ai-detail-row">
-                <div style="flex:1;">
-                    <span style="font-size:0.8rem; color:#94A3B8; font-weight:bold; text-transform:uppercase; letter-spacing:1px;">Tespit Edilen Arıza</span>
-                    <p style="margin:2px 0 0; color:var(--text-main); font-size:1rem; line-height:1.4; font-weight: 500;">${issue}</p>
+        <div class="ai-diag-card">
+            <div class="ai-diag-header">
+                <div class="ai-diag-icon-wrap">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 10 4a2 2 0 0 1 2-2zM9 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
                 </div>
+                <span class="ai-diag-title">Yapay Zeka Ön Teşhis Raporu</span>
+                <span class="ai-diag-chip" style="background:${diffBg}; color:${diffColor};">${diffLabel}</span>
             </div>
-            <div class="ai-detail-row" style="margin-top: 12px;">
-                <div style="flex:1;">
-                    <span style="font-size:0.8rem; color:#94A3B8; font-weight:bold; text-transform:uppercase; letter-spacing:1px;">Onarım Zorluğu: <span style="color:${diffColor};">${difficulty}/10</span></span>
-                    <div class="difficulty-track" style="height: 10px; background: rgba(0,0,0,0.1); border-radius: 10px; margin-top: 6px; overflow: hidden; border: 1px solid var(--border-color);">
-                        <div class="difficulty-fill" style="width: ${diffPct}%; background: ${diffColor}; height: 100%; border-radius: 10px; transition: width 1s ease;"></div>
+
+            <div class="ai-diag-ariza">${ariza}</div>
+
+            <div class="ai-diag-metrics">
+                <div class="ai-metric">
+                    <div class="ai-metric-label">Onarım Zorluğu</div>
+                    <div class="ai-metric-bar-wrap">
+                        <div class="ai-metric-bar-track">
+                            <div class="ai-metric-bar-fill" style="width:${diffPct}%; background:linear-gradient(90deg,${diffColor}88,${diffColor});"></div>
+                        </div>
+                        <span class="ai-metric-val" style="color:${diffColor}">${zorluk}/10</span>
+                    </div>
+                </div>
+                <div class="ai-metric">
+                    <div class="ai-metric-label">Tahmini Süre</div>
+                    <div class="ai-metric-info">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        ${sure}
+                    </div>
+                </div>
+                <div class="ai-metric">
+                    <div class="ai-metric-label">Aciliyet</div>
+                    <div class="ai-metric-info" style="color:${aciColor}">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        ${aciliyet}
                     </div>
                 </div>
             </div>
-            <div class="ai-detail-row" style="margin-top: 12px;">
-                <div style="flex:1;">
-                    <span style="font-size:0.8rem; color:#94A3B8; font-weight:bold; text-transform:uppercase; letter-spacing:1px;">Çözüm Önerisi</span>
-                    <p style="margin:2px 0 0; color:var(--text-main); font-size:0.95rem; line-height:1.4; opacity: 0.9;">${solution}</p>
-                </div>
-            </div>
+
+            ${cozum ? `<div class="ai-diag-solution">
+                <div class="ai-diag-sol-label">Çözüm Önerisi</div>
+                <div class="ai-diag-sol-text">${cozum}</div>
+            </div>` : ''}
         </div>
         `;
     } catch (e) {
-        return `<div class="ai-report-box"><strong>${icons.bot} Yapay Zekâ Özeti:</strong><br>${reportString}</div>`;
+        return `<div class="ai-diag-card" style="padding:1rem; font-size:0.88rem; color:var(--text-main);">${reportString}</div>`;
     }
 }
 
 // --- GLOBAL METOTLAR ---
-window.currentTab = 'all';
+
+window.currentTab = 'pending';
 window.switchTab = (tabName, event) => {
     window.currentTab = tabName;
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    if (event) event.target.classList.add('active');
+    if (event) event.currentTarget.classList.add('active');
 
-    const allTickets = document.querySelectorAll('.ticket-wrapper');
-    allTickets.forEach(wrapper => {
-        const isAssigned = wrapper.innerHTML.includes('status-onaylandi') || wrapper.innerHTML.includes('Satıldı');
-        wrapper.style.display = (tabName === 'active' && !isAssigned) ? 'none' : 'block';
+    const allWrappers = document.querySelectorAll('.ticket-wrapper');
+    let visibleCount = 0;
+    allWrappers.forEach(wrapper => {
+        const state = wrapper.getAttribute('data-state');
+        const show = state === tabName;
+        wrapper.style.display = show ? 'block' : 'none';
+        if (show) visibleCount++;
     });
+
+    // Boş durum mesajı
+    const emptyEl = document.getElementById('tickets-empty-state');
+    if (emptyEl) emptyEl.remove();
+    if (visibleCount === 0) {
+        const labels = { pending: 'Bekleyen kaydınız bulunmuyor.', active: 'Aktif işleminiz bulunmuyor.', completed: 'Tamamlanan işleminiz bulunmuyor.' };
+        const div = document.createElement('div');
+        div.id = 'tickets-empty-state';
+        div.style.cssText = 'text-align:center; padding:3rem 1rem; color:var(--gray-light); font-size:0.95rem;';
+        div.innerHTML = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:1rem; opacity:0.4;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><br>${labels[tabName] || 'Kayıt bulunamadı.'}`;
+        document.getElementById('ticket-list').appendChild(div);
+    }
 };
 
 window.toggleSwipe = (event, el) => {
@@ -125,9 +176,31 @@ window.initSwipeMenu = () => {
 
 window.deleteTicket = async (ticketId, event) => {
     if (event) event.stopPropagation();
-    if (confirm("Bu kaydı silmek istediğinize emin misiniz?")) {
-        try { await deleteDoc(doc(db, "tickets", ticketId)); } catch (error) { alert("Silinirken bir hata oluştu."); }
+    // Aktif işlemler silinemez
+    const snap = await getDoc(doc(db, 'tickets', ticketId));
+    if (snap.exists() && snap.data().assignedService) {
+        alert('Bu kayıt şu anda aktif bir servise bağlı. Silmek yerine "İşlemi İptal Et" butonunu kullanın.');
+        return;
     }
+    if (confirm('Bu kaydı kalıcı olarak silmek istediğinize emin misiniz?')) {
+        try { await deleteDoc(doc(db, 'tickets', ticketId)); } catch (e) { alert('Silinirken bir hata oluştu.'); }
+    }
+};
+
+window.requestCancelTicket = async (ticketId, serviceEmail, event) => {
+    if (event) event.stopPropagation();
+    if (!confirm('Bu işlemi iptal etmek istediğinize emin misiniz? Servis iptal talebinizi görecek ve onaylayacak.')) return;
+    try {
+        await updateDoc(doc(db, 'tickets', ticketId), { cancellationRequested: true });
+        await addDoc(collection(db, 'notifications'), {
+            userEmail: serviceEmail,
+            message: 'Müşteri bu işlemi iptal etmek istiyor. Lütfen servis panelinizden onaylayın.',
+            link: 'service.html',
+            read: false,
+            createdAt: serverTimestamp()
+        });
+        alert('İptal talebiniz servise iletildi. Servis onayladığında kayıt serbest kalacak.');
+    } catch (e) { console.error('İptal hatası:', e); alert('Hata oluştu.'); }
 };
 
 window.selectService = async (ticketId, serviceEmail, event) => {
@@ -169,22 +242,32 @@ window.openReviewModal = (ticketId, serviceEmail, event) => {
     currentReviewTicketId = ticketId;
     currentReviewService = serviceEmail;
     selectedRating = 0;
-    document.getElementById('rating-service-name').innerText = `${serviceEmail} ile olan deneyiminizi puanlayın.`;
+    document.getElementById('rating-service-name').innerText = `${serviceEmail} - deneyiminizi puanlayın`;
     document.getElementById('rating-comment').value = '';
-    document.querySelectorAll('#star-rating span').forEach(s => s.style.color = '#ccc');
-    document.getElementById('rating-modal').style.display = 'flex';
+    document.querySelectorAll('#star-rating span').forEach(s => s.style.color = 'var(--border-color)');
+    document.getElementById('rating-modal').classList.add('open');
 };
 
 document.querySelectorAll('#star-rating span').forEach(star => {
+    star.addEventListener('mouseenter', (e) => {
+        const hovered = parseInt(e.target.getAttribute('data-val'));
+        document.querySelectorAll('#star-rating span').forEach(s => {
+            s.style.color = parseInt(s.getAttribute('data-val')) <= hovered ? '#F59E0B' : 'var(--border-color)';
+            s.style.transform = parseInt(s.getAttribute('data-val')) === hovered ? 'scale(1.2)' : 'scale(1)';
+        });
+    });
     star.addEventListener('click', (e) => {
         selectedRating = parseInt(e.target.getAttribute('data-val'));
         document.querySelectorAll('#star-rating span').forEach(s => {
-            if (parseInt(s.getAttribute('data-val')) <= selectedRating) {
-                s.style.color = '#F59E0B'; // Gold
-            } else {
-                s.style.color = '#ccc';
-            }
+            s.style.color = parseInt(s.getAttribute('data-val')) <= selectedRating ? '#F59E0B' : 'var(--border-color)';
+            s.style.transform = 'scale(1)';
         });
+    });
+});
+document.getElementById('star-rating')?.addEventListener('mouseleave', () => {
+    document.querySelectorAll('#star-rating span').forEach(s => {
+        s.style.color = parseInt(s.getAttribute('data-val')) <= selectedRating ? '#F59E0B' : 'var(--border-color)';
+        s.style.transform = 'scale(1)';
     });
 });
 
@@ -216,7 +299,7 @@ document.getElementById('submit-rating-btn')?.addEventListener('click', async ()
         });
 
         alert("Değerlendirmeniz için teşekkürler!");
-        document.getElementById('rating-modal').style.display = 'none';
+        document.getElementById('rating-modal').classList.remove('open');
     } catch (err) {
         console.error(err);
         alert("Değerlendirme gönderilirken hata oluştu.");
@@ -230,14 +313,29 @@ document.getElementById('submit-rating-btn')?.addEventListener('click', async ()
 
 onAuthStateChanged(auth, async (user) => {
     if (user && ticketList) {
+
+        // --- ANI ÖNBELLEK YÜKLEME ---
+        const cachedHtml = localStorage.getItem('tz_customer_tickets_cache');
+        if (cachedHtml) {
+            ticketList.innerHTML = cachedHtml;
+            // Cache'ten yüklenen tab görünümünü hemen uygula
+            window.switchTab(window.currentTab, null);
+        } else {
+            ticketList.innerHTML = `<div style="text-align:center; padding:3rem 1rem; color:var(--gray-light);">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px; opacity:0.4; display:block; margin-left:auto; margin-right:auto;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Kayıtlarınız yükleniyor...
+            </div>`;
+        }
+
         const q = query(collection(db, "tickets"), where("userEmail", "==", user.email));
         onSnapshot(q, async (querySnapshot) => {
             let generatedHtml = '';
 
             if (querySnapshot.empty) {
-                generatedHtml = '<p style="color: var(--gray-light); text-align:center;">Henüz bir arıza kaydınız bulunmuyor.</p>';
+                generatedHtml = '<p style="color:var(--gray-light); text-align:center; padding:2rem;">Henüz bir arıza kaydınız bulunmuyor.</p>';
                 ticketList.innerHTML = generatedHtml;
-                localStorage.setItem('tz_customer_tickets_cache', generatedHtml);
+                // Ham veriyi temizle
+                localStorage.removeItem('tz_customer_tickets_cache');
                 return;
             }
 
@@ -279,13 +377,22 @@ onAuthStateChanged(auth, async (user) => {
                 let bidHtml = '';
                 if (data.isForSale) {
                     if (data.status === "Satıldı") {
+                        const saleRatingData = serviceRatings[data.assignedService];
+                        let saleRatingInfoHtml = '';
+                        if (saleRatingData && saleRatingData.count > 0) {
+                            const avg = (saleRatingData.sum / saleRatingData.count).toFixed(1);
+                            saleRatingInfoHtml = `<div style="display:flex; align-items:center; gap:6px; margin-top:5px; font-size:0.85rem;"><span style="color:var(--gray-light);">Servis Puani:</span><span style="display:inline-flex; align-items:center; gap:3px; color:#F59E0B; font-weight:700;"><svg width="12" height="12" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>${avg} (${saleRatingData.count})</span></div>`;
+                        }
                         bidHtml = `
                         <div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:10px;">
-                            <span style="display:flex; align-items:center; gap:5px;"><strong>${icons.check} Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> servisine ${data.acceptedPrice.toLocaleString('tr-TR')} ₺'ye satıldı!</strong></span>
+                            <div>
+                                <span style="display:flex; align-items:center; gap:5px;"><strong>${icons.check} Cihaziniz <span style="text-decoration: underline;">${data.assignedService}</span> servisine ${data.acceptedPrice.toLocaleString('tr-TR')} TL'ye satildi!</strong></span>
+                                ${saleRatingInfoHtml}
+                            </div>
                             ${cargoHtml}
-                            <div style="display:flex; gap:10px; margin-top: 10px;">
-                                <a href="track.html?id=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: linear-gradient(135deg, #10B981, #059669); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:5px;">Süreci Takip Et ${icons.truck}</a>
-                                <a href="chat.html?ticketId=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: transparent; border: 1px solid #10B981; color: #10B981; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:5px;">${icons.chat} Mesajlaş</a>
+                            <div style="display:flex; gap:10px; margin-top: 4px;">
+                                <a href="track.html?id=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: linear-gradient(135deg, #10B981, #059669); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:5px;">Sureci Takip Et ${icons.truck}</a>
+                                <a href="chat.html?ticketId=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: transparent; border: 1px solid #10B981; color: #10B981; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:5px;">${icons.chat} Mesajlas</a>
                             </div>
                         </div>`;
                     } else {
@@ -315,13 +422,31 @@ onAuthStateChanged(auth, async (user) => {
                     }
                 } else {
                     if (data.assignedService) {
+                        const ratingData = serviceRatings[data.assignedService];
+                        let ratingInfoHtml = '';
+                        if (ratingData && ratingData.count > 0) {
+                            const avg = (ratingData.sum / ratingData.count).toFixed(1);
+                            ratingInfoHtml = `
+                            <div style="display:flex; align-items:center; gap:6px; margin-top:6px; font-size:0.85rem;">
+                                <span style="color:var(--gray-light);">Servis Puani:</span>
+                                <span style="display:inline-flex; align-items:center; gap:4px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.2); padding:2px 10px; border-radius:20px; font-weight:700; color:#F59E0B;">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                    ${avg} <span style="font-weight:400; color:var(--gray-light);">(${ratingData.count})</span>
+                                </span>
+                            </div>`;
+                        } else {
+                            ratingInfoHtml = `<div style="font-size:0.8rem; color:var(--gray-light); margin-top:4px;">Bu servis henuz degerlendirilmemis.</div>`;
+                        }
+
                         bidHtml = `
-                        <div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:10px;">
-                            <span style="display:flex;align-items:center;gap:5px;"><strong>${icons.check} Cihazınız <span style="text-decoration: underline;">${data.assignedService}</span> isimli servise yönlendirildi.</strong></span>
-                            ${cargoHtml}
-                            <div style="display:flex; gap:10px; margin-top: 10px;">
-                                <a href="track.html?id=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: linear-gradient(135deg, var(--primary), #4338ca); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">Süreci Takip Et ${icons.truck}</a>
-                                <a href="chat.html?ticketId=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: transparent; border: 1px solid #10B981; color: #10B981; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">${icons.chat} Mesajlaş</a>
+                        <div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:8px;">
+                            <div>
+                                <span style="display:flex;align-items:center;gap:5px;">${icons.check} Cihaziniz <strong style="text-decoration:underline;">${data.assignedService}</strong> isimli servise yonlendirildi.</span>
+                                ${ratingInfoHtml}
+                            </div>
+                            <div style="display:flex; gap:10px; margin-top: 4px;">
+                                <a href="track.html?id=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: linear-gradient(135deg, var(--primary), #4338ca); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">Sureci Takip Et ${icons.truck}</a>
+                                <a href="chat.html?ticketId=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: transparent; border: 1px solid #10B981; color: #10B981; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">${icons.chat} Mesajlas</a>
                             </div>
                         </div>`;
                     }
@@ -343,51 +468,97 @@ onAuthStateChanged(auth, async (user) => {
                 }
 
                 let reviewHtml = '';
-                if ((data.status === 'Satıldı' || data.status === 'Servise Yönlendirildi') && data.processStep >= 3 && !data.isReviewed) {
+                if (data.assignedService && data.processCompleted && !data.isReviewed) {
                     reviewHtml = `
                     <div style="margin-top: 15px;">
-                        <button onclick="window.openReviewModal('${ticketId}', '${data.assignedService}', event)" style="width: 100%; background: var(--primary); padding: 12px; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                            Servisi Değerlendir
+                        <button onclick="window.openReviewModal('${ticketId}', '${data.assignedService}', event)" style="width: 100%; background: linear-gradient(135deg, #F59E0B, #D97706); padding: 12px; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(245,158,11,0.3); transition: 0.2s;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            Servisi Degerlendir
                         </button>
+                    </div>`;
+                } else if (data.assignedService && data.processCompleted && data.isReviewed) {
+                    reviewHtml = `<div style="margin-top:12px; text-align:center; font-size:0.85rem; color:#10B981; display:flex; align-items:center; justify-content:center; gap:5px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Degerlendirmeniz iletildi, tesekkurler!
                     </div>`;
                 }
 
+                // Ticket durumunu belirle
+                let ticketState = 'pending';
+                if (data.processCompleted) {
+                    ticketState = 'completed';
+                } else if (data.assignedService) {
+                    ticketState = 'active';
+                }
                 const statusClass = data.status === 'Bekliyor' ? 'status-bekliyor' : 'status-onaylandi';
 
+                // Durum bazlı aksiyon butonu
+                let actionBtn = '';
+                if (ticketState === 'active') {
+                    if (data.cancellationRequested) {
+                        actionBtn = `<div style="margin-top:8px; padding:8px 12px; background:rgba(245,158,11,0.1); border:1px solid #F59E0B; border-radius:8px; font-size:0.82rem; color:#D97706; display:flex; align-items:center; gap:6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            İptal talebi gönderildi — servis onayı bekleniyor.
+                        </div>`;
+                    } else {
+                        actionBtn = `<button onclick="window.requestCancelTicket('${ticketId}', '${data.assignedService}', event)" style="margin-top:8px; width:100%; padding:9px; background:transparent; border:1.5px solid #EF4444; color:#EF4444; border-radius:8px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.08)'" onmouseout="this.style.background='transparent'">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                            İşlemi İptal Et
+                        </button>`;
+                    }
+                }
+
                 generatedHtml += `
-                    <div class="ticket-wrapper">
-                        <div class="delete-action-btn" onclick="window.deleteTicket('${ticketId}', event)" title="Kaydı Sil"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></div>
+                    <div class="ticket-wrapper" data-state="${ticketState}">
+                        ${ticketState !== 'active' ? `<div class="delete-action-btn" onclick="window.deleteTicket('${ticketId}', event)" title="Kaydı Sil"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></div>` : ''}
                         <div class="modern-ticket-card" onclick="window.toggleSwipe(event, this)">
                             <div class="modern-ticket-header">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <span style="font-size: 1.8rem; background: rgba(79, 70, 229, 0.1); border-radius: 12px; padding: 5px; display:inline-flex; align-items:center; justify-content:center;">${icons.phone}</span>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <span style="font-size:1.8rem; background:rgba(79,70,229,0.1); border-radius:12px; padding:5px; display:inline-flex; align-items:center; justify-content:center;">${icons.phone}</span>
                                     <div>
-                                        <h4 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">${deviceInfo}</h4>
-                                        <span style="font-size: 0.8rem; color: #94A3B8; display:flex; align-items:center; gap:3px;">${icons.calendar} ${dateStr} | Kayıt ID: #${ticketId.slice(0, 6).toUpperCase()}</span>
+                                        <h4 style="margin:0; font-size:1.05rem; color:var(--text-main);">${deviceInfo}</h4>
+                                        <span style="font-size:0.78rem; color:#94A3B8; display:flex; align-items:center; gap:3px;">${icons.calendar} ${dateStr} &nbsp;|&nbsp; #${ticketId.slice(0,6).toUpperCase()}</span>
                                     </div>
                                 </div>
                                 <span class="status-pill ${statusClass}">${data.status}</span>
                             </div>
-                            <div><p style="color: var(--text-main); font-size: 0.95rem;"><strong>Şikayet Özeti:</strong> ${data.description}</p></div>
-                            ${formatAIReport(data.aiReport)}
+                            <div><p style="color:var(--text-main); font-size:0.92rem;"><strong>Şikayet:</strong> ${data.description}</p></div>
+                             ${formatAIReport(data.aiReport)}
                             ${bidHtml}
                             ${reviewHtml}
+                            ${actionBtn}
                         </div>
                     </div>
                 `;
             });
 
             ticketList.innerHTML = generatedHtml;
+
+            // Önbelleğe kaydet — bir sonraki açılışta anında göster
             localStorage.setItem('tz_customer_tickets_cache', generatedHtml);
 
-            let activeCount = myTickets.filter(t => t.assignedService !== "").length;
+            // Sayaclar
+            const pendingCount = myTickets.filter(t => !t.assignedService && !t.processCompleted).length;
+            const activeCount = myTickets.filter(t => t.assignedService && !t.processCompleted).length;
+            const completedCount = myTickets.filter(t => !!t.processCompleted).length;
+            const pendingBadge = document.getElementById('pending-badge');
             const activeBadge = document.getElementById('active-badge');
+            const completedBadge = document.getElementById('completed-badge');
+            if (pendingBadge) {
+                pendingBadge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+                pendingBadge.innerText = pendingCount;
+            }
             if (activeBadge) {
-                if (activeCount > 0) { activeBadge.style.display = 'inline-block'; activeBadge.innerText = activeCount; }
-                else { activeBadge.style.display = 'none'; }
+                activeBadge.style.display = activeCount > 0 ? 'inline-block' : 'none';
+                activeBadge.innerText = activeCount;
+            }
+            if (completedBadge) {
+                completedBadge.style.display = completedCount > 0 ? 'inline-block' : 'none';
+                completedBadge.innerText = completedCount;
             }
 
+            // Mevcut tab gorunumunu yenile
+            window.switchTab(window.currentTab, null);
             window.initSwipeMenu();
         });
     }

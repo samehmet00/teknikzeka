@@ -1,168 +1,636 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
-
-    <!-- Mobil Uygulama (PWA) Etiketleri -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4f46e5">
-    <meta name="mobile-web-app-capable" content="yes"> 
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TeknikZeka">
+    <meta name="description"
+        content="Yapay zekâ destekli teknik servis yönetim platformu. Arıza kaydı oluşturun, servislere iletin.">
     <link rel="manifest" href="manifest.json">
-
-    <title>TeknikZeka - Yapay Zekâ Destekli Servis Yönetimi</title>
+    <title>TeknikZeka — Yapay Zekâ Destekli Servis Yönetimi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/home.css">
 </head>
-<body>
-    <nav class="navbar">
-        <button id="mobile-menu-btn" class="nav-icon-btn" title="Menü">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        </button>
 
-        <a href="index.html" class="logo" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
-            <img src="../img/icon-512.png" alt="TeknikZeka Logo" style="width: 35px; height: auto; border-radius: 8px;">
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="logo" style="text-decoration:none; display:flex; align-items:center; gap:8px;">
+            <img src="img/icon-512.png" alt="TeknikZeka"
+                style="width:32px; height:32px; border-radius:8px; object-fit:cover;">
             <div>Teknik<span>Zeka</span></div>
         </a>
-        
         <div class="nav-links" id="nav-menu">
-            <a href="pages/login.html" id="nav-records-link">Arıza Kayıtlarım</a>
+            <a href="pages/tickets.html" id="nav-records-link">Arıza Kayıtlarım</a>
             <a href="#sell-device">Cihaz Sat</a>
             <a href="pages/about.html">Hakkımızda</a>
             <a href="#footer">İletişim</a>
         </div>
-        
         <div class="nav-actions-pill">
-
             <div id="dynamic-auth-menu">
                 <a href="pages/login.html" class="nav-login-btn">Giriş Yap</a>
             </div>
         </div>
+        <button id="mobile-menu-btn" class="nav-icon-btn" title="Menü" style="display:none;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+        </button>
     </nav>
 
-    <header class="hero">
-        <div class="hero-content">
-            <h1 class="animate-title">Cihaz Arızalarınıza <br><span class="ai-glow-text">Yapay </span><span class="ai-glow-text" style="color: var(--accent);">Zekâ</span> <br>ile Çözüm Bulun</h1>
-            <p class="animate-subtitle">Teknik servise gitmeden önce sorunun ne olduğunu öğrenin. Şikayetinizi yazın, gelişmiş algoritmamız saniyeler içinde donanımsal ön teşhisinizi yapsın ve sizi en doğru yerel servise yönlendirsin.</p>
-            <div style="min-height: 70px; display: flex; justify-content: center; align-items: center;">
-                <div id="btn-wrapper" style="width: fit-content; height: fit-content;">
-                    <a href="pages/login.html" class="modern-dual-btn btn-blue" id="hero-action-btn">
-                        <div class="btn-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+    <!-- HERO -->
+    <header class="home-hero">
+        <!-- Arka plan animasyon topları -->
+        <div class="hero-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+
+        <div class="hero-inner">
+            <div class="hero-badge fade-up" style="animation-delay:0s;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 10 4a2 2 0 0 1 2-2zM9 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
+                </svg>
+                Yapay Zekâ Destekli Platform
+            </div>
+
+            <h1 class="hero-title fade-up" style="animation-delay:0.1s;">
+                Cihaz Arızanıza<br>
+                <span class="gradient-text">Akıllı Çözüm</span>
+            </h1>
+
+            <p class="hero-subtitle fade-up" style="animation-delay:0.2s;">
+                Şikayetinizi yazın — yapay zekâ anında teşhis koysun,<br class="desktop-br">
+                sizi en yakın ve en uygun servise yönlendirsin.
+            </p>
+
+            <div class="hero-cta fade-up" style="animation-delay:0.3s;">
+                <a href="pages/login.html" class="btn-primary" id="hero-action-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    Arıza Kaydı Oluştur
+                </a>
+                <a href="#how-it-works" class="btn-ghost">
+                    Nasıl Çalışır?
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Mini istatistikler -->
+            <div class="hero-stats fade-up" style="animation-delay:0.4s;">
+                <div class="hero-stat">
+                    <span class="hero-stat-num counter-number" data-target="500">0</span><span>+</span>
+                    <span class="hero-stat-label">Kayıtlı Servis</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-num counter-number" data-target="2">0</span><span>dk</span>
+                    <span class="hero-stat-label">Ort. Teklif</span>
+                </div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat">
+                    <span>%</span><span class="hero-stat-num counter-number" data-target="98">0</span>
+                    <span class="hero-stat-label">Memnuniyet</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero görsel / mockup -->
+        <div class="hero-visual fade-up" style="animation-delay:0.25s;">
+            <div class="mockup-card">
+                <div class="mockup-header">
+                    <div class="mockup-dots">
+                        <span style="background:#EF4444;"></span>
+                        <span style="background:#F59E0B;"></span>
+                        <span style="background:#10B981;"></span>
+                    </div>
+                    <span style="font-size:0.75rem; color:#94A3B8;">TeknikZeka — Yapay Zekâ Raporu</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-label">Tespit Edilen Arıza</div>
+                    <div class="mockup-value">Batarya / Şarj Devresi</div>
+                    <div class="mockup-bar-wrap">
+                        <div class="mockup-bar-label">Onarım Zorluğu</div>
+                        <div class="mockup-bar-track">
+                            <div class="mockup-bar-fill"
+                                style="width:60%; background:linear-gradient(90deg,#4F46E5,#818CF8);"></div>
                         </div>
-                        <div class="btn-text-wrapper">
-                            <span class="btn-title">Arıza Kaydı Oluştur</span>
-                            <span class="btn-subtitle">Yapay zekâ ile anında teşhis</span>
+                        <span style="font-size:0.78rem; color:#4F46E5; font-weight:700;">6/10</span>
+                    </div>
+                    <div class="mockup-label" style="margin-top:12px;">Çözüm Önerisi</div>
+                    <div class="mockup-value" style="font-size:0.82rem; color:#64748B;">Batarya değişimi veya şarj
+                        entegresinin bakımı önerilir.</div>
+                    <div class="mockup-services">
+                        <div class="mockup-service-chip">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="#10B981">
+                                <circle cx="12" cy="12" r="10" />
+                            </svg>
+                            ProTeknik Servis
                         </div>
-                    </a>
+                        <div class="mockup-service-chip">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="#10B981">
+                                <circle cx="12" cy="12" r="10" />
+                            </svg>
+                            MobilFix
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <a href="pages/login.html" class="floating-fab" id="fab-action-btn">
-        <span class="btn-text">Hemen Arıza Kaydı Oluştur</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-    </a>
-
-<div style="width: 70%; height: 2px; background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.4), transparent); margin: 2rem auto; position: relative; z-index: 1;"></div>
-
-    <!-- İSTATİSTİKLİ VE ANİMASYONLU CİHAZ SAT BÖLÜMÜ -->
-    <section id="sell-device" class="reveal" style="padding: 6rem 5%; text-align: center; background: var(--card-bg);">
-        <div class="hero-content" style="max-width: 900px; margin: 0 auto;">
-            
-            <h2 class="animate-title" style="font-size: 3rem;"><span style="font-size: 4rem; display:block; margin-bottom:10px; color: #10B981;">₺</span>Arızalı Cihazını <br><span class="ai-glow-text" style="color: var(--accent);">Anında Sat</span></h2>
-            
-            <p class="animate-subtitle" style="margin-top: 20px; font-size: 1.2rem; margin-bottom: 3rem; color: var(--text-muted);">Tamir masrafı cihazın değerini mi aştı? Cihazınızı çekmeceye atmak yerine sistemimizdeki yüzlerce teknik servise doğrudan satın. Kayıt oluştururken "Satmak İstiyorum" seçeneğini işaretleyin ve servislerden gelen en iyi fiyat teklifini anında kabul edin.</p>
-            
-            <!-- İstatistik Kutuları -->
-            <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 3rem;">
-                <div style="text-align: center;">
-                    <div style="font-size: 3rem; font-weight: 800; color: var(--accent); font-family: system-ui, sans-serif;">
-                        <span class="counter-number" data-target="500">0</span>+
-                    </div>
-                    <div style="color: var(--text-main); font-weight: 600; font-size: 1.1rem; margin-top: 5px;">Kayıtlı Servis</div>
+    <!-- NASIL ÇALIŞIR -->
+    <section id="how-it-works" class="how-section">
+        <div class="section-head reveal">
+            <h2 class="section-title">Sadece <span class="gradient-text">3 Adım</span></h2>
+            <p class="section-sub">Teknik servise gitmeden önce sorununuzu anlayın. Hızlı, güvenli, akıllı.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card reveal" style="animation-delay:0s;">
+                <div class="step-num">01</div>
+                <div class="step-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z" />
+                    </svg>
                 </div>
-                
-                <div style="text-align: center;">
-                    <div style="font-size: 3rem; font-weight: 800; color: var(--accent); font-family: system-ui, sans-serif;">
-                        <span class="counter-number" data-target="2">0</span>dk
-                    </div>
-                    <div style="color: var(--text-main); font-weight: 600; font-size: 1.1rem; margin-top: 5px;">Ortalama Teklif Süresi</div>
+                <h3>Şikayetinizi Anlatın</h3>
+                <p>Cihazınızın gösterdiği belirtileri kendi kelimelerinizle yazın. Hiçbir teknik bilgi gerekmez.</p>
+            </div>
+            <div class="step-card reveal" style="animation-delay:0.1s;">
+                <div class="step-num">02</div>
+                <div class="step-icon" style="background:rgba(16,185,129,0.1); color:#10B981;">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 10 4a2 2 0 0 1 2-2z" />
+                    </svg>
                 </div>
+                <h3>Yapay Zekâ Analiz Eder</h3>
+                <p>Llama 3 modelimiz şikayetinizi okur ve olası donanım arızasını saniyeler içinde tespit eder.</p>
+            </div>
+            <div class="step-card reveal" style="animation-delay:0.2s;">
+                <div class="step-num">03</div>
+                <div class="step-icon" style="background:rgba(99,102,241,0.1); color:#6366F1;">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                    </svg>
+                </div>
+                <h3>Servisle Buluşun</h3>
+                <p>Rapor buluta kaydedilir. Kayıtlı servisler anında görür, size en iyi teklifi sunar.</p>
+            </div>
+        </div>
+    </section>
 
-                <div style="text-align: center;">
-                    <div style="font-size: 3rem; font-weight: 800; color: var(--accent); font-family: system-ui, sans-serif;">
-                        %<span class="counter-number" data-target="98">0</span>
+    <!-- CİHAZ SAT -->
+    <section id="sell-device" class="sell-section reveal">
+        <div class="sell-inner">
+            <div class="sell-text">
+                <div class="sell-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                    Arızalı Cihazını Sat
+                </div>
+                <h2>Tamir Masrafı mı Yüksek?<br><span class="gradient-text">Direkt Sat.</span></h2>
+                <p>Sistemimizdeki yüzlerce teknik servise doğrudan satın. Kayıt oluştururken "Satmak İstiyorum"
+                    seçeneğini işaretleyin ve en iyi fiyat teklifini anında kabul edin.</p>
+                <a href="pages/login.html" class="btn-primary" id="sell-action-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                    Cihazıma Fiyat Al
+                </a>
+            </div>
+            <div class="sell-visual">
+                <div class="sell-card">
+                    <div class="sell-card-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" />
+                            <line x1="8" y1="21" x2="16" y2="21" />
+                            <line x1="12" y1="17" x2="12" y2="21" />
+                        </svg>
                     </div>
-                    <div style="color: var(--text-main); font-weight: 600; font-size: 1.1rem; margin-top: 5px;">Müşteri Memnuniyeti</div>
+                    <div>
+                        <div style="font-size:0.78rem; color:#94A3B8; margin-bottom:2px;">Alınan Teklif</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:#10B981;">2.400 ₺</div>
+                    </div>
+                    <div class="sell-chip">En Yüksek</div>
+                </div>
+                <div class="sell-card" style="animation-delay:0.3s; margin-left:auto; margin-right:0;">
+                    <div class="sell-card-icon" style="background:rgba(79,70,229,0.1);">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div style="font-size:0.78rem; color:#94A3B8; margin-bottom:2px;">Teklif Veren</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:#4F46E5;">12 Servis</div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <!-- DİKKAT: id="sell-action-btn" BURAYA EKLENDİ -->
-            <div style="display: flex; justify-content: center; align-items: center;">
-                 <a href="pages/login.html" id="sell-action-btn" class="modern-dual-btn btn-green">
-                    <div class="btn-icon">
-                        <span style="font-size: 1.5rem; font-weight: 800;">₺</span>
+    <!-- NEDEN BİZ -->
+    <section class="why-section">
+        <div class="section-head reveal">
+            <h2 class="section-title">Neden <span class="gradient-text">TeknikZeka?</span></h2>
+        </div>
+        <div class="why-grid">
+            <div class="why-card reveal" style="animation-delay:0s;">
+                <div class="why-icon" style="background:rgba(79,70,229,0.08); color:var(--primary);">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                </div>
+                <h4>Gerçek Zamanlı Takip</h4>
+                <p>Cihazınızın her aşamasını anlık olarak takip edin. Kargo kodu, servis adımları, bildirimler.</p>
+            </div>
+            <div class="why-card reveal" style="animation-delay:0.1s;">
+                <div class="why-icon" style="background:rgba(16,185,129,0.08); color:#10B981;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                </div>
+                <h4>Güvenli İhale Sistemi</h4>
+                <p>Servisler size rekabetçi teklifler sunar. En uygun fiyatı siz seçersiniz, haksız fiyatlandırma yok.
+                </p>
+            </div>
+            <div class="why-card reveal" style="animation-delay:0.2s;">
+                <div class="why-icon" style="background:rgba(245,158,11,0.08); color:#F59E0B;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                </div>
+                <h4>Puan & Yorum Sistemi</h4>
+                <p>Her tamamlanan işlem sonrası servisi puanlayın. Gerçek kullanıcı yorumlarıyla doğru seçimi yapın.</p>
+            </div>
+            <div class="why-card reveal" style="animation-delay:0.3s;">
+                <div class="why-icon" style="background:rgba(239,68,68,0.08); color:#EF4444;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                </div>
+                <h4>Canlı Mesajlaşma</h4>
+                <p>Servis teknisyeniyle doğrudan mesajlaşın. Süreç hakkında anlık bilgi alın, sorularınızı sorun.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- GÜVEN ŞERİDİ -->
+    <section class="trust-strip">
+        <div class="trust-inner">
+            <div class="trust-item">
+                <div class="trust-num"><span class="counter-number" data-target="1240">0</span>+</div>
+                <div class="trust-label">Tamamlanan Onarım</div>
+            </div>
+            <div class="trust-divider"></div>
+            <div class="trust-item">
+                <div class="trust-num"><span class="counter-number" data-target="87">0</span>+</div>
+                <div class="trust-label">Kayıtlı Servis</div>
+            </div>
+            <div class="trust-divider"></div>
+            <div class="trust-item">
+                <div class="trust-num"><span class="counter-number" data-target="98">0</span>%</div>
+                <div class="trust-label">Memnuniyet Oranı</div>
+            </div>
+            <div class="trust-divider"></div>
+            <div class="trust-item">
+                <div class="trust-num"><span class="counter-number" data-target="4">0</span>dk</div>
+                <div class="trust-label">Ort. İlk Teklif</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KULLANICI YORUMLARI -->
+    <section class="reviews-section">
+        <div class="section-head reveal">
+            <h2 class="section-title">Kullanıcılar <span class="gradient-text">Ne Diyor?</span></h2>
+            <p class="section-sub">Gerçek kullanıcılardan gerçek deneyimler.</p>
+        </div>
+        <div class="reviews-grid">
+            <div class="review-card" style="transition-delay:0s">
+                <div class="review-stars">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                </div>
+                <p class="review-text">"Ekrana düşürdüm, şikayetimi yazdım ve 3 dakika içinde 2 servis teklif verdi.
+                    İnanılmaz hızlı."</p>
+                <div class="review-author">
+                    <div class="review-avatar" style="background:linear-gradient(135deg,#4F46E5,#818CF8);">A</div>
+                    <div>
+                        <div class="review-name">Ahmet Y.</div>
+                        <div class="review-role">Samsung Galaxy S23 Kullanıcısı</div>
                     </div>
-                    <div class="btn-text-wrapper">
-                        <span class="btn-title">Cihazıma Fiyat Al</span>
-                        <span class="btn-subtitle">Servislerden anında nakit teklifi</span>
+                </div>
+            </div>
+            <div class="review-card" style="transition-delay:0.1s">
+                <div class="review-stars">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                </div>
+                <p class="review-text">"Yapay zekâ arızayı tam doğru tahmin etti. Servis de raporu görünce çok daha
+                    hızlı çözdü. Teşekkürler."</p>
+                <div class="review-author">
+                    <div class="review-avatar" style="background:linear-gradient(135deg,#10B981,#34D399);">Z</div>
+                    <div>
+                        <div class="review-name">Zeynep K.</div>
+                        <div class="review-role">MacBook Pro Kullanıcısı</div>
                     </div>
+                </div>
+            </div>
+            <div class="review-card" style="transition-delay:0.2s">
+                <div class="review-stars">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#E2E8F0">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                </div>
+                <p class="review-text">"Servis seçimi ve fiyat karşılaştırması çok kolay. Eskiden nasıl doğru servisi
+                    bulacağımı bilemezdim."</p>
+                <div class="review-author">
+                    <div class="review-avatar" style="background:linear-gradient(135deg,#F59E0B,#FBBF24);">M</div>
+                    <div>
+                        <div class="review-name">Mehmet D.</div>
+                        <div class="review-role">iPhone 15 Kullanıcısı</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ÖZELLİKLER / PLATFORM -->
+    <section class="features-section">
+        <div class="section-head reveal">
+            <h2 class="section-title">Platform <span class="gradient-text">Özellikleri</span></h2>
+            <p class="section-sub">Tek platformda hem müşteri hem servis deneyimi.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon" style="--fclr:#4F46E5;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                </div>
+                <div class="feature-text">
+                    <div class="feature-title">Şifreli Bağlantı</div>
+                    <div class="feature-desc">Tüm veriler Firebase altyapısıyla güvende. Hiçbir kişisel bilgi üçüncü
+                        tarafla paylaşılmaz.</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon" style="--fclr:#10B981;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                </div>
+                <div class="feature-text">
+                    <div class="feature-title">Gerçek Zamanlı</div>
+                    <div class="feature-desc">Kayıt durumunuz anlık güncellenir. Servis her adımı sisteme girdikçe siz
+                        anında haberdar olursunuz.</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon" style="--fclr:#F59E0B;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                </div>
+                <div class="feature-text">
+                    <div class="feature-title">Canlı Mesajlaşma</div>
+                    <div class="feature-desc">Servis teknisyeniyle anlık sohbet. Süreç hakkında sorularınızı doğrudan
+                        sorun.</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon" style="--fclr:#6366F1;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                </div>
+                <div class="feature-text">
+                    <div class="feature-title">Puan Sistemi</div>
+                    <div class="feature-desc">Her tamamlanan işlem sonrası servis puanlama. Doğrulanmış yorumlar ile en
+                        iyiyi seçin.</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon" style="--fclr:#EF4444;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" />
+                        <line x1="8" y1="21" x2="16" y2="21" />
+                        <line x1="12" y1="17" x2="12" y2="21" />
+                    </svg>
+                </div>
+                <div class="feature-text">
+                    <div class="feature-title">Çoklu Cihaz</div>
+                    <div class="feature-desc">Telefon, tablet, bilgisayar, beyaz eşya — her tür cihaz için arıza kaydı
+                        oluşturabilirsiniz.</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon" style="--fclr:#06B6D4;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                </div>
+                <div class="feature-text">
+                    <div class="feature-title">Kayıt Arşivi</div>
+                    <div class="feature-desc">Tüm geçmiş işlemleriniz bulutta saklanır. Gerektiğinde kolayca erişin,
+                        takip edin.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAB -->
+    <a href="pages/login.html" class="home-fab" id="fab-action-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        <span>Kayıt Oluştur</span>
+    </a>
+
+    <!-- FOOTER -->
+    <footer id="footer" class="footer reveal">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2>Teknik<span>Zeka</span></h2>
+                <p>Yapay zekâ destekli teknik servis yönetim platformu.</p>
+                <p style="font-size:0.8rem; margin-top:4px; opacity:0.6;">İnönü Üniversitesi — İnternet Programcılığı
+                    Dersi Projesi</p>
+            </div>
+            <div class="footer-links">
+                <h4>Hızlı Bağlantılar</h4>
+                <a href="pages/tickets.html">Arıza Kayıtlarım</a>
+                <a href="#sell-device">Cihaz Sat</a>
+                <a href="pages/about.html">Hakkımızda</a>
+                <a href="pages/login.html">Giriş Yap</a>
+            </div>
+            <div class="footer-contact">
+                <h4>İletişim</h4>
+                <p>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    İnönü Üniversitesi, Bilgisayar Müh.
+                </p>
+                <a href="mailto:servisteknikzeka@gmail.com">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                    servisteknikzeka@gmail.com
                 </a>
             </div>
         </div>
-    </section>
-
-    <div style="width: 70%; height: 2px; background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.4), transparent); margin: 2rem auto; position: relative; z-index: 1;"></div>
-
-    <section id="why-us" class="info-section">
-        <div class="sticky-container">
-            <p class="cinematic-sentence huge-title color-gradient-2">
-                Geleneksel Servis Anlayışını Değiştiriyoruz.
-            </p>
-            <p class="cinematic-sentence color-gradient-1">
-                Cihazı bozulan kullanıcılar sorunun ne olduğunu tam olarak bilemezler.
-            </p>
-            <p class="cinematic-sentence color-gradient-2">
-                Teknik servisler ise müşteriden net bilgi alamadığı için arıza tespitinde saatlerini harcar.
-            </p>
-            <p class="cinematic-sentence color-gradient-3">
-                TeknikZeka, aradaki bu iletişim kopukluğunu yapay zekâ ile gidererek iki tarafın da zamanını kurtarır.
-            </p>
-            <p class="cinematic-sentence color-gradient-1">
-                Küçük işletmeler müşteri taleplerini defterler yerine dijital biletleme sistemiyle takip eder.
-            </p>
-        </div>
-        <div class="scroll-triggers"><div class="trigger" data-step="0"></div><div class="trigger" data-step="1"></div><div class="trigger" data-step="2"></div><div class="trigger" data-step="3"></div><div class="trigger" data-step="4"></div></div>
-    </section>
-
-    <section id="about" class="about-section">
-        <div class="reveal">
-            <h2 class="section-title">Sadece 3 Adımda Çözüm</h2>
-        </div>
-        <div class="features">
-            <div class="feature-card reveal">
-                <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></div><h3>1. Şikayetinizi Anlatın</h3><p>Cihazınızın gösterdiği belirtileri, duyduğunuz sesleri kendi kelimelerinizle yazın.</p>
+        <!-- SOSYAL MEDYA BANDI -->
+        <div class="social-band">
+            <span class="social-band-label">Bizi Takip Edin</span>
+            <div class="social-links">
+                <!-- Instagram -->
+                <a href="#" class="social-link" aria-label="Instagram" title="Instagram">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                    </svg>
+                </a>
+                <!-- Twitter / X -->
+                <a href="#" class="social-link" aria-label="X (Twitter)" title="X (Twitter)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.738-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                    </svg>
+                </a>
+                <!-- LinkedIn -->
+                <a href="#" class="social-link" aria-label="LinkedIn" title="LinkedIn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                        <rect x="2" y="9" width="4" height="12" />
+                        <circle cx="4" cy="4" r="2" />
+                    </svg>
+                </a>
+                <!-- YouTube -->
+                <a href="#" class="social-link" aria-label="YouTube" title="YouTube">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
+                        <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" />
+                    </svg>
+                </a>
+                <!-- GitHub -->
+                <a href="#" class="social-link" aria-label="GitHub" title="GitHub">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                    </svg>
+                </a>
             </div>
-            <div class="feature-card reveal" style="transition-delay: 0.2s;">
-                <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg></div><h3>2. AI Ön Teşhis Yapsın</h3><p>Dil modelimiz şikayetinizi okur ve olası donanım arızasını anında tespit eder.</p>
-            </div>
-            <div class="feature-card reveal" style="transition-delay: 0.4s;">
-                <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></div><h3>3. Servise İletilsin</h3><p>Oluşan rapor güvenli buluta kaydedilir. Servisler panellerinden durumu görüp müdahale eder.</p>
-            </div>
         </div>
-    </section>
 
-    <footer id="footer" class="footer reveal">
-        <div class="footer-content">
-            <div class="footer-brand"><h2>Teknik<span>Zeka</span></h2><p>İnternet Programcılığı Dersi Projesi olarak geliştirilmiştir.</p></div>
-            <div class="footer-contact"><h3>İletişim & Konum</h3><p><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> İnönü Üniversitesi, Bilgisayar Mühendisliği Bölümü</p><a href="mailto:servisteknikzeka@gmail.com" style="color:var(--text-muted);"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-2px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> servisteknikzeka@gmail.com</a></div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 TeknikZeka. Tüm hakları saklıdır.</p>
+            <span class="footer-badge">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 10 4a2 2 0 0 1 2-2z" />
+                </svg>
+                Yapay Zekâ Destekli
+            </span>
         </div>
-        <div class="footer-bottom"><p>&copy; 2026 TeknikZeka. Tüm hakları saklıdır.</p></div>
     </footer>
+
 
     <script type="module" src="js/index.js"></script>
     <script type="module" src="js/theme-manager.js"></script>
 </body>
+
 </html>
