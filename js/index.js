@@ -8,7 +8,41 @@ const heroBtnAuth = document.getElementById('hero-action-btn');
 const fabBtnAuth = document.getElementById('fab-action-btn');
 const sellBtnAuth = document.getElementById('sell-action-btn');
 
+// ========== DİL SİSTEMİ ==========
+let currentLang = localStorage.getItem('tz_lang') || 'tr';
+
+function applyLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll('[data-tr]').forEach(el => {
+        const text = lang === 'tr' ? el.getAttribute('data-tr') : el.getAttribute('data-en');
+        if (text) el.textContent = text;
+    });
+    const langText = document.getElementById('lang-text');
+    if (langText) langText.textContent = lang === 'tr' ? 'EN' : 'TR';
+    localStorage.setItem('tz_lang', lang);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+    // Dil Başlatma
+    applyLang(currentLang);
+    const langBtn = document.getElementById('lang-toggle');
+    if (langBtn) {
+        langBtn.addEventListener('click', () => {
+            applyLang(currentLang === 'tr' ? 'en' : 'tr');
+        });
+    }
+
+    // Tema Toggle
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            const isLight = document.body.classList.contains('light-mode');
+            const newTheme = isLight ? 'dark' : 'light';
+            localStorage.setItem('global_theme', newTheme);
+            if (window.applyGlobalTheme) window.applyGlobalTheme();
+        });
+    }
+
     // Mobil Menü
     const mobileBtn = document.getElementById('mobile-menu-btn');
     const navMenu = document.getElementById('nav-menu');

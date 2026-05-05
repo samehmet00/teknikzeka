@@ -29,11 +29,12 @@ onAuthStateChanged(auth, async (user) => {
         
         if (userSnap.exists()) {
             const data = userSnap.data();
-            if (data.notifSystem !== undefined) notifSystem.checked = data.notifSystem;
-            if (data.notifEmail !== undefined) notifEmail.checked = data.notifEmail;
+            // Varsayılan olarak true (hepsi açık)
+            notifSystem.checked = data.notifSystem !== false;
+            notifEmail.checked = data.notifEmail !== false;
             
             // Arka planda Firebase'den gelen kesin veriyi cache'e yaz
-            localStorage.setItem('tz_settings_cache', JSON.stringify({ notifSystem: data.notifSystem, notifEmail: data.notifEmail }));
+            localStorage.setItem('tz_settings_cache', JSON.stringify({ notifSystem: notifSystem.checked, notifEmail: notifEmail.checked }));
         }
     } else {
         localStorage.removeItem('tz_settings_cache');

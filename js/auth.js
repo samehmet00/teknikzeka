@@ -128,7 +128,9 @@ if(authForm) {
                     email: email,
                     role: accType,
                     companyName: accType === 'servis' ? companyNameInput.value.trim() : "",
-                    createdAt: serverTimestamp()
+                    createdAt: serverTimestamp(),
+                    notifSystem: true,
+                    notifEmail: true
                 });
 
                 // E-posta gönderimi
