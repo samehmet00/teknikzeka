@@ -78,12 +78,12 @@ body.light-mode .icon-moon { display: block; } body.light-mode .icon-sun { displ
 .primary-btn-large.hidden { opacity: 0; transform: translateY(30px) scale(0.9); pointer-events: none; }
 .btn-text { position: relative; z-index: 3; }
 
-/* --- DÜZELTİLMİŞ YÜZEN BUTON (FAB) - Sola kaçma iptal edildi --- */
-.floating-fab { position: fixed; bottom: 30px; right: 30px; height: 65px; width: 65px; border-radius: 50px; z-index: 1000; padding: 0; opacity: 0; transform: translateY(50px) scale(0.5); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); pointer-events: none; }
+/* --- DÜZELTİLMİŞ YÜZEN BUTON (FAB) - Ortalanmış Tasarım --- */
+.floating-fab { position: fixed; bottom: 30px; left: 50%; height: 65px; width: 65px; margin-left: -32.5px; border-radius: 50px; z-index: 1000; padding: 0; opacity: 0; transform: translateY(50px) scale(0.5); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); pointer-events: none; }
 .floating-fab.visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
 .floating-fab .btn-text { display: inline-block; max-width: 0; opacity: 0; white-space: nowrap; transition: all 0.4s ease; overflow: hidden; font-size: 1.05rem; margin: 0; }
-.floating-fab.visible:hover { width: 340px; padding: 0 1.5rem; justify-content: space-between; }
-.floating-fab.visible:hover .btn-text { max-width: 250px; opacity: 1; margin-right: 10px; }
+.floating-fab.visible:hover { width: 340px; margin-left: -170px; padding: 0 1.5rem; justify-content: center; }
+.floating-fab.visible:hover .btn-text { max-width: 250px; opacity: 1; margin-left: 10px; }
 
 /* YAPAY ZEKÂ METİN EFEKTLERİ */
 .ai-glow-text { color: #F59E0B; text-shadow: 0 0 20px rgba(245, 158, 11, 0.8), 0 0 40px rgba(245, 158, 11, 0.4); animation: pulseGlow 3s infinite alternate; }
@@ -435,37 +435,44 @@ body.light-mode .icon-moon { display: block; } body.light-mode .icon-sun { displ
    MOBİL VE SWIPE (KAYDIRMA) KUSURSUZLAŞTIRMA GÜNCELLEMESİ 
    ========================================================= */
 
-/* 1. SİL BUTONU KIRMIZI TAŞMASINI ENGELLER */
+/* 1. CARD TOP ACCENT LINE */
 .ticket-wrapper {
     position: relative;
-    overflow: hidden !important; /* Dışarı taşan kırmızılığı kesin olarak keser */
+    overflow: hidden !important;
     border-radius: 12px;
     margin-bottom: 15px !important;
-    background: #EF4444; 
+    background: transparent;
 }
 
 .modern-ticket-card, .service-list-bar {
     margin-bottom: 0 !important;
     position: relative;
-    z-index: 2; /* Sil butonunun üstünde durmasını sağlar */
+    z-index: 2;
     background: var(--card-bg) !important;
     border-radius: 12px;
     width: 100%;
+    border-top: 3px solid var(--primary);
 }
 
 .delete-action-btn {
     position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 80px;
-    background: #EF4444;
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    background: rgba(239,68,68,0.1);
+    color: #EF4444;
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    z-index: 1; /* Kartın bir tık arkasında bekler */
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.2s, transform 0.15s;
 }
+.delete-action-btn:hover { background: #EF4444; color: white; transform: scale(1.1); }
+.delete-action-btn svg { width: 15px; height: 15px; }
 
 /* 2. MOBİL EKRANLAR İÇİN HER ŞEYİ KÜÇÜLTME VE HİZALAMA */
 @media (max-width: 768px) {

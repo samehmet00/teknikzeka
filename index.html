@@ -26,7 +26,7 @@
         <a href="index.html" class="logo" style="text-decoration:none; display:flex; align-items:center; gap:8px;">
             <img src="img/icon-512.png" alt="TeknikZeka"
                 style="width:32px; height:32px; border-radius:8px; object-fit:cover;">
-            <div>Teknik<span>Zeka</span></div>
+            <div class="logo-text-desktop">Teknik<span>Zeka</span></div>
         </a>
         <div class="nav-links" id="nav-menu">
             <a href="pages/tickets.html" id="nav-records-link" data-tr="Arıza Kayıtlarım" data-en="My Records">Arıza
@@ -128,20 +128,28 @@
             <!-- Mini istatistikler -->
             <div class="hero-stats fade-up" style="animation-delay:0.4s;">
                 <div class="hero-stat">
-                    <span class="hero-stat-num counter-number" data-target="500">0</span>
+                    <div style="display:flex; align-items:baseline; gap:2px;">
+                        <span class="hero-stat-num counter-number" data-target="500">0</span>
+                        <span style="color:var(--home-primary); font-weight:800; font-size:1.4rem;">+</span>
+                    </div>
                     <span class="hero-stat-label" data-tr="Kayıtlı Servis" data-en="Registered Services">Kayıtlı
                         Servis</span>
                 </div>
                 <div class="hero-stat-divider"></div>
                 <div class="hero-stat">
-                    <span class="hero-stat-num counter-number" data-target="2">0</span><span
-                        style="color:var(--home-primary); font-weight:800; font-size:1.4rem;">dk</span>
+                    <div style="display:flex; align-items:baseline; gap:2px;">
+                        <span class="hero-stat-num counter-number" data-target="2">0</span>
+                        <span style="color:var(--home-primary); font-weight:800; font-size:1.4rem;" data-tr="dk"
+                            data-en="min">dk</span>
+                    </div>
                     <span class="hero-stat-label" data-tr="Ort. Teklif" data-en="Avg. Offer">Ort. Teklif</span>
                 </div>
                 <div class="hero-stat-divider"></div>
                 <div class="hero-stat">
-                    <span style="color:var(--home-primary); font-weight:800; font-size:1.4rem;">%</span><span
-                        class="hero-stat-num counter-number" data-target="98">0</span>
+                    <div style="display:flex; align-items:baseline; gap:2px;">
+                        <span style="color:var(--home-primary); font-weight:800; font-size:1.4rem;">%</span>
+                        <span class="hero-stat-num counter-number" data-target="98">0</span>
+                    </div>
                     <span class="hero-stat-label" data-tr="Memnuniyet" data-en="Satisfaction">Memnuniyet</span>
                 </div>
             </div>
@@ -156,21 +164,32 @@
                         <span style="background:#F59E0B;"></span>
                         <span style="background:#10B981;"></span>
                     </div>
-                    <span style="font-size:0.75rem; color:#94A3B8;">TeknikZeka — Yapay Zekâ Raporu</span>
+                    <span style="font-size:0.75rem; color:#94A3B8;" data-tr="TeknikZeka — Yapay Zekâ Raporu"
+                        data-en="TeknikZeka — AI Report">TeknikZeka — Yapay Zekâ Raporu</span>
                 </div>
                 <div class="mockup-body">
-                    <div class="mockup-label">Tespit Edilen Arıza</div>
-                    <div class="mockup-value">Batarya / Şarj Devresi</div>
+                    <div class="mockup-label" data-tr="Tespit Edilen Arıza" data-en="Detected Fault">Tespit Edilen Arıza
+                    </div>
+                    <div class="mockup-value" data-tr="Batarya / Şarj Devresi" data-en="Battery / Charging Circuit">
+                        Batarya / Şarj Devresi</div>
+
                     <div class="mockup-bar-wrap">
-                        <div class="mockup-bar-label">Onarım Zorluğu</div>
+                        <div class="mockup-bar-label" data-tr="Onarım Zorluğu" data-en="Repair Difficulty">Onarım
+                            Zorluğu</div>
                         <div class="mockup-bar-track">
+                            <!-- Değişiklik burada: --bar-width eklendi -->
                             <div class="mockup-bar-fill"
-                                style="width:60%; background:linear-gradient(90deg,#4F46E5,#818CF8);"></div>
+                                style="--bar-width: 60%; width: var(--bar-width); background:linear-gradient(90deg,#4F46E5,#818CF8);">
+                            </div>
                         </div>
                         <span style="font-size:0.78rem; color:#4F46E5; font-weight:700;">6/10</span>
                     </div>
-                    <div class="mockup-label" style="margin-top:12px;">Çözüm Önerisi</div>
-                    <div class="mockup-value" style="font-size:0.82rem; color:#64748B;">Batarya değişimi veya şarj
+
+                    <div class="mockup-label" style="margin-top:12px;" data-tr="Çözüm Önerisi"
+                        data-en="Solution Recommendation">Çözüm Önerisi</div>
+                    <div class="mockup-value" style="font-size:0.82rem; color:#64748B;"
+                        data-tr="Batarya değişimi veya şarj entegresinin bakımı önerilir."
+                        data-en="Battery replacement or charging IC maintenance recommended.">Batarya değişimi veya şarj
                         entegresinin bakımı önerilir.</div>
                     <div class="mockup-services">
                         <div class="mockup-service-chip">
@@ -304,10 +323,64 @@
         </div>
     </section>
 
+    <!-- NASIL ÇALIŞIR -->
+    <section class="how-it-works" style="padding: 6rem 5%; background: var(--home-bg2);">
+        <div class="section-head reveal">
+            <h2 class="section-title" data-tr="Sistem Nasıl İşler?" data-en="How It Works?">Sistem <span
+                    class="gradient-text">Nasıl İşler?</span></h2>
+            <p class="section-sub" data-tr="Sadece 3 adımda cihazınızı tamir ettirin veya satın."
+                data-en="Repair or sell your device in just 3 steps.">Sadece 3 adımda cihazınızı tamir ettirin veya
+                satın.</p>
+        </div>
+        <div class="steps-grid"
+            style="display:flex; justify-content:center; gap:3rem; max-width:1100px; margin:0 auto; flex-wrap:wrap;">
+            <!-- Step 1 -->
+            <div class="step-card reveal"
+                style="background:var(--home-card); padding:2.5rem; border-radius:20px; border:1px solid var(--home-border); flex:1; min-width:280px; text-align:center; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.05);">
+                <div
+                    style="width:60px; height:60px; border-radius:50%; background:rgba(79,70,229,0.1); color:var(--home-purple); font-size:1.5rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem;">
+                    1</div>
+                <h4 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem; color:var(--home-text);"
+                    data-tr="Cihazı Tanımlayın" data-en="Identify Device">Cihazı Tanımlayın</h4>
+                <p style="color:var(--home-muted); font-size:0.95rem; line-height:1.6;"
+                    data-tr="Yapay zekâ destekli formumuzla cihazınızın modelini ve arızasını saniyeler içinde belirleyin."
+                    data-en="Determine your device model and fault in seconds with our AI-powered form.">Yapay zekâ
+                    destekli formumuzla cihazınızın modelini ve arızasını saniyeler içinde belirleyin.</p>
+            </div>
+            <!-- Step 2 -->
+            <div class="step-card reveal"
+                style="animation-delay:0.1s; background:var(--home-card); padding:2.5rem; border-radius:20px; border:1px solid var(--home-border); flex:1; min-width:280px; text-align:center; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.05);">
+                <div
+                    style="width:60px; height:60px; border-radius:50%; background:rgba(16,185,129,0.1); color:var(--home-green); font-size:1.5rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem;">
+                    2</div>
+                <h4 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem; color:var(--home-text);"
+                    data-tr="Teklifleri Karşılaştırın" data-en="Compare Offers">Teklifleri Karşılaştırın</h4>
+                <p style="color:var(--home-muted); font-size:0.95rem; line-height:1.6;"
+                    data-tr="Sistemdeki doğrulanmış servislerden gelen fiyat tekliflerini inceleyin. En uygun olanı seçin."
+                    data-en="Review price quotes from verified services in the system. Choose the best one.">Sistemdeki
+                    doğrulanmış servislerden gelen fiyat tekliflerini inceleyin. En uygun olanı seçin.</p>
+            </div>
+            <!-- Step 3 -->
+            <div class="step-card reveal"
+                style="animation-delay:0.2s; background:var(--home-card); padding:2.5rem; border-radius:20px; border:1px solid var(--home-border); flex:1; min-width:280px; text-align:center; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.05);">
+                <div
+                    style="width:60px; height:60px; border-radius:50%; background:rgba(245,158,11,0.1); color:#F59E0B; font-size:1.5rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem;">
+                    3</div>
+                <h4 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem; color:var(--home-text);"
+                    data-tr="Süreci Yönetin" data-en="Manage the Process">Süreci Yönetin</h4>
+                <p style="color:var(--home-muted); font-size:0.95rem; line-height:1.6;"
+                    data-tr="Cihazınızı kargolayın, adım adım tamir aşamasını takip edin ve işlem bitince puan verin."
+                    data-en="Ship your device, track the repair step by step, and rate it when finished.">Cihazınızı
+                    kargolayın, adım adım tamir aşamasını takip edin ve işlem bitince puan verin.</p>
+            </div>
+        </div>
+    </section>
+
     <!-- NEDEN BİZ -->
     <section class="why-section">
         <div class="section-head reveal">
-            <h2 class="section-title">Neden <span class="gradient-text">TeknikZeka?</span></h2>
+            <h2 class="section-title" data-tr="Neden TeknikZeka?" data-en="Why TeknikZeka?">Neden <span
+                    class="gradient-text">TeknikZeka?</span></h2>
         </div>
         <div class="why-grid">
             <div class="why-card reveal" style="animation-delay:0s;">
@@ -317,8 +390,10 @@
                         <polyline points="12 6 12 12 16 14" />
                     </svg>
                 </div>
-                <h4>Gerçek Zamanlı Takip</h4>
-                <p>Cihazınızın her aşamasını anlık olarak takip edin. Kargo kodu, servis adımları, bildirimler.</p>
+                <h4 data-tr="Gerçek Zamanlı Takip" data-en="Real-Time Tracking">Gerçek Zamanlı Takip</h4>
+                <p data-tr="Cihazınızın her aşamasını anlık olarak takip edin. Kargo kodu, servis adımları, bildirimler."
+                    data-en="Track every stage of your device in real time. Cargo code, service steps, notifications.">
+                    Cihazınızın her aşamasını anlık olarak takip edin. Kargo kodu, servis adımları, bildirimler.</p>
             </div>
             <div class="why-card reveal" style="animation-delay:0.1s;">
                 <div class="why-icon" style="background:rgba(16,185,129,0.08); color:#10B981;">
@@ -326,8 +401,10 @@
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                 </div>
-                <h4>Güvenli İhale Sistemi</h4>
-                <p>Servisler size rekabetçi teklifler sunar. En uygun fiyatı siz seçersiniz, haksız fiyatlandırma yok.
+                <h4 data-tr="Güvenli İhale Sistemi" data-en="Secure Bidding System">Güvenli İhale Sistemi</h4>
+                <p data-tr="Servisler size rekabetçi teklifler sunar. En uygun fiyatı siz seçersiniz, haksız fiyatlandırma yok."
+                    data-en="Services offer you competitive bids. You choose the best price — no unfair pricing.">
+                    Servisler size rekabetçi teklifler sunar. En uygun fiyatı siz seçersiniz, haksız fiyatlandırma yok.
                 </p>
             </div>
             <div class="why-card reveal" style="animation-delay:0.2s;">
@@ -337,8 +414,10 @@
                             points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                     </svg>
                 </div>
-                <h4>Puan & Yorum Sistemi</h4>
-                <p>Her tamamlanan işlem sonrası servisi puanlayın. Gerçek kullanıcı yorumlarıyla doğru seçimi yapın.</p>
+                <h4 data-tr="Puan & Yorum Sistemi" data-en="Rating & Review System">Puan & Yorum Sistemi</h4>
+                <p data-tr="Her tamamlanan işlem sonrası servisi puanlayın. Gerçek kullanıcı yorumlarıyla doğru seçimi yapın."
+                    data-en="Rate services after each completed job. Make the right choice with real user reviews.">Her
+                    tamamlanan işlem sonrası servisi puanlayın. Gerçek kullanıcı yorumlarıyla doğru seçimi yapın.</p>
             </div>
             <div class="why-card reveal" style="animation-delay:0.3s;">
                 <div class="why-icon" style="background:rgba(239,68,68,0.08); color:#EF4444;">
@@ -346,8 +425,10 @@
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                 </div>
-                <h4>Canlı Mesajlaşma</h4>
-                <p>Servis teknisyeniyle doğrudan mesajlaşın. Süreç hakkında anlık bilgi alın, sorularınızı sorun.</p>
+                <h4 data-tr="Canlı Mesajlaşma" data-en="Live Messaging">Canlı Mesajlaşma</h4>
+                <p data-tr="Servis teknisyeniyle doğrudan mesajlaşın. Süreç hakkında anlık bilgi alın, sorularınızı sorun."
+                    data-en="Message the service technician directly. Get real-time updates and ask your questions.">
+                    Servis teknisyeniyle doğrudan mesajlaşın. Süreç hakkında anlık bilgi alın, sorularınızı sorun.</p>
             </div>
         </div>
     </section>
@@ -357,22 +438,23 @@
         <div class="trust-inner">
             <div class="trust-item">
                 <div class="trust-num"><span class="counter-number" data-target="1240">0</span>+</div>
-                <div class="trust-label">Tamamlanan Onarım</div>
+                <div class="trust-label" data-tr="Tamamlanan Onarım" data-en="Completed Repairs">Tamamlanan Onarım</div>
             </div>
             <div class="trust-divider"></div>
             <div class="trust-item">
-                <div class="trust-num"><span class="counter-number" data-target="87">0</span>+</div>
-                <div class="trust-label">Kayıtlı Servis</div>
+                <div class="trust-num"><span class="counter-number" data-target="500">0</span>+</div>
+                <div class="trust-label" data-tr="Kayıtlı Servis" data-en="Registered Services">Kayıtlı Servis</div>
             </div>
             <div class="trust-divider"></div>
             <div class="trust-item">
                 <div class="trust-num"><span class="counter-number" data-target="98">0</span>%</div>
-                <div class="trust-label">Memnuniyet Oranı</div>
+                <div class="trust-label" data-tr="Memnuniyet Oranı" data-en="Satisfaction Rate">Memnuniyet Oranı</div>
             </div>
             <div class="trust-divider"></div>
             <div class="trust-item">
-                <div class="trust-num"><span class="counter-number" data-target="4">0</span>dk</div>
-                <div class="trust-label">Ort. İlk Teklif</div>
+                <div class="trust-num"><span class="counter-number" data-target="4">0</span><span data-tr="dk"
+                        data-en="min">dk</span></div>
+                <div class="trust-label" data-tr="Ort. İlk Teklif" data-en="Avg. First Offer">Ort. İlk Teklif</div>
             </div>
         </div>
     </section>
@@ -380,8 +462,10 @@
     <!-- KULLANICI YORUMLARI -->
     <section class="reviews-section">
         <div class="section-head reveal">
-            <h2 class="section-title">Kullanıcılar <span class="gradient-text">Ne Diyor?</span></h2>
-            <p class="section-sub">Gerçek kullanıcılardan gerçek deneyimler.</p>
+            <h2 class="section-title" data-tr="Kullanıcılar Ne Diyor?" data-en="What Users Say?">Kullanıcılar <span
+                    class="gradient-text">Ne Diyor?</span></h2>
+            <p class="section-sub" data-tr="Gerçek kullanıcılardan gerçek deneyimler."
+                data-en="Real experiences from real users.">Gerçek kullanıcılardan gerçek deneyimler.</p>
         </div>
         <div class="reviews-grid">
             <div class="review-card" style="transition-delay:0s">
@@ -489,8 +573,11 @@
     <!-- ÖZELLİKLER / PLATFORM -->
     <section class="features-section">
         <div class="section-head reveal">
-            <h2 class="section-title">Platform <span class="gradient-text">Özellikleri</span></h2>
-            <p class="section-sub">Tek platformda hem müşteri hem servis deneyimi.</p>
+            <h2 class="section-title" data-tr="Platform Özellikleri" data-en="Platform Features">Platform <span
+                    class="gradient-text">Özellikleri</span></h2>
+            <p class="section-sub" data-tr="Tek platformda hem müşteri hem servis deneyimi."
+                data-en="Both customer and service experience in one platform.">Tek platformda hem müşteri hem servis
+                deneyimi.</p>
         </div>
         <div class="features-grid">
             <div class="feature-item">
@@ -500,8 +587,12 @@
                     </svg>
                 </div>
                 <div class="feature-text">
-                    <div class="feature-title">Şifreli Bağlantı</div>
-                    <div class="feature-desc">Tüm veriler Firebase altyapısıyla güvende. Hiçbir kişisel bilgi üçüncü
+                    <div class="feature-title" data-tr="Şifreli Bağlantı" data-en="Encrypted Connection">Şifreli
+                        Bağlantı</div>
+                    <div class="feature-desc"
+                        data-tr="Tüm veriler Firebase altyapısıyla güvende. Hiçbir kişisel bilgi üçüncü tarafla paylaşılmaz."
+                        data-en="All data is secured with Firebase infrastructure. No personal information is shared with third parties.">
+                        Tüm veriler Firebase altyapısıyla güvende. Hiçbir kişisel bilgi üçüncü
                         tarafla paylaşılmaz.</div>
                 </div>
             </div>
@@ -513,8 +604,11 @@
                     </svg>
                 </div>
                 <div class="feature-text">
-                    <div class="feature-title">Gerçek Zamanlı</div>
-                    <div class="feature-desc">Kayıt durumunuz anlık güncellenir. Servis her adımı sisteme girdikçe siz
+                    <div class="feature-title" data-tr="Gerçek Zamanlı" data-en="Real-Time">Gerçek Zamanlı</div>
+                    <div class="feature-desc"
+                        data-tr="Kayıt durumunuz anlık güncellenir. Servis her adımı sisteme girdikçe siz anında haberdar olursunuz."
+                        data-en="Your record status is updated in real time. You are instantly notified as the service progresses.">
+                        Kayıt durumunuz anlık güncellenir. Servis her adımı sisteme girdikçe siz
                         anında haberdar olursunuz.</div>
                 </div>
             </div>
@@ -525,8 +619,12 @@
                     </svg>
                 </div>
                 <div class="feature-text">
-                    <div class="feature-title">Canlı Mesajlaşma</div>
-                    <div class="feature-desc">Servis teknisyeniyle anlık sohbet. Süreç hakkında sorularınızı doğrudan
+                    <div class="feature-title" data-tr="Canlı Mesajlaşma" data-en="Live Messaging">Canlı Mesajlaşma
+                    </div>
+                    <div class="feature-desc"
+                        data-tr="Servis teknisyeniyle anlık sohbet. Süreç hakkında sorularınızı doğrudan sorun."
+                        data-en="Instant chat with the service technician. Ask your questions about the process directly.">
+                        Servis teknisyeniyle anlık sohbet. Süreç hakkında sorularınızı doğrudan
                         sorun.</div>
                 </div>
             </div>
@@ -607,14 +705,14 @@
                     Dersi Projesi</p>
             </div>
             <div class="footer-links">
-                <h4>Hızlı Bağlantılar</h4>
-                <a href="pages/tickets.html">Arıza Kayıtlarım</a>
-                <a href="#sell-device">Cihaz Sat</a>
-                <a href="pages/about.html">Hakkımızda</a>
-                <a href="pages/login.html">Giriş Yap</a>
+                <h4 data-tr="Hızlı Bağlantılar" data-en="Quick Links">Hızlı Bağlantılar</h4>
+                <a href="pages/tickets.html" data-tr="Arıza Kayıtlarım" data-en="My Repair Records">Arıza Kayıtlarım</a>
+                <a href="#sell-device" data-tr="Cihaz Sat" data-en="Sell Device">Cihaz Sat</a>
+                <a href="pages/about.html" data-tr="Hakkımızda" data-en="About Us">Hakkımızda</a>
+                <a href="pages/login.html" data-tr="Giriş Yap" data-en="Login">Giriş Yap</a>
             </div>
             <div class="footer-contact">
-                <h4>İletişim</h4>
+                <h4 data-tr="İletişim" data-en="Contact">İletişim</h4>
                 <p>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -633,26 +731,11 @@
         </div>
         <!-- SOSYAL MEDYA BANDI -->
         <div class="social-band">
-            <span class="social-band-label">Bizi Takip Edin</span>
+            <span class="social-band-label" data-tr="Bizi Takip Edin" data-en="Follow Us">Bizi Takip Edin</span>
             <div class="social-links">
-                <!-- Instagram -->
-                <a href="#" class="social-link" aria-label="Instagram" title="Instagram">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                    </svg>
-                </a>
-                <!-- Twitter / X -->
-                <a href="#" class="social-link" aria-label="X (Twitter)" title="X (Twitter)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.738-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg>
-                </a>
                 <!-- LinkedIn -->
-                <a href="#" class="social-link" aria-label="LinkedIn" title="LinkedIn">
+                <a href="https://www.linkedin.com/in/mehmet-%C5%9Fa-704626297/" class="social-link"
+                    aria-label="LinkedIn" title="LinkedIn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -660,17 +743,9 @@
                         <circle cx="4" cy="4" r="2" />
                     </svg>
                 </a>
-                <!-- YouTube -->
-                <a href="#" class="social-link" aria-label="YouTube" title="YouTube">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
-                        <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" />
-                    </svg>
-                </a>
                 <!-- GitHub -->
-                <a href="#" class="social-link" aria-label="GitHub" title="GitHub">
+                <a href="https://github.com/samehmet00/teknikzeka" class="social-link" aria-label="GitHub"
+                    title="GitHub">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path
@@ -681,13 +756,14 @@
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2026 TeknikZeka. Tüm hakları saklıdır.</p>
+            <p data-tr="© 2026 TeknikZeka. Tüm hakları saklıdır." data-en="© 2026 TeknikZeka. All rights reserved.">
+                &copy; 2026 TeknikZeka. Tüm hakları saklıdır.</p>
             <span class="footer-badge">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 10 4a2 2 0 0 1 2-2z" />
                 </svg>
-                Yapay Zekâ Destekli
+                <span data-tr="Yapay Zekâ Destekli" data-en="AI-Powered">Yapay Zekâ Destekli</span>
             </span>
         </div>
     </footer>

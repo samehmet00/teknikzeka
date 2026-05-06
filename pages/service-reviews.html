@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Servis Değerlendirmeleri - TeknikZeka</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <style>
+        .reviews-page-wrapper {
+            max-width: 700px;
+            margin: 90px auto 50px;
+            padding: 0 1rem;
+        }
+        .service-hero-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--primary);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        }
+        .service-avatar {
+            width: 72px; height: 72px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--primary), #06B6D4);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.8rem; font-weight: 800;
+            flex-shrink: 0;
+        }
+        .service-name { font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+        .service-email { font-size: 0.85rem; color: var(--gray-light); margin-bottom: 10px; }
+        .rating-summary {
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+        }
+        .rating-big {
+            font-size: 2.4rem; font-weight: 900; color: #F59E0B; line-height: 1;
+        }
+        .stars-row { display: flex; gap: 3px; }
+        .star { width: 20px; height: 20px; }
+        .review-count { font-size: 0.85rem; color: var(--gray-light); }
+
+        .reviews-list-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        .reviews-list-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem; font-weight: 700; color: var(--text-main);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .review-item {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            animation: fadeInUp 0.4s ease both;
+        }
+        .review-item:last-child { border-bottom: none; }
+        @keyframes fadeInUp {
+            from { opacity:0; transform: translateY(12px); }
+            to { opacity:1; transform: translateY(0); }
+        }
+        .review-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
+        .reviewer-info { display: flex; align-items: center; gap: 10px; }
+        .reviewer-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #06B6D4);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.9rem; font-weight: 700;
+            flex-shrink: 0;
+        }
+        .reviewer-name { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+        .review-date { font-size: 0.78rem; color: var(--gray-light); margin-top: 1px; }
+        .review-stars { display: flex; gap: 2px; }
+        .review-stars svg { width: 14px; height: 14px; }
+        .review-text { font-size: 0.9rem; color: var(--gray-light); line-height: 1.6; font-style: italic; }
+        .no-reviews {
+            text-align: center; padding: 3rem 1rem; color: var(--gray-light);
+        }
+        .no-reviews svg { margin-bottom: 1rem; opacity: 0.4; }
+        .loading-spinner {
+            display: flex; align-items: center; justify-content: center; padding: 3rem;
+        }
+        .spinner {
+            width: 36px; height: 36px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="light-mode">
+
+    <nav class="navbar">
+        <a href="javascript:history.back()" class="logo" style="text-decoration:none; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+            Geri Dön
+        </a>
+    </nav>
+
+    <div class="reviews-page-wrapper">
+        <!-- Service Hero -->
+        <div class="service-hero-card" id="service-hero">
+            <div class="loading-spinner"><div class="spinner"></div></div>
+        </div>
+
+        <!-- Reviews List -->
+        <div class="reviews-list-card">
+            <div class="reviews-list-header" style="justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    Kullanıcı Değerlendirmeleri
+                </div>
+                <select id="sort-reviews" style="padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); font-size: 0.85rem; cursor: pointer; outline: none;">
+                    <option value="newest">En Yeni</option>
+                    <option value="highest">En Yüksek Puan</option>
+                    <option value="lowest">En Düşük Puan</option>
+                </select>
+            </div>
+            <div id="reviews-list">
+                <div class="loading-spinner"><div class="spinner"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db } from '../js/firebase-config.js';
+        import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const params = new URLSearchParams(window.location.search);
+        const serviceEmail = params.get('email');
+        const heroEl = document.getElementById('service-hero');
+        const listEl = document.getElementById('reviews-list');
+
+        function starsSvg(rating) {
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= Math.floor(rating)) {
+                    html += `<svg class="review-stars" width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+                } else if (i === Math.ceil(rating) && !Number.isInteger(rating)) {
+                    const gradId = 'grad' + Math.random().toString(36).substr(2, 9);
+                    html += `<svg class="review-stars" width="14" height="14" viewBox="0 0 24 24" fill="url(#${gradId})"><defs><linearGradient id="${gradId}"><stop offset="50%" stop-color="#F59E0B"/><stop offset="50%" stop-color="#CBD5E1"/></linearGradient></defs><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+                } else {
+                    html += `<svg class="review-stars" width="14" height="14" viewBox="0 0 24 24" fill="#CBD5E1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+                }
+            }
+            return html;
+        }
+
+        function fullStars(avg, count) {
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= Math.floor(avg)) {
+                    html += `<svg class="star" viewBox="0 0 24 24" fill="#F59E0B"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+                } else if (i === Math.ceil(avg) && !Number.isInteger(avg)) {
+                    const gradId = 'grad' + Math.random().toString(36).substr(2, 9);
+                    html += `<svg class="star" viewBox="0 0 24 24" fill="url(#${gradId})"><defs><linearGradient id="${gradId}"><stop offset="50%" stop-color="#F59E0B"/><stop offset="50%" stop-color="#CBD5E1"/></linearGradient></defs><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+                } else {
+                    html += `<svg class="star" viewBox="0 0 24 24" fill="#CBD5E1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+                }
+            }
+            return html;
+        }
+
+        if (!serviceEmail) {
+            heroEl.innerHTML = '<p style="color:var(--gray-light); padding:1rem;">Servis bulunamadı.</p>';
+            listEl.innerHTML = '';
+        } else {
+            const name = serviceEmail.split('@')[0].replace(/[._-]/g, ' ');
+            const initial = name.charAt(0).toUpperCase();
+
+            // Load reviews
+            try {
+                const q = query(collection(db, 'reviews'), where('serviceEmail', '==', serviceEmail));
+                const snap = await getDocs(q);
+                let allReviews = [];
+                snap.forEach(d => allReviews.push({ id: d.id, ...d.data() }));
+
+                const totalCount = allReviews.length;
+                const avg = totalCount > 0 ? (allReviews.reduce((s, r) => s + r.rating, 0) / totalCount) : 0;
+
+                // Render hero
+                heroEl.innerHTML = `
+                    <div class="service-avatar">${initial}</div>
+                    <div style="flex:1;">
+                        <div class="service-name">${name}</div>
+                        <div class="service-email">${serviceEmail}</div>
+                        <div class="rating-summary">
+                            <span class="rating-big">${totalCount > 0 ? avg.toFixed(1) : '—'}</span>
+                            <div>
+                                <div class="stars-row">${fullStars(avg, totalCount)}</div>
+                                <div class="review-count">${totalCount > 0 ? `${totalCount} değerlendirme` : 'Henüz değerlendirme yok'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                const renderReviews = () => {
+                    const sortVal = document.getElementById('sort-reviews').value;
+                    let sorted = [...allReviews];
+                    if (sortVal === 'newest') {
+                        sorted.sort((a, b) => {
+                            const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+                            const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+                            return tb - ta;
+                        });
+                    } else if (sortVal === 'highest') {
+                        sorted.sort((a, b) => b.rating - a.rating);
+                    } else if (sortVal === 'lowest') {
+                        sorted.sort((a, b) => a.rating - b.rating);
+                    }
+
+                    // Render reviews
+                    if (sorted.length === 0) {
+                        listEl.innerHTML = `
+                            <div class="no-reviews">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <p>Bu servis için henüz değerlendirme bulunmuyor.</p>
+                            </div>
+                        `;
+                    } else {
+                        listEl.innerHTML = sorted.map((r, idx) => {
+                            const userInitial = r.userEmail ? r.userEmail.charAt(0).toUpperCase() : '?';
+                            const maskedEmail = r.userEmail ? r.userEmail.replace(/(?<=.{3}).(?=[^@]*@)/g, '*') : 'Anonim';
+                            let dateStr = '';
+                            if (r.createdAt) {
+                                const d = r.createdAt.toDate ? r.createdAt.toDate() : new Date(r.createdAt);
+                                dateStr = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+                            }
+                            return `
+                                <div class="review-item" style="animation-delay:${idx * 0.07}s">
+                                    <div class="review-header">
+                                        <div class="reviewer-info">
+                                            <div class="reviewer-avatar">${userInitial}</div>
+                                            <div>
+                                                <div class="reviewer-name">${maskedEmail}</div>
+                                                <div class="review-date">${dateStr}</div>
+                                            </div>
+                                        </div>
+                                        <div class="review-stars">${starsSvg(r.rating)}</div>
+                                    </div>
+                                    ${r.comment ? `<p class="review-text">"${r.comment}"</p>` : ''}
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                };
+
+                document.getElementById('sort-reviews').addEventListener('change', renderReviews);
+                renderReviews(); // Initial render
+
+            } catch (err) {
+                console.error(err);
+                heroEl.innerHTML = `<div class="service-avatar">${initial}</div><div><div class="service-name">${name}</div><div class="service-email">${serviceEmail}</div></div>`;
+                listEl.innerHTML = '<p style="color:var(--gray-light); padding:1rem; text-align:center;">Değerlendirmeler yüklenemedi.</p>';
+            }
+        }
+    </script>
+    <script type="module" src="../js/theme-manager.js"></script>
+</body>
+</html>

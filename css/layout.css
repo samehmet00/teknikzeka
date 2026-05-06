@@ -127,9 +127,9 @@
 }
 
 /* Sol renkli çizgi (state göstergesi) */
-.ticket-wrapper[data-state="pending"] > .modern-ticket-card { border-left: 4px solid #F59E0B; }
-.ticket-wrapper[data-state="active"]  > .modern-ticket-card { border-left: 4px solid var(--primary); }
-.ticket-wrapper[data-state="completed"] > .modern-ticket-card { border-left: 4px solid #10B981; }
+.ticket-wrapper[data-state="pending"] > .modern-ticket-card { border-top: 4px solid #F59E0B; border-left: 1px solid var(--border-color); }
+.ticket-wrapper[data-state="active"]  > .modern-ticket-card { border-top: 4px solid var(--primary); border-left: 1px solid var(--border-color); }
+.ticket-wrapper[data-state="completed"] > .modern-ticket-card { border-top: 4px solid #10B981; border-left: 1px solid var(--border-color); }
 
 /* ==============================
    DURUM PILL'LERİ

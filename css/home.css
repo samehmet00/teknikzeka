@@ -79,6 +79,18 @@ body.light-mode {
     }
 }
 
+/* Animasyonunuzu bu şekilde güncelleyin */
+@keyframes barGrow {
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: var(--bar-width, 100%);
+        /* HTML'den gelen %60 değerinde duracak */
+    }
+}
+
 .fade-up {
     opacity: 0;
     animation: fadeUp 0.7s ease forwards;
@@ -187,6 +199,11 @@ body.light-mode {
     background: var(--home-primary);
     color: white;
     border-color: var(--home-primary);
+}
+
+/* Hide logo text on mobile to save space */
+.logo-text-desktop {
+    display: block;
 }
 
 body.light-mode .theme-icon-light {
@@ -382,14 +399,6 @@ body.light-mode .theme-icon-dark {
     gap: 2px;
 }
 
-.hero-stat> :first-child,
-.hero-stat> :nth-child(2) {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--home-primary);
-    line-height: 1;
-}
-
 .hero-stat-num {
     font-size: 1.6rem;
     font-weight: 800;
@@ -482,6 +491,7 @@ body.light-mode .theme-icon-dark {
 
 .mockup-bar-track {
     flex: 1;
+    width: 100%;
     height: 8px;
     background: var(--home-border);
     border-radius: 10px;
@@ -493,6 +503,7 @@ body.light-mode .theme-icon-dark {
     border-radius: 10px;
     animation: barGrow 1.5s 0.5s ease both;
 }
+
 
 .mockup-services {
     display: flex;
@@ -1205,6 +1216,17 @@ body.light-mode .theme-icon-dark {
     #mobile-menu-btn {
         display: flex !important;
         margin-left: auto;
+    }
+
+    /* Hide text label next to logo on mobile */
+    .logo-text-desktop {
+        display: none;
+    }
+
+    /* Prevent cards from scrolling left (overflow fix) */
+    .ticket-wrapper,
+    .modern-ticket-card {
+        touch-action: pan-y !important;
     }
 }
 

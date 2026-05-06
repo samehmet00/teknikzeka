@@ -29,7 +29,7 @@ function formatAIReport(reportString) {
         cleanText.split('\n').forEach(line => {
             const lower = line.toLowerCase();
             if (lower.includes('ariza:') || lower.includes('arıza:')) ariza = line.split(':').slice(1).join(':').trim();
-            if (lower.includes('zorluk:')) zorluk = parseInt(line.split(':').slice(1).join(':').trim().replace(/\D/g,'')) || 5;
+            if (lower.includes('zorluk:')) zorluk = parseInt(line.split(':').slice(1).join(':').trim().replace(/\D/g, '')) || 5;
             if (lower.includes('sure:') || lower.includes('süre:')) sure = line.split(':').slice(1).join(':').trim();
             if (lower.includes('aciliyet:')) aciliyet = line.split(':').slice(1).join(':').trim();
             if (lower.includes('cozum:') || lower.includes('çözüm:') || lower.includes('öneri:')) cozum = line.split(':').slice(1).join(':').trim();
@@ -48,10 +48,10 @@ function formatAIReport(reportString) {
 
         const diffColor = zorluk <= 3 ? '#10B981' : zorluk <= 6 ? '#F59E0B' : '#EF4444';
         const diffLabel = zorluk <= 3 ? 'Kolay' : zorluk <= 6 ? 'Orta' : 'Zor';
-        const diffBg    = zorluk <= 3 ? 'rgba(16,185,129,0.12)' : zorluk <= 6 ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)';
-        const aciColor  = aciliyet.toLowerCase().includes('yüksek') || aciliyet.toLowerCase().includes('yuksek') ? '#EF4444'
-                        : aciliyet.toLowerCase().includes('orta') ? '#F59E0B' : '#10B981';
-        const diffPct   = zorluk * 10;
+        const diffBg = zorluk <= 3 ? 'rgba(16,185,129,0.12)' : zorluk <= 6 ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)';
+        const aciColor = aciliyet.toLowerCase().includes('yüksek') || aciliyet.toLowerCase().includes('yuksek') ? '#EF4444'
+            : aciliyet.toLowerCase().includes('orta') ? '#F59E0B' : '#10B981';
+        const diffPct = zorluk * 10;
 
         return `
         <div class="ai-diag-card">
@@ -139,39 +139,8 @@ window.toggleSwipe = (event, el) => {
 };
 
 window.initSwipeMenu = () => {
-    const cards = document.querySelectorAll('.modern-ticket-card');
-    cards.forEach(card => {
-        if (card.dataset.swipeInitialized) return;
-        card.dataset.swipeInitialized = "true";
-        let startX = 0, startY = 0, currentX = 0, currentY = 0, isDragging = false, isScrolling = false; const threshold = 50;
-
-        const startDrag = (e) => {
-            if (e.target.tagName.toLowerCase() === 'button' || e.target.closest('a') || e.target.closest('button')) return;
-            startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-            startY = e.type.includes('mouse') ? e.pageY : e.touches[0].clientY;
-            isDragging = true; isScrolling = false; card.style.transition = 'none';
-            document.querySelectorAll('.modern-ticket-card.swiped').forEach(el => { if (el !== card) { el.classList.remove('swiped'); el.style.transform = ''; } });
-        };
-        const onDrag = (e) => {
-            if (!isDragging) return;
-            currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-            currentY = e.type.includes('mouse') ? e.pageY : e.touches[0].clientY;
-            const diffX = currentX - startX;
-            const diffY = currentY - startY;
-            if (Math.abs(diffY) > Math.abs(diffX)) { isScrolling = true; }
-            if (isScrolling) return;
-            if (diffX < 0 && diffX > -100) card.style.transform = `translateX(${diffX}px)`;
-        };
-        const endDrag = (e) => {
-            if (!isDragging) return;
-            isDragging = false; card.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            if (isScrolling) return;
-            const diffX = currentX - startX;
-            if (diffX < -threshold) { card.classList.add('swiped'); card.style.transform = 'translateX(-80px)'; }
-            else { card.classList.remove('swiped'); card.style.transform = 'translateX(0)'; }
-        };
-        card.addEventListener('touchstart', startDrag, { passive: true }); card.addEventListener('touchmove', onDrag, { passive: true }); card.addEventListener('touchend', endDrag);
-    });
+    // Swipe-to-delete disabled: delete button is always visible as top-right icon
+    // Cards no longer slide left on mobile
 };
 
 window.deleteTicket = async (ticketId, event) => {
@@ -244,31 +213,55 @@ window.openReviewModal = (ticketId, serviceEmail, event) => {
     selectedRating = 0;
     document.getElementById('rating-service-name').innerText = `${serviceEmail} - deneyiminizi puanlayın`;
     document.getElementById('rating-comment').value = '';
-    document.querySelectorAll('#star-rating span').forEach(s => s.style.color = 'var(--border-color)');
+    updateStars(0);
     document.getElementById('rating-modal').classList.add('open');
 };
 
+const updateStars = (rating) => {
+    document.querySelectorAll('#star-rating span').forEach(s => {
+        const starVal = parseInt(s.getAttribute('data-val'));
+        if (starVal <= Math.floor(rating)) {
+            s.style.background = 'none';
+            s.style.webkitTextFillColor = 'initial';
+            s.style.color = '#F59E0B';
+        } else if (starVal === Math.ceil(rating) && !Number.isInteger(rating)) {
+            s.style.background = `linear-gradient(90deg, #F59E0B 50%, var(--border-color) 50%)`;
+            s.style.webkitBackgroundClip = 'text';
+            s.style.webkitTextFillColor = 'transparent';
+            s.style.color = 'transparent';
+        } else {
+            s.style.background = 'none';
+            s.style.webkitTextFillColor = 'initial';
+            s.style.color = 'var(--border-color)';
+        }
+    });
+};
+
 document.querySelectorAll('#star-rating span').forEach(star => {
-    star.addEventListener('mouseenter', (e) => {
-        const hovered = parseInt(e.target.getAttribute('data-val'));
+    star.addEventListener('mousemove', (e) => {
+        const rect = e.target.getBoundingClientRect();
+        const starVal = parseInt(e.target.getAttribute('data-val'));
+        const isHalf = (e.clientX - rect.left) < (rect.width / 2);
+        const hoveredRating = isHalf ? starVal - 0.5 : starVal;
+        
+        updateStars(hoveredRating);
         document.querySelectorAll('#star-rating span').forEach(s => {
-            s.style.color = parseInt(s.getAttribute('data-val')) <= hovered ? '#F59E0B' : 'var(--border-color)';
-            s.style.transform = parseInt(s.getAttribute('data-val')) === hovered ? 'scale(1.2)' : 'scale(1)';
+            s.style.transform = parseInt(s.getAttribute('data-val')) === starVal ? 'scale(1.2)' : 'scale(1)';
         });
     });
     star.addEventListener('click', (e) => {
-        selectedRating = parseInt(e.target.getAttribute('data-val'));
-        document.querySelectorAll('#star-rating span').forEach(s => {
-            s.style.color = parseInt(s.getAttribute('data-val')) <= selectedRating ? '#F59E0B' : 'var(--border-color)';
-            s.style.transform = 'scale(1)';
-        });
+        const rect = e.target.getBoundingClientRect();
+        const starVal = parseInt(e.target.getAttribute('data-val'));
+        const isHalf = (e.clientX - rect.left) < (rect.width / 2);
+        selectedRating = isHalf ? starVal - 0.5 : starVal;
+        
+        updateStars(selectedRating);
+        document.querySelectorAll('#star-rating span').forEach(s => s.style.transform = 'scale(1)');
     });
 });
 document.getElementById('star-rating')?.addEventListener('mouseleave', () => {
-    document.querySelectorAll('#star-rating span').forEach(s => {
-        s.style.color = parseInt(s.getAttribute('data-val')) <= selectedRating ? '#F59E0B' : 'var(--border-color)';
-        s.style.transform = 'scale(1)';
-    });
+    updateStars(selectedRating);
+    document.querySelectorAll('#star-rating span').forEach(s => s.style.transform = 'scale(1)');
 });
 
 document.getElementById('submit-rating-btn')?.addEventListener('click', async () => {
@@ -386,9 +379,9 @@ onAuthStateChanged(auth, async (user) => {
                         bidHtml = `
                         <div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:10px;">
                             <div>
-                                <span style="display:flex; align-items:center; gap:5px;"><strong>${icons.check} Cihaziniz <span style="text-decoration: underline;">${data.assignedService}</span> servisine ${data.acceptedPrice.toLocaleString('tr-TR')} TL'ye satildi!</strong></span>
-                                ${saleRatingInfoHtml}
-                            </div>
+                            <span style="display:flex; align-items:center; gap:5px;">${icons.check} Cihaziniz <a href="service-reviews.html?email=${encodeURIComponent(data.assignedService)}" onclick="event.stopPropagation()" style="text-decoration:underline; color:inherit; font-weight:700;">${data.assignedService}</a> servisine ${data.acceptedPrice.toLocaleString('tr-TR')} TL'ye satildi!</span>
+                            ${saleRatingInfoHtml}
+                        </div>
                             ${cargoHtml}
                             <div style="display:flex; gap:10px; margin-top: 4px;">
                                 <a href="track.html?id=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: linear-gradient(135deg, #10B981, #059669); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex; align-items:center; justify-content:center; gap:5px;">Sureci Takip Et ${icons.truck}</a>
@@ -397,6 +390,7 @@ onAuthStateChanged(auth, async (user) => {
                         </div>`;
                     } else {
                         bidHtml = `<div class="info-box-dynamic"><strong style="display:flex;align-items:center;gap:5px;">${icons.money} Servislerden Gelen Fiyat Teklifleri:</strong><br>`;
+                        bidHtml += `<span style="display:flex;align-items:center;gap:5px;font-size:0.85rem;margin-top:4px;margin-bottom:4px;">İlgili Servisin Sayfası için Üzerine Tıklayınız...</span>`;
                         const offerKeys = data.offers ? Object.keys(data.offers) : [];
                         if (offerKeys.length > 0) {
                             offerKeys.forEach(srv => {
@@ -413,7 +407,7 @@ onAuthStateChanged(auth, async (user) => {
 
                                 bidHtml += `
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding:10px; background:rgba(0,0,0,0.1); border-radius:8px;">
-                                    <span style="font-size:0.95rem;">${srv} ${ratingHtml}: <strong style="font-size: 1.1rem; color: #10B981;">${Number(offerPrice).toLocaleString('tr-TR')} ₺</strong></span>
+                                    <span style="font-size:0.95rem;"><a href="service-reviews.html?email=${encodeURIComponent(srv)}" onclick="event.stopPropagation()" style="text-decoration:underline; color:inherit; font-weight:700;">${srv}</a> ${ratingHtml}: <strong style="font-size: 1.1rem; color: #10B981;">${Number(offerPrice).toLocaleString('tr-TR')} ₺</strong></span>
                                     <button onclick="window.acceptOffer('${ticketId}', '${srv}', ${offerPrice}, event)" style="background:#10B981; border:none; padding:6px 15px; border-radius:6px; color:white; font-weight:bold; cursor:pointer;">Kabul Et</button>
                                 </div>`;
                             });
@@ -441,9 +435,9 @@ onAuthStateChanged(auth, async (user) => {
                         bidHtml = `
                         <div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:8px;">
                             <div>
-                                <span style="display:flex;align-items:center;gap:5px;">${icons.check} Cihaziniz <strong style="text-decoration:underline;">${data.assignedService}</strong> isimli servise yonlendirildi.</span>
-                                ${ratingInfoHtml}
-                            </div>
+                            <span style="display:flex;align-items:center;gap:5px;">${icons.check} Cihaziniz <a href="service-reviews.html?email=${encodeURIComponent(data.assignedService)}" onclick="event.stopPropagation()" style="font-weight:700; text-decoration:underline; color:inherit;">${data.assignedService}</a> isimli servise yonlendirildi.</span>
+                            ${ratingInfoHtml}
+                        </div>
                             <div style="display:flex; gap:10px; margin-top: 4px;">
                                 <a href="track.html?id=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: linear-gradient(135deg, var(--primary), #4338ca); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">Sureci Takip Et ${icons.truck}</a>
                                 <a href="chat.html?ticketId=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: transparent; border: 1px solid #10B981; color: #10B981; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">${icons.chat} Mesajlas</a>
@@ -461,7 +455,10 @@ onAuthStateChanged(auth, async (user) => {
                                 ratingHtml = `<span style="font-size:0.8rem; color:#94A3B8; margin-left:5px;">★ Yeni</span>`;
                             }
 
-                            bidHtml += `<button onclick="window.selectService('${ticketId}', '${srv}', event)" style="margin-top:8px; background: #10B981; padding: 5px 10px; width: auto; font-size: 0.85rem; display: block; border:none; border-radius: 6px; color:white; font-weight:bold; cursor:pointer;">${srv} ${ratingHtml} - Bu Servisi Seç</button>`;
+                            bidHtml += `<div style="margin-top:8px; background: #10B981; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                                <div><a href="service-reviews.html?email=${encodeURIComponent(srv)}" onclick="event.stopPropagation()" style="color:white; text-decoration:underline; font-weight:bold;">${srv}</a> ${ratingHtml}</div>
+                                <button onclick="window.selectService('${ticketId}', '${srv}', event)" style="background: white; color: #10B981; padding: 5px 12px; border:none; border-radius: 6px; font-weight:bold; cursor:pointer;">Seç</button>
+                            </div>`;
                         });
                         bidHtml += `</div>`;
                     }
@@ -517,7 +514,7 @@ onAuthStateChanged(auth, async (user) => {
                                     <span style="font-size:1.8rem; background:rgba(79,70,229,0.1); border-radius:12px; padding:5px; display:inline-flex; align-items:center; justify-content:center;">${icons.phone}</span>
                                     <div>
                                         <h4 style="margin:0; font-size:1.05rem; color:var(--text-main);">${deviceInfo}</h4>
-                                        <span style="font-size:0.78rem; color:#94A3B8; display:flex; align-items:center; gap:3px;">${icons.calendar} ${dateStr} &nbsp;|&nbsp; #${ticketId.slice(0,6).toUpperCase()}</span>
+                                        <span style="font-size:0.78rem; color:#94A3B8; display:flex; align-items:center; gap:3px;">${icons.calendar} ${dateStr} &nbsp;|&nbsp; #${ticketId.slice(0, 6).toUpperCase()}</span>
                                     </div>
                                 </div>
                                 <span class="status-pill ${statusClass}">${data.status}</span>

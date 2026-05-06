@@ -172,7 +172,8 @@ function renderAuthUI(username, isTech) {
     }
     if (fabBtnAuth) {
         fabBtnAuth.href = targetPage;
-        fabBtnAuth.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>İşlemlerime Git</span>`;
+        // Keep FAB as pure icon (checkmark) — no text change on mobile
+        fabBtnAuth.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span>İşlemlerime Git</span>`;
     }
     if (sellBtnAuth) {
         sellBtnAuth.href = targetPage;
