@@ -99,8 +99,23 @@
     </nav>
 
     <div class="chat-list-container">
+        <!-- ARAMA ÇUBUĞU -->
+        <div style="position: relative; margin-bottom: 20px;">
+            <input type="text" id="chat-search" class="premium-input" placeholder="İsim, e-posta veya cihaz ara..." style="padding-left: 45px !important;">
+            <svg style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gray-light);" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
+
+        <!-- SEKMELER -->
+        <div class="tab-container" style="border-bottom-style: dashed; margin-bottom: 25px;">
+            <button class="tab-btn active" data-tab="active">
+                Devam Edenler <span class="tab-badge" id="active-count" style="display:none;">0</span>
+            </button>
+            <button class="tab-btn" data-tab="completed">
+                Tamamlananlar <span class="tab-badge" id="completed-count" style="display:none; background: #10B981;">0</span>
+            </button>
+        </div>
+
         <div id="chats-list">
-            <!-- Cache'ten veri gelene kadar gösterilecek temiz yazı -->
             <p style="text-align: center; color: var(--gray-light); margin-top: 50px;">Sohbetleriniz kontrol ediliyor...</p>
         </div>
     </div>
@@ -111,67 +126,111 @@
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
         const chatsListEl = document.getElementById('chats-list');
+        const searchInput = document.getElementById('chat-search');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const activeCountEl = document.getElementById('active-count');
+        const completedCountEl = document.getElementById('completed-count');
 
-        // ÖNBELLEK: Önceki sohbetleri anında ekrana bas
+        let currentTab = 'active';
+        let searchQuery = '';
+        let allTickets = [];
+        let currentUser = null;
+
         const cachedChats = localStorage.getItem('tz_chats_list_cache');
-        if (cachedChats) {
-            chatsListEl.innerHTML = cachedChats;
-        }
+        if (cachedChats) chatsListEl.innerHTML = cachedChats;
 
         onAuthStateChanged(auth, (user) => {
             if (!user) return window.location.href = "login.html";
+            currentUser = user;
 
             const q = query(collection(db, "tickets"), where("assignedService", "!=", ""));
 
             onSnapshot(q, (snapshot) => {
-                let myChatsHtml = "";
-                let hasChat = false;
-
+                allTickets = [];
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    
                     if (data.userEmail === user.email || data.assignedService === user.email) {
-                        hasChat = true;
-                        
-                        const isCustomer = user.email === data.userEmail;
-                        const partnerEmail = isCustomer ? data.assignedService : data.userEmail;
-                        const partnerName = partnerEmail.split('@')[0];
-                        const avatarLetter = partnerName.charAt(0).toUpperCase();
-                        
-                        myChatsHtml += `
-                            <a href="chat.html?ticketId=${doc.id}" class="chat-list-item">
-                                <div class="chat-list-avatar">
-                                    ${avatarLetter}
-                                    <div class="status-dot"></div>
-                                </div>
-                                <div style="flex: 1; overflow: hidden;">
-                                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                                        <h3 style="margin: 0; color: var(--text-main); font-size: 1.15rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${partnerName}</h3>
-                                        <span style="font-size: 0.75rem; color: #94A3B8;">#${doc.id.slice(0,6).toUpperCase()}</span>
-                                    </div>
-                                    <p style="margin: 2px 0 0 0; color: var(--primary); font-size: 0.8rem; font-weight: 600;">${partnerEmail}</p>
-                                    <p style="margin: 4px 0 0 0; color: var(--gray-light); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px;">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-                                        ${data.deviceBrand} ${data.deviceModel} İşlemi
-                                    </p>
-                                </div>
-                                <div class="chat-arrow">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                                </div>
-                            </a>
-                        `;
+                        allTickets.push({ id: doc.id, ...data });
                     }
                 });
+                renderChats();
+            });
+        });
 
-                if (hasChat) {
-                    chatsListEl.innerHTML = myChatsHtml;
-                    // Arka planda gelen son listeyi hafızaya kaydet
-                    localStorage.setItem('tz_chats_list_cache', myChatsHtml);
-                } else {
-                    const noChatHtml = `<p style="text-align: center; color: var(--gray-light); margin-top: 50px;">Henüz aktif bir sohbetiniz bulunmuyor.</p>`;
-                    chatsListEl.innerHTML = noChatHtml;
-                    localStorage.setItem('tz_chats_list_cache', noChatHtml);
-                }
+        function renderChats() {
+            if (!currentUser) return;
+
+            // Sayaçları güncelle
+            const activeCount = allTickets.filter(t => !t.processCompleted).length;
+            const completedCount = allTickets.filter(t => t.processCompleted).length;
+            
+            activeCountEl.innerText = activeCount;
+            activeCountEl.style.display = activeCount > 0 ? 'inline-block' : 'none';
+            completedCountEl.innerText = completedCount;
+            completedCountEl.style.display = completedCount > 0 ? 'inline-block' : 'none';
+
+            const filtered = allTickets.filter(t => {
+                const partnerEmail = currentUser.email === t.userEmail ? t.assignedService : t.userEmail;
+                const partnerName = partnerEmail.split('@')[0].toLowerCase();
+                const device = `${t.deviceBrand} ${t.deviceModel}`.toLowerCase();
+                const matchesSearch = partnerName.includes(searchQuery) || partnerEmail.toLowerCase().includes(searchQuery) || device.includes(searchQuery);
+                
+                const isCompleted = t.processCompleted === true;
+                const matchesTab = currentTab === 'active' ? !isCompleted : isCompleted;
+                
+                return matchesSearch && matchesTab;
+            });
+
+            if (filtered.length > 0) {
+                let html = "";
+                filtered.forEach(t => {
+                    const partnerEmail = currentUser.email === t.userEmail ? t.assignedService : t.userEmail;
+                    const partnerName = partnerEmail.split('@')[0];
+                    const avatarLetter = partnerName.charAt(0).toUpperCase();
+                    
+                    html += `
+                        <a href="chat.html?ticketId=${t.id}" class="chat-list-item">
+                            <div class="chat-list-avatar">
+                                ${avatarLetter}
+                                <div class="status-dot" style="background: ${t.processCompleted ? '#10B981' : '#F59E0B'}"></div>
+                            </div>
+                            <div style="flex: 1; overflow: hidden;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                    <h3 style="margin: 0; color: var(--text-main); font-size: 1.15rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${partnerName}</h3>
+                                    <span style="font-size: 0.75rem; color: #94A3B8;">#${t.id.slice(0,6).toUpperCase()}</span>
+                                </div>
+                                <p style="margin: 2px 0 0 0; color: var(--primary); font-size: 0.8rem; font-weight: 600;">${partnerEmail}</p>
+                                <p style="margin: 4px 0 0 0; color: var(--gray-light); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                                    ${t.deviceBrand} ${t.deviceModel} İşlemi
+                                </p>
+                            </div>
+                            <div class="chat-arrow">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                            </div>
+                        </a>
+                    `;
+                });
+                chatsListEl.innerHTML = html;
+                if (searchQuery === "") localStorage.setItem('tz_chats_list_cache', html);
+            } else {
+                const msg = searchQuery ? "Aramanızla eşleşen sohbet bulunamadı." : (currentTab === 'active' ? "Henüz aktif bir sohbetiniz bulunmuyor." : "Henüz tamamlanmış bir sohbetiniz bulunmuyor.");
+                chatsListEl.innerHTML = `<p style="text-align: center; color: var(--gray-light); margin-top: 50px;">${msg}</p>`;
+            }
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase();
+            renderChats();
+        });
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTab = btn.dataset.tab;
+                renderChats();
             });
         });
     </script>

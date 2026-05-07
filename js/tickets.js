@@ -243,7 +243,7 @@ document.querySelectorAll('#star-rating span').forEach(star => {
         const starVal = parseInt(e.target.getAttribute('data-val'));
         const isHalf = (e.clientX - rect.left) < (rect.width / 2);
         const hoveredRating = isHalf ? starVal - 0.5 : starVal;
-        
+
         updateStars(hoveredRating);
         document.querySelectorAll('#star-rating span').forEach(s => {
             s.style.transform = parseInt(s.getAttribute('data-val')) === starVal ? 'scale(1.2)' : 'scale(1)';
@@ -254,7 +254,7 @@ document.querySelectorAll('#star-rating span').forEach(star => {
         const starVal = parseInt(e.target.getAttribute('data-val'));
         const isHalf = (e.clientX - rect.left) < (rect.width / 2);
         selectedRating = isHalf ? starVal - 0.5 : starVal;
-        
+
         updateStars(selectedRating);
         document.querySelectorAll('#star-rating span').forEach(s => s.style.transform = 'scale(1)');
     });
@@ -390,7 +390,7 @@ onAuthStateChanged(auth, async (user) => {
                         </div>`;
                     } else {
                         bidHtml = `<div class="info-box-dynamic"><strong style="display:flex;align-items:center;gap:5px;">${icons.money} Servislerden Gelen Fiyat Teklifleri:</strong><br>`;
-                        bidHtml += `<span style="display:flex;align-items:center;gap:5px;font-size:0.85rem;margin-top:4px;margin-bottom:4px;">İlgili Servisin Sayfası için Üzerine Tıklayınız...</span>`;
+                        bidHtml += `<span style="display:flex;align-items:center;gap:5px;font-size:0.85rem;margin-top:4px;margin-bottom:4px;">İlgili Servisin Sayfası için Mail'in Üzerine Tıklayınız...</span>`;
                         const offerKeys = data.offers ? Object.keys(data.offers) : [];
                         if (offerKeys.length > 0) {
                             offerKeys.forEach(srv => {
@@ -455,8 +455,16 @@ onAuthStateChanged(auth, async (user) => {
                                 ratingHtml = `<span style="font-size:0.8rem; color:#94A3B8; margin-left:5px;">★ Yeni</span>`;
                             }
 
+                            let offerDetailsHtml = '';
+                            if (data.repairOffers && data.repairOffers[srv]) {
+                                offerDetailsHtml = `<div style="font-size:0.85rem; color:#f0fdf4; margin-top:4px; opacity:0.9;">Fiyat: <strong>${data.repairOffers[srv].price.toLocaleString('tr-TR')} ₺</strong> &nbsp;|&nbsp; Parça: <strong>${data.repairOffers[srv].part}</strong></div>`;
+                            }
+
                             bidHtml += `<div style="margin-top:8px; background: #10B981; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
-                                <div><a href="service-reviews.html?email=${encodeURIComponent(srv)}" onclick="event.stopPropagation()" style="color:white; text-decoration:underline; font-weight:bold;">${srv}</a> ${ratingHtml}</div>
+                                <div>
+                                    <a href="service-reviews.html?email=${encodeURIComponent(srv)}" onclick="event.stopPropagation()" style="color:white; text-decoration:underline; font-weight:bold;">${srv}</a> ${ratingHtml}
+                                    ${offerDetailsHtml}
+                                </div>
                                 <button onclick="window.selectService('${ticketId}', '${srv}', event)" style="background: white; color: #10B981; padding: 5px 12px; border:none; border-radius: 6px; font-weight:bold; cursor:pointer;">Seç</button>
                             </div>`;
                         });

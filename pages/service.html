@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4f46e5">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes"> 
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TeknikZeka">
     <link rel="manifest" href="../manifest.json">
 
     <title>Teknik Servis Paneli - TeknikZeka</title>
-    <link rel="stylesheet" href="../css/style.css"> 
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/layout.css">
     <link rel="stylesheet" href="../css/service.css">
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
+
 <body class="light-mode">
 
     <nav class="navbar">
-        <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span> <span style="font-size: 0.9rem; color: #EF4444;">(Servis)</span></a>
+        <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span> <span
+                style="font-size: 0.9rem; color: #EF4444;">(Servis)</span></a>
         <div style="display: flex; gap: 15px; align-items: center; margin-left: auto;">
-            <a href="notifications.html" class="nav-icon-btn" style="position:relative; text-decoration:none; display:flex; align-items:center;" title="Bildirimler">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                <span id="noti-badge" style="position:absolute; top:-5px; right:-8px; background:#EF4444; color:white; border-radius:50%; width: 18px; height: 18px; font-size:0.75rem; font-weight:bold; display:none; align-items:center; justify-content:center;">0</span>
+            <a href="notifications.html" class="nav-icon-btn"
+                style="position:relative; text-decoration:none; display:flex; align-items:center;" title="Bildirimler">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span id="noti-badge"
+                    style="position:absolute; top:-5px; right:-8px; background:#EF4444; color:white; border-radius:50%; width: 18px; height: 18px; font-size:0.75rem; font-weight:bold; display:none; align-items:center; justify-content:center;">0</span>
             </a>
             <div class="nav-actions-pill" id="nav-auth-menu"></div>
         </div>
@@ -33,24 +42,36 @@
 
     <!-- YENİ DÜZEN: service-layout -->
     <section class="service-layout">
-        
+
         <!-- SOL MENÜ: SABİTLENDİ -->
         <aside class="sticky-sidebar ticket-box" style="margin-bottom: 0;">
             <div class="mobile-filter-header" onclick="this.parentElement.classList.toggle('open')">
                 <h3 style="margin: 0; color: var(--text-main);">Filtrele</h3>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m6 9 6 6 6-6" />
+                </svg>
             </div>
-            <h3 class="desktop-filter-header" style="margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; color: var(--text-main);">Filtrele</h3>
-            
+            <h3 class="desktop-filter-header"
+                style="margin-bottom: 1rem; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; color: var(--text-main);">
+                Filtrele</h3>
+
             <div class="filter-content">
                 <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light);">Kategori</label>
-                <select id="filter-type" class="premium-input" style="width: 100%; margin-bottom: 15px; padding: 10px;"><option value="Tümü">Tümü</option></select>
+                <select id="filter-type" class="premium-input" style="width: 100%; margin-bottom: 15px; padding: 10px;">
+                    <option value="Tümü">Tümü</option>
+                </select>
 
                 <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light);">Marka</label>
-                <select id="filter-brand" disabled class="premium-input" style="width: 100%; margin-bottom: 15px; padding: 10px;"><option value="Tümü">Önce Kategori Seçin</option></select>
+                <select id="filter-brand" disabled class="premium-input"
+                    style="width: 100%; margin-bottom: 15px; padding: 10px;">
+                    <option value="Tümü">Önce Kategori Seçin</option>
+                </select>
 
                 <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light);">Model</label>
-                <select id="filter-model" disabled class="premium-input" style="width: 100%; margin-bottom: 15px; padding: 10px;"><option value="Tümü">Önce Marka Seçin</option></select>
+                <select id="filter-model" disabled class="premium-input"
+                    style="width: 100%; margin-bottom: 15px; padding: 10px;">
+                    <option value="Tümü">Önce Marka Seçin</option>
+                </select>
 
                 <label style="font-weight: 600; font-size: 0.9rem; color: var(--gray-light);">İşlem Tipi</label>
                 <select id="filter-sale" class="premium-input" style="width: 100%; margin-bottom: 15px; padding: 10px;">
@@ -69,7 +90,7 @@
 
         <!-- SAĞ İÇERİK -->
         <main class="content-area">
-            
+
             <!-- BAŞLIK VE SEKME: SABİTLENDİ -->
             <div class="sticky-header">
                 <div class="header-top-row">
@@ -78,22 +99,23 @@
                 </div>
                 <div class="tab-container">
                     <button class="tab-btn active" onclick="switchServiceTab('havuz', event)">
-                        İş Havuzu
+                        Tüm Kayıtlar
                     </button>
                     <button class="tab-btn" onclick="switchServiceTab('aktif', event)">
                         Aktif İşlerim <span class="tab-badge" id="service-active-badge" style="display:none;">0</span>
                     </button>
                     <button class="tab-btn" onclick="switchServiceTab('tamamlanan', event)">
-                        Tamamlananlar <span class="tab-badge" id="service-done-badge" style="display:none; background:#10B981;">0</span>
+                        Tamamlananlar <span class="tab-badge" id="service-done-badge"
+                            style="display:none; background:#10B981;">0</span>
                     </button>
                 </div>
             </div>
-            
+
             <!-- KAYITLARIN LİSTELENDİĞİ ALAN -->
             <div id="service-ticket-list" class="ticket-list-view">
                 <!-- Kayıtlar buraya gelecek -->
             </div>
-            
+
         </main>
 
     </section>
@@ -115,4 +137,5 @@
     <script type="module" src="../js/service.js"></script>
     <script type="module" src="../js/theme-manager.js"></script>
 </body>
+
 </html>

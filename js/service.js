@@ -363,7 +363,45 @@ function renderTickets() {
                         </div>
                     </div>`;
                 }
-            } else if (data.assignedService) { techActionHtml = `<div class="error-box-dynamic" style="display:flex;align-items:center;gap:5px;">${icons.cross} Müşteri başka servisi seçti.</div>`; } else if (data.interestedServices && data.interestedServices.includes(window.currentServiceEmail)) { techActionHtml = `<div class="info-box-dynamic" style="display:flex;align-items:center;gap:5px;">${icons.clock} Müşterinin seçimi bekleniyor...</div>`; } else { techActionHtml = `<button onclick="window.approveTicket('${data.id}', '${data.userEmail}', event)" style="background:var(--primary); color:white; padding:10px 20px; font-weight:600; font-size:1rem; border:none; border-radius:8px; cursor:pointer; display:flex;align-items:center;justify-content:center;gap:5px;">Ben Yapabilirim ${icons.tool}</button>`; }
+            } else if (data.assignedService) { techActionHtml = `<div class="error-box-dynamic" style="display:flex;align-items:center;gap:5px;">${icons.cross} Müşteri başka servisi seçti.</div>`; } else { 
+                let myRepairOffer = (data.repairOffers && data.repairOffers[window.currentServiceEmail]) ? data.repairOffers[window.currentServiceEmail] : null;
+                
+                let formHtml = `
+                <div style="background: rgba(16, 185, 129, 0.05); padding: 12px; border: 1px dashed #10B981; border-radius: 8px; display:flex; flex-direction:column; gap:10px;">
+                    <div style="font-weight:bold; color:var(--text-main); font-size:0.9rem;">Tamir Teklifi ${myRepairOffer ? 'Güncelle' : 'Sun'}</div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:120px;">
+                            <label style="font-size:0.75rem; color:var(--gray-light);">Tahmini Fiyat (₺)</label>
+                            <input type="number" id="repair-price-${data.id}" placeholder="Örn: 500" value="${myRepairOffer ? myRepairOffer.price : ''}" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); outline:none;" onclick="event.stopPropagation();">
+                        </div>
+                        <div style="flex:1; min-width:120px;">
+                            <label style="font-size:0.75rem; color:var(--gray-light);">Kullanılacak Parça</label>
+                            <select id="repair-part-${data.id}" onchange="document.getElementById('repair-part-detail-${data.id}').style.display = this.value === 'Diğer' ? 'block' : 'none';" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); outline:none;" onclick="event.stopPropagation();">
+                                <option value="Orijinal" ${myRepairOffer && myRepairOffer.part === 'Orijinal' ? 'selected' : ''}>Orijinal</option>
+                                <option value="Yan Sanayi" ${myRepairOffer && myRepairOffer.part === 'Yan Sanayi' ? 'selected' : ''}>Yan Sanayi</option>
+                                <option value="Çıkma Parça" ${myRepairOffer && myRepairOffer.part === 'Çıkma Parça' ? 'selected' : ''}>Çıkma Parça</option>
+                                <option value="Diğer" ${myRepairOffer && !['Orijinal', 'Yan Sanayi', 'Çıkma Parça'].includes(myRepairOffer.part) ? 'selected' : ''}>Diğer...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="text" id="repair-part-detail-${data.id}" placeholder="Kullanılacak parçayı belirtiniz..." value="${myRepairOffer && !['Orijinal', 'Yan Sanayi', 'Çıkma Parça'].includes(myRepairOffer.part) ? myRepairOffer.part : ''}" style="display:${myRepairOffer && !['Orijinal', 'Yan Sanayi', 'Çıkma Parça'].includes(myRepairOffer.part) ? 'block' : 'none'}; width:100%; padding:6px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); outline:none;" onclick="event.stopPropagation();">
+                    <button onclick="window.submitRepairOffer('${data.id}', '${data.userEmail}', event)" style="background:var(--primary); color:white; padding:8px 15px; font-weight:600; font-size:0.9rem; border:none; border-radius:6px; cursor:pointer; align-self:flex-end;">${myRepairOffer ? 'Güncelle' : 'Gönder'} ${icons.tool}</button>
+                </div>`;
+
+                if (myRepairOffer) {
+                    techActionHtml = `
+                    <div id="repair-offer-display-${data.id}" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-top:10px;">
+                        <span style="color: var(--text-main); display:flex;flex-direction:column;gap:3px;font-size:0.9rem;">
+                            <strong style="display:flex;align-items:center;gap:5px;">${icons.check} ${myRepairOffer.price.toLocaleString('tr-TR')} ₺ teklif verdiniz.</strong>
+                            <span style="font-size:0.8rem; color:var(--gray-light);">Parça: ${myRepairOffer.part}</span>
+                        </span>
+                        <button onclick="event.stopPropagation(); document.getElementById('repair-offer-display-${data.id}').style.display='none'; document.getElementById('repair-offer-edit-${data.id}').style.display='block';" style="background: transparent; border: 1px solid #10B981; color: #10B981; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Değiştir</button>
+                    </div>
+                    <div id="repair-offer-edit-${data.id}" style="display: none;">${formHtml}</div>`;
+                } else {
+                    techActionHtml = formHtml;
+                }
+            }
         }
 
         const bar = document.createElement('div');
@@ -421,13 +459,40 @@ function renderTickets() {
     }
 }
 
-window.approveTicket = async (ticketId, customerEmail, event) => {
+window.submitRepairOffer = async (ticketId, customerEmail, event) => {
     event.stopPropagation(); 
+    const priceStr = document.getElementById(`repair-price-${ticketId}`).value;
+    const price = parseInt(priceStr, 10);
+    const partSelect = document.getElementById(`repair-part-${ticketId}`).value;
+    let partDetail = partSelect;
+    if (partSelect === 'Diğer') {
+        partDetail = document.getElementById(`repair-part-detail-${ticketId}`).value;
+        if (!partDetail.trim()) return alert("Lütfen kullanılacak parçayı belirtiniz.");
+    }
+    
+    if (isNaN(price) || price <= 0) {
+        return alert("Lütfen geçerli bir tamir fiyatı giriniz.");
+    }
+
     try { 
-        await updateDoc(doc(db, "tickets", ticketId), { interestedServices: arrayUnion(window.currentServiceEmail) }); 
-        await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: "Bir servis cihazinizi tamir edebilecegini belirtti!", link: "dashboard.html", read: false, createdAt: serverTimestamp() });
-        alert("Cihazi yapabilecegimizi onayladiniz. Musteriye iletildi!"); 
-    } catch (error) { console.error("Hata:", error); }
+        const ticketRef = doc(db, "tickets", ticketId);
+        const ticketSnap = await getDoc(ticketRef);
+        if (ticketSnap.exists()) {
+            let repairOffers = ticketSnap.data().repairOffers || {};
+            repairOffers[window.currentServiceEmail] = {
+                price: price,
+                part: partDetail,
+                createdAt: new Date().toISOString()
+            };
+
+            await updateDoc(ticketRef, { 
+                interestedServices: arrayUnion(window.currentServiceEmail),
+                repairOffers: repairOffers
+            }); 
+            await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: "Bir servis cihazınızı tamir edebileceğini belirtti!", link: "dashboard.html", read: false, createdAt: serverTimestamp() });
+            alert("Tamir teklifiniz müşteriye iletildi!"); 
+        }
+    } catch (error) { console.error("Hata:", error); alert("Hata oluştu."); }
 };
 
 window.approveCancellation = async (ticketId, customerEmail, event) => {

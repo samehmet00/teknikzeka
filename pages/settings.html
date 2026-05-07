@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
-    
+
     <!-- Mobil Uygulama (PWA) Etiketleri -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4f46e5">
-    <meta name="mobile-web-app-capable" content="yes"> 
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TeknikZeka">
     <link rel="manifest" href="../manifest.json">
@@ -17,35 +18,66 @@
     <link rel="stylesheet" href="../css/layout.css">
 
 </head>
+
 <body class="light-mode">
 
     <nav class="navbar">
-        <a href="javascript:history.back()" class="logo" style="text-decoration: none; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        <a href="javascript:history.back()" class="logo"
+            style="text-decoration: none; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m15 18-6-6 6-6" />
+            </svg>
             Geri Dön
         </a>
     </nav>
 
     <section class="settings-container">
-        <h2 style="margin-top: 0; color: var(--text-main); font-size: 2rem; margin-bottom: 30px; display: flex; align-items: center; gap: 10px;"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Ayarlar</h2>
+        <h2
+            style="margin-top: 0; color: var(--text-main); font-size: 2rem; margin-bottom: 30px; display: flex; align-items: center; gap: 10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+            </svg> Ayarlar</h2>
 
         <div class="setting-group">
             <div class="setting-title" style="display: flex; align-items: center; gap: 8px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v20"></path>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
                 Görünüm Tercihleri
             </div>
-            <p style="color: var(--gray-light); font-size: 0.85rem; margin-bottom: 15px;">Uygulamanın genel görünümünü buradan değiştirebilirsiniz.</p>
-            
+            <p style="color: var(--gray-light); font-size: 0.85rem; margin-bottom: 15px;">Uygulamanın genel görünümünü
+                buradan değiştirebilirsiniz.</p>
+
             <div class="theme-options" style="display: flex; gap: 12px; flex-wrap: wrap;">
                 <div class="theme-card" id="theme-dark" onclick="setTheme('dark')">
                     <span class="theme-icon" style="display:inline-flex; align-items:center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                        </svg>
                     </span>
                     Koyu Tema
                 </div>
                 <div class="theme-card" id="theme-light" onclick="setTheme('light')">
                     <span class="theme-icon" style="display:inline-flex; align-items:center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5" />
+                            <line x1="12" y1="1" x2="12" y2="3" />
+                            <line x1="12" y1="21" x2="12" y2="23" />
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                            <line x1="1" y1="12" x2="3" y2="12" />
+                            <line x1="21" y1="12" x2="23" y2="12" />
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                        </svg>
                     </span>
                     Açık Tema
                 </div>
@@ -54,38 +86,83 @@
 
         <div class="setting-group">
             <div class="setting-title" style="display: flex; align-items: center; gap: 8px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="2" y1="12" x2="22" y2="12" />
+                    <path
+                        d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+                Dil Tercihi (Language)
+            </div>
+            <p style="color: var(--gray-light); font-size: 0.85rem; margin-bottom: 15px;">Uygulamanın dilini buradan
+                değiştirebilirsiniz. Değişiklik tüm sayfalarda geçerli olur.</p>
+            <select id="settings-lang-select"
+                style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border-color); background:var(--bg-main); color:var(--text-main); font-size:0.95rem; outline:none; font-family:'Inter', sans-serif;">
+                <option value="tr">Türkçe</option>
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="ar">العربية</option>
+                <option value="ru">Русский</option>
+                <option value="fr">Français</option>
+            </select>
+            <div id="google_translate_element" style="display:none;"></div>
+        </div>
+        <div class="setting-group">
+            <div class="setting-title" style="display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
                 Bildirim Tercihleri
             </div>
             <div class="toggle-switch">
                 <label>Sistem İçi Bildirimler (Teklif & Durum)</label>
-                <label class="switch"><input type="checkbox" id="notif-system" checked><span class="slider"></span></label>
+                <label class="switch"><input type="checkbox" id="notif-system" checked><span
+                        class="slider"></span></label>
             </div>
             <div class="toggle-switch">
                 <label>E-Posta Bildirimleri Al</label>
-                <label class="switch"><input type="checkbox" id="notif-email" checked><span class="slider"></span></label>
+                <label class="switch"><input type="checkbox" id="notif-email" checked><span
+                        class="slider"></span></label>
             </div>
             <div id="notif-msg" class="msg-box msg-success">Ayarlar kaydedildi.</div>
         </div>
 
         <div class="setting-group">
             <div class="setting-title" style="display: flex; align-items: center; gap: 8px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
                 Güvenlik & Şifre
             </div>
-            <input type="password" id="old-password" placeholder="Mevcut Şifreniz" class="premium-input" style="margin-bottom: 10px;">
-            <input type="password" id="new-password" placeholder="Yeni Şifreniz (En az 6 karakter)" class="premium-input" style="margin-bottom: 10px;">
-            <button id="update-pass-btn" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">Şifreyi Güncelle</button>
+            <input type="password" id="old-password" placeholder="Mevcut Şifreniz" class="premium-input"
+                style="margin-bottom: 10px;">
+            <input type="password" id="new-password" placeholder="Yeni Şifreniz (En az 6 karakter)"
+                class="premium-input" style="margin-bottom: 10px;">
+            <button id="update-pass-btn"
+                style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">Şifreyi
+                Güncelle</button>
             <div id="pass-msg" class="msg-box"></div>
         </div>
 
         <div class="setting-group">
             <div class="setting-title" style="color: #EF4444; display: flex; align-items: center; gap: 8px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                    </path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
                 Tehlikeli Bölge
             </div>
-            <p style="color: var(--gray-light); font-size: 0.85rem; margin-bottom: 10px;">Hesabınızı sildiğinizde tüm geçmişiniz kalıcı olarak silinir. Bu işlem geri alınamaz.</p>
-            <button id="delete-account-btn" style="background: transparent; border: 1px solid #EF4444; color: #EF4444; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#EF4444'; this.style.color='white';" onmouseout="this.style.background='transparent'; this.style.color='#EF4444';">Hesabımı Kalıcı Olarak Sil</button>
+            <p style="color: var(--gray-light); font-size: 0.85rem; margin-bottom: 10px;">Hesabınızı sildiğinizde tüm
+                geçmişiniz kalıcı olarak silinir. Bu işlem geri alınamaz.</p>
+            <button id="delete-account-btn"
+                style="background: transparent; border: 1px solid #EF4444; color: #EF4444; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;"
+                onmouseover="this.style.background='#EF4444'; this.style.color='white';"
+                onmouseout="this.style.background='transparent'; this.style.color='#EF4444';">Hesabımı Kalıcı Olarak
+                Sil</button>
         </div>
     </section>
 
@@ -103,9 +180,40 @@
             window.applyGlobalTheme();
         }
         updateThemeCards();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const langSelect = document.getElementById('settings-lang-select');
+            const cookie = document.cookie.split('; ').find(row => row.startsWith('googtrans='));
+            if (cookie) {
+                const lang = cookie.split('=')[1].split('/')[2];
+                if (lang) langSelect.value = lang;
+            } else {
+                langSelect.value = 'tr';
+            }
+
+            langSelect.addEventListener('change', (e) => {
+                const langCode = e.target.value;
+                window.setTranslateCookie(langCode);
+                window.location.reload();
+            });
+        });
     </script>
-    
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'tr',
+                includedLanguages: 'en,de,ar,ru,fr',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     <script type="module" src="../js/theme-manager.js"></script>
     <script type="module" src="../js/settings.js"></script>
 </body>
+
 </html>

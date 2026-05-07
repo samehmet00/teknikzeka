@@ -197,10 +197,21 @@ function renderUI() {
                     completedBtn.disabled = true;
                     completedBtn.style.opacity = "0.6";
                     completedBtn.style.cursor = "not-allowed";
+                } else if (!isForSale) {
+                    // Tamir ise ve son aşamadaysa müşteri onaylayacak
+                    completedBtn.innerHTML = `
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Müşteri Onayı Bekleniyor...
+                    `;
+                    completedBtn.disabled = true;
+                    completedBtn.style.opacity = "0.8";
+                    completedBtn.style.cursor = "not-allowed";
+                    completedBtn.style.background = "#F59E0B"; // Turuncu bekleme rengi
+                    completedBtn.style.borderColor = "#F59E0B";
                 } else {
                     completedBtn.innerHTML = `
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Sureci Tamamla ve Müşteriyi Bilgilendir
+                        Süreci Tamamla ve Müşteriyi Bilgilendir
                     `;
                     completedBtn.disabled = false;
                     completedBtn.onclick = async () => {
@@ -210,9 +221,7 @@ function renderUI() {
                             await updateDoc(doc(db, "tickets", ticketId), { processCompleted: true });
                             await addDoc(collection(db, "notifications"), {
                                 userEmail: currentTicket.userEmail,
-                                message: isForSale
-                                    ? `Cihazınızın satış süreci tamamlandı. Ödemeniz işleme alındı.`
-                                    : `Cihazınız tamir edildi ve kargoya verildi! Takip kodunuz: ${currentTicket.cargoCode || 'Bildirildi'}`,
+                                message: `Cihazınızın satış süreci tamamlandı. Ödemeniz işleme alındı.`,
                                 link: `track.html?id=${ticketId}`,
                                 read: false,
                                 createdAt: serverTimestamp()
@@ -271,24 +280,72 @@ function renderUI() {
         serviceControls.style.display = "none";
     }
 
-    // --- MÜŞTERİ İÇİN: İşlem tamamlandı mesajı ---
+    // --- MÜŞTERİ İÇİN: İşlem tamamlandı mesajı ve onay ---
     const completionMsg = document.getElementById('customer-completion-msg');
     if (completionMsg) {
-        if (currentTicket.processCompleted && currentUserEmail === currentTicket.userEmail) {
-            completionMsg.style.display = "block";
-            completionMsg.innerHTML = `
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="background:#10B981; border-radius:50%; width:42px; height:42px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        if (currentUserEmail === currentTicket.userEmail) {
+            if (currentTicket.processCompleted) {
+                completionMsg.style.display = "block";
+                let extraStatus = currentTicket.isReturned ? '<div style="margin-top:8px; color:#EF4444; font-weight:bold;">Cihaz İade Edildi (Tamir Edilmedi).</div>' : '';
+                completionMsg.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="background:#10B981; border-radius:50%; width:42px; height:42px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                        <div>
+                            <strong style="color:#10B981; font-size:1.05rem;">Süreç Tamamlandı!</strong>
+                            <p style="margin:2px 0 0; color:var(--gray-light); font-size:0.9rem;">
+                                ${isForSale ? 'Satış işleminiz tamamlandı. Ödemeniz hesabınıza aktarıldı.' : 'Tamir süreci sonuçlandı.'}
+                            </p>
+                            ${extraStatus}
+                        </div>
                     </div>
-                    <div>
-                        <strong style="color:#10B981; font-size:1.05rem;">Süreç Tamamlandı!</strong>
-                        <p style="margin:2px 0 0; color:var(--gray-light); font-size:0.9rem;">
-                            ${isForSale ? 'Satış işleminiz tamamlandı. Ödemeniz hesabınıza aktarıldı.' : 'Cihazınız tamir edildi ve kargoya verildi.'}
-                        </p>
+                `;
+            } else if (!isForSale && isLastStep) {
+                completionMsg.style.display = "block";
+                completionMsg.innerHTML = `
+                    <div style="background:rgba(16,185,129,0.05); border:1px dashed #10B981; padding:16px; border-radius:12px;">
+                        <strong style="color:var(--text-main); font-size:1.05rem; display:block; margin-bottom:8px;">Cihazınız Kargolandı / Teslimata Çıktı</strong>
+                        <p style="color:var(--gray-light); font-size:0.9rem; margin-bottom:16px;">Lütfen cihazınızı teslim aldıktan sonra süreci onaylayın veya tamir edilmediyse iade talebi oluşturun.</p>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button id="approve-repair-btn" style="flex:1; padding:10px; background:#10B981; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Teslim Aldım ve Onaylıyorum</button>
+                            <button id="return-repair-btn" style="flex:1; padding:10px; background:transparent; border:1px solid #EF4444; color:#EF4444; border-radius:8px; font-weight:bold; cursor:pointer;">Tamir Edilmedi (İade Talebi)</button>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+                
+                document.getElementById('approve-repair-btn').onclick = async () => {
+                    if (!confirm('Cihazı sorunsuz teslim aldığınızı ve tamir sürecini onayladığınızı teyit ediyor musunuz?')) return;
+                    try {
+                        await updateDoc(doc(db, "tickets", ticketId), { processCompleted: true });
+                        await addDoc(collection(db, "notifications"), {
+                            userEmail: currentTicket.assignedService,
+                            message: `Müşteri tamir sürecini onayladı! İşlem başarıyla tamamlandı.`,
+                            link: `track.html?id=${ticketId}`,
+                            read: false,
+                            createdAt: serverTimestamp()
+                        });
+                        alert('Onayınız alındı. Teşekkür ederiz!');
+                    } catch(e) { console.error(e); alert("Hata oluştu."); }
+                };
+
+                document.getElementById('return-repair-btn').onclick = async () => {
+                    if (!confirm('Cihazın tamir edilmediğini belirtip iade talebinde bulunmak istediğinize emin misiniz?')) return;
+                    try {
+                        await updateDoc(doc(db, "tickets", ticketId), { processCompleted: true, isReturned: true });
+                        await addDoc(collection(db, "notifications"), {
+                            userEmail: currentTicket.assignedService,
+                            message: `Müşteri cihazın tamir edilmediğini belirterek iade talebi oluşturdu. İşlem sonlandırıldı.`,
+                            link: `track.html?id=${ticketId}`,
+                            read: false,
+                            createdAt: serverTimestamp()
+                        });
+                        alert('İade kaydınız alındı. Süreç sonlandırıldı.');
+                    } catch(e) { console.error(e); alert("Hata oluştu."); }
+                };
+            } else {
+                completionMsg.style.display = "none";
+            }
         } else {
             completionMsg.style.display = "none";
         }

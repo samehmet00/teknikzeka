@@ -31,17 +31,16 @@
         <div class="nav-links" id="nav-menu">
             <a href="pages/tickets.html" id="nav-records-link" data-tr="Arıza Kayıtlarım" data-en="My Records">Arıza
                 Kayıtlarım</a>
-            <a href="#sell-device" data-tr="Cihaz Sat" data-en="Sell Device">Cihaz Sat</a>
+            <a href="#sell-device" id="nav-sell-link" data-tr="Cihaz Sat" data-en="Sell Device">Cihaz Sat</a>
             <a href="pages/about.html" data-tr="Hakkımızda" data-en="About Us">Hakkımızda</a>
             <a href="#footer" data-tr="İletişim" data-en="Contact">İletişim</a>
         </div>
-
         <div class="nav-controls">
-            <!-- Dil Butonu -->
-            <button id="lang-toggle" class="nav-control-btn" title="Dili Değiştir / Change Language">
-                <span id="lang-text">EN</span>
+            <!-- Özel Dil Butonu -->
+            <button id="custom-lang-btn" class="nav-control-btn" title="Dili Değiştir / Change Language">
+                <span id="custom-lang-text">EN</span>
             </button>
-            <!-- Tema Butonu -->
+            <div id="google_translate_element" style="display:none;"></div>
             <button id="theme-toggle" class="nav-control-btn" title="Temayı Değiştir / Toggle Theme">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     class="theme-icon-light">
@@ -323,58 +322,6 @@
         </div>
     </section>
 
-    <!-- NASIL ÇALIŞIR -->
-    <section class="how-it-works" style="padding: 6rem 5%; background: var(--home-bg2);">
-        <div class="section-head reveal">
-            <h2 class="section-title" data-tr="Sistem Nasıl İşler?" data-en="How It Works?">Sistem <span
-                    class="gradient-text">Nasıl İşler?</span></h2>
-            <p class="section-sub" data-tr="Sadece 3 adımda cihazınızı tamir ettirin veya satın."
-                data-en="Repair or sell your device in just 3 steps.">Sadece 3 adımda cihazınızı tamir ettirin veya
-                satın.</p>
-        </div>
-        <div class="steps-grid"
-            style="display:flex; justify-content:center; gap:3rem; max-width:1100px; margin:0 auto; flex-wrap:wrap;">
-            <!-- Step 1 -->
-            <div class="step-card reveal"
-                style="background:var(--home-card); padding:2.5rem; border-radius:20px; border:1px solid var(--home-border); flex:1; min-width:280px; text-align:center; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.05);">
-                <div
-                    style="width:60px; height:60px; border-radius:50%; background:rgba(79,70,229,0.1); color:var(--home-purple); font-size:1.5rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem;">
-                    1</div>
-                <h4 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem; color:var(--home-text);"
-                    data-tr="Cihazı Tanımlayın" data-en="Identify Device">Cihazı Tanımlayın</h4>
-                <p style="color:var(--home-muted); font-size:0.95rem; line-height:1.6;"
-                    data-tr="Yapay zekâ destekli formumuzla cihazınızın modelini ve arızasını saniyeler içinde belirleyin."
-                    data-en="Determine your device model and fault in seconds with our AI-powered form.">Yapay zekâ
-                    destekli formumuzla cihazınızın modelini ve arızasını saniyeler içinde belirleyin.</p>
-            </div>
-            <!-- Step 2 -->
-            <div class="step-card reveal"
-                style="animation-delay:0.1s; background:var(--home-card); padding:2.5rem; border-radius:20px; border:1px solid var(--home-border); flex:1; min-width:280px; text-align:center; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.05);">
-                <div
-                    style="width:60px; height:60px; border-radius:50%; background:rgba(16,185,129,0.1); color:var(--home-green); font-size:1.5rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem;">
-                    2</div>
-                <h4 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem; color:var(--home-text);"
-                    data-tr="Teklifleri Karşılaştırın" data-en="Compare Offers">Teklifleri Karşılaştırın</h4>
-                <p style="color:var(--home-muted); font-size:0.95rem; line-height:1.6;"
-                    data-tr="Sistemdeki doğrulanmış servislerden gelen fiyat tekliflerini inceleyin. En uygun olanı seçin."
-                    data-en="Review price quotes from verified services in the system. Choose the best one.">Sistemdeki
-                    doğrulanmış servislerden gelen fiyat tekliflerini inceleyin. En uygun olanı seçin.</p>
-            </div>
-            <!-- Step 3 -->
-            <div class="step-card reveal"
-                style="animation-delay:0.2s; background:var(--home-card); padding:2.5rem; border-radius:20px; border:1px solid var(--home-border); flex:1; min-width:280px; text-align:center; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.05);">
-                <div
-                    style="width:60px; height:60px; border-radius:50%; background:rgba(245,158,11,0.1); color:#F59E0B; font-size:1.5rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem;">
-                    3</div>
-                <h4 style="font-size:1.2rem; font-weight:800; margin-bottom:1rem; color:var(--home-text);"
-                    data-tr="Süreci Yönetin" data-en="Manage the Process">Süreci Yönetin</h4>
-                <p style="color:var(--home-muted); font-size:0.95rem; line-height:1.6;"
-                    data-tr="Cihazınızı kargolayın, adım adım tamir aşamasını takip edin ve işlem bitince puan verin."
-                    data-en="Ship your device, track the repair step by step, and rate it when finished.">Cihazınızı
-                    kargolayın, adım adım tamir aşamasını takip edin ve işlem bitince puan verin.</p>
-            </div>
-        </div>
-    </section>
 
     <!-- NEDEN BİZ -->
     <section class="why-section">

@@ -1105,6 +1105,19 @@ body.light-mode .theme-icon-dark {
     border-radius: 20px;
 }
 
+/* ========== GOOGLE TRANSLATE ========== */
+.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+}
+
+body {
+    top: 0px !important;
+}
+
+#google_translate_element {
+    display: none !important;
+}
+
 /* ========== MOBİL ========== */
 @media (max-width: 1024px) {
     .why-grid {
@@ -1121,6 +1134,20 @@ body.light-mode .theme-icon-dark {
 }
 
 @media (max-width: 768px) {
+    .navbar {
+        gap: 8px;
+        padding: 0 16px;
+    }
+
+    .navbar .logo {
+        margin-right: auto;
+    }
+
+    .nav-controls {
+        margin-left: 0;
+        gap: 4px;
+    }
+
     .home-hero {
         grid-template-columns: 1fr;
         padding: 90px 5% 60px;
@@ -1215,7 +1242,7 @@ body.light-mode .theme-icon-dark {
 
     #mobile-menu-btn {
         display: flex !important;
-        margin-left: auto;
+        margin-left: 0;
     }
 
     /* Hide text label next to logo on mobile */

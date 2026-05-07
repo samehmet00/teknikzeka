@@ -1,7 +1,7 @@
 // js/settings.js
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, updatePassword, reauthenticateWithCredential, EmailAuthProvider, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { doc, getDoc, updateDoc, deleteDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const notifSystem = document.getElementById('notif-system');
 const notifEmail = document.getElementById('notif-email');
@@ -78,16 +78,59 @@ if(updatePassBtn) {
 
 if(deleteAccountBtn) {
     deleteAccountBtn.addEventListener('click', async () => {
-        if (!confirm("DİKKAT! Hesabınızı silmek istediğinize emin misiniz?")) return;
+        if (!currentUser) return;
+        
         try {
+            // 1. Müşteri olarak tüm işlerini çek
+            const qCustomer = query(collection(db, "tickets"), where("userEmail", "==", currentUser.email));
+            // 2. Servis olarak tüm işlerini çek
+            const qService = query(collection(db, "tickets"), where("assignedService", "==", currentUser.email));
+
+            const [customerSnap, serviceSnap] = await Promise.all([
+                getDocs(qCustomer),
+                getDocs(qService)
+            ]);
+            
+            let hasActiveJob = false;
+
+            // Müşteri tarafında: Bir servis atanmışsa ve henüz TAMAMLANMAMIŞSA (true değilse)
+            customerSnap.forEach(doc => { 
+                const data = doc.data();
+                if (data.assignedService && data.processCompleted !== true) {
+                    hasActiveJob = true;
+                }
+            });
+
+            // Servis tarafında: Atanmış bir iş varsa ve henüz TAMAMLANMAMIŞSA
+            serviceSnap.forEach(doc => {
+                const data = doc.data();
+                if (data.processCompleted !== true) {
+                    hasActiveJob = true;
+                }
+            });
+
+            if (hasActiveJob) {
+                return alert("DİKKAT: Henüz tamamlanmamış (aktif) tamir veya satış işlemleriniz bulunuyor. Güvenlik nedeniyle aktif işiniz varken hesabınızı silemezsiniz. Lütfen tüm süreçlerin sonuçlanmasını bekleyin.");
+            }
+
+            // --- EK GÜVENLİK ÖNLEMİ ---
+            const confirmText = prompt("Hesabınızı silmek için 'SİL' yazın:");
+            if (confirmText !== "SİL") return alert("Hatalı giriş yaptınız. Silme işlemi iptal edildi.");
+
+            const confirmEmail = prompt("Onaylamak için e-posta adresinizi girin:");
+            if (confirmEmail !== currentUser.email) return alert("E-posta adresi eşleşmedi. Silme işlemi iptal edildi.");
+
+            if (!confirm("SON UYARI: Hesabınız ve tüm verileriniz kalıcı olarak silinecek. Geri dönüşü yoktur. Emin misiniz?")) return;
+            
             await deleteDoc(doc(db, "users", currentUser.uid));
             await deleteUser(currentUser);
-            localStorage.clear(); // Silinen kullanıcının tüm kalıntılarını temizle
+            localStorage.clear(); 
             alert("Hesabınız başarıyla silindi. Hoşça kalın!");
             window.location.href = "../index.html";
         } catch (error) {
+            console.error("Hesap silme hatası:", error);
             if (error.code === 'auth/requires-recent-login') alert("Güvenlik nedeniyle hesabı silebilmek için sisteme yeni giriş yapmış olmanız gerekir.");
-            else alert("Hesap silinirken bir hata oluştu.");
+            else alert("Hesap silinirken bir hata oluştu: " + error.message);
         }
     });
 }

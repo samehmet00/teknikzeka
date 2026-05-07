@@ -8,27 +8,26 @@ const heroBtnAuth = document.getElementById('hero-action-btn');
 const fabBtnAuth = document.getElementById('fab-action-btn');
 const sellBtnAuth = document.getElementById('sell-action-btn');
 
-// ========== DİL SİSTEMİ ==========
-let currentLang = localStorage.getItem('tz_lang') || 'tr';
-
-function applyLang(lang) {
-    currentLang = lang;
-    document.querySelectorAll('[data-tr]').forEach(el => {
-        const text = lang === 'tr' ? el.getAttribute('data-tr') : el.getAttribute('data-en');
-        if (text) el.textContent = text;
-    });
-    const langText = document.getElementById('lang-text');
-    if (langText) langText.textContent = lang === 'tr' ? 'EN' : 'TR';
-    localStorage.setItem('tz_lang', lang);
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-    // Dil Başlatma
-    applyLang(currentLang);
-    const langBtn = document.getElementById('lang-toggle');
-    if (langBtn) {
-        langBtn.addEventListener('click', () => {
-            applyLang(currentLang === 'tr' ? 'en' : 'tr');
+    // Dil Butonu Mantığı
+    const customLangBtn = document.getElementById('custom-lang-btn');
+    if (customLangBtn) {
+        const cookie = document.cookie.split('; ').find(row => row.startsWith('googtrans='));
+        let isTr = true;
+        if (cookie) {
+            const lang = cookie.split('=')[1].split('/')[2];
+            if (lang && lang !== 'tr') isTr = false;
+        }
+        document.getElementById('custom-lang-text').innerText = isTr ? 'EN' : 'TR';
+
+        customLangBtn.addEventListener('click', () => {
+            // Doğrudan dili değiştir (Ayarlara gitmeden)
+            if (isTr) {
+                window.setTranslateCookie('en');
+            } else {
+                window.setTranslateCookie('tr');
+            }
+            window.location.reload();
         });
     }
 
@@ -166,6 +165,11 @@ function renderAuthUI(username, isTech) {
         navLink.innerText = isTech ? "Servis İşlemlerim" : "Geçmiş Kayıtlarım";
     }
 
+    const sellLink = document.getElementById('nav-sell-link');
+    if (sellLink) {
+        sellLink.innerText = isTech ? "Cihaz Al" : "Cihaz Sat";
+    }
+
     if (heroBtnAuth) {
         heroBtnAuth.href = targetPage;
         heroBtnAuth.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> İşlemlerime Git`;
@@ -185,6 +189,9 @@ function renderGuestUI() {
     if (authMenu) authMenu.innerHTML = `<a href="pages/login.html" class="nav-login-btn">Giriş Yap</a>`;
     const navLink = document.getElementById('nav-records-link');
     if (navLink) { navLink.href = "pages/login.html"; navLink.innerText = "Kayıt Sorgula"; }
+
+    const sellLink = document.getElementById('nav-sell-link');
+    if (sellLink) { sellLink.innerText = "Cihaz Sat"; }
 
     if (heroBtnAuth) {
         heroBtnAuth.href = "pages/login.html";
