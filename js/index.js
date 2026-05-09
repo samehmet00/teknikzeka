@@ -131,7 +131,7 @@ function renderAuthUI(username, isTech) {
                 <div class="profile-dropdown" id="profile-dropdown-container">
                     <span class="user-name-text" style="color:var(--text-main); font-weight:bold; font-size:1rem; display:flex; align-items:center; gap:5px;">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        ${username}
+                        <span class="name-truncate">${username}</span>
                     </span>
                     <button class="three-dots-btn" title="Menü">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>

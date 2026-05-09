@@ -171,6 +171,18 @@ onAuthStateChanged(auth, async (user) => {
                 if(badge) { if(snapshot.empty) badge.style.display = 'none'; else { badge.style.display = 'flex'; badge.innerText = snapshot.size; } }
             });
 
+            // --- ANI ÖNBELLEK YÜKLEME ---
+            const cachedHtml = localStorage.getItem(`tz_service_tickets_cache_${window.currentServiceTab}`);
+            if (cachedHtml && listContainer) {
+                listContainer.innerHTML = cachedHtml;
+            } else if (listContainer) {
+                listContainer.innerHTML = `
+                    <div class="skeleton-card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-badge"></div></div>
+                    <div class="skeleton-card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-badge"></div></div>
+                    <div class="skeleton-card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-badge"></div></div>
+                `;
+            }
+
             const qAll = query(collection(db, "tickets"));
             onSnapshot(qAll, (snapshot) => {
                 allTickets = [];
@@ -187,7 +199,7 @@ onAuthStateChanged(auth, async (user) => {
 function renderServiceAuthUI(companyName) {
     navAuthMenu.innerHTML = `
         <div class="profile-dropdown" id="profile-dropdown-container">
-            <span class="user-name-text" style="color: var(--text-main); font-weight: bold; font-size: 1rem; display:inline-flex; align-items:center; gap:5px;">&nbsp;&nbsp;${icons.tool} ${companyName}</span>
+            <span class="user-name-text" style="color: var(--text-main); font-weight: bold; font-size: 1rem; display:inline-flex; align-items:center; gap:5px;">&nbsp;&nbsp;${icons.tool} <span class="name-truncate">${companyName}</span></span>
             <button class="three-dots-btn" title="Menü"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></button>
             <div class="profile-dropdown-content">
                 <a href="../index.html">Ana Sayfa</a>
@@ -289,9 +301,9 @@ function renderTickets() {
 
     if (filtered.length === 0) {
         listContainer.innerHTML = `<p style="color:var(--gray-light); text-align:center; padding:3rem;">Bu sekme için kayıt bulunamadı.</p>`;
-        // Badge'leri sonunda güncelleyelim — return etmeden aşağıya düş
     } else {
 
+    let htmlBuffer = "";
     paginatedTickets.forEach(data => {
         const deviceInfo = data.deviceBrand ? `${data.deviceType} - ${data.deviceBrand} ${data.deviceModel}` : data.deviceType;
         let dateStr = "Şimdi eklendi";
@@ -336,7 +348,6 @@ function renderTickets() {
             saleBadge = `<span style="color:var(--primary); border:1px solid var(--primary); padding:2px 6px; border-radius:4px; font-size:0.75rem;">TAMİR</span>`;
             if (data.assignedService === window.currentServiceEmail) {
                 const myRatingHtml = getRatingHtml(window.currentServiceEmail);
-                // Müşteri iptal talebinde bulunmuş mu?
                 if (data.cancellationRequested) {
                     techActionHtml = `<div style="display:flex; flex-direction:column; gap:10px;">
                         <div style="padding:10px 14px; background:rgba(245,158,11,0.1); border:1px solid #F59E0B; border-radius:8px; font-size:0.85rem; color:#D97706; display:flex; align-items:center; gap:8px;">
@@ -404,29 +415,35 @@ function renderTickets() {
             }
         }
 
-        const bar = document.createElement('div');
-        bar.className = 'service-list-bar ticket-wrapper';
-        bar.innerHTML = `
-            <div class="bar-header" onclick="this.parentElement.classList.toggle('expanded')">
-                <div style="display:flex; align-items:flex-start; gap:12px; flex-grow:1; overflow:hidden;">
-                    <span style="font-size:1.6rem; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${icons.phone}</span>
-                    <div style="overflow:hidden; min-width:0;">
-                        <div class="bar-title">${deviceInfo} ${saleBadge}</div>
-                        <div class="bar-summary">
-                            <span class="ticket-date-badge">${icons.calendar} ${dateStr} <span class="ticket-id-sep"></span> #${data.id.slice(0, 6).toUpperCase()}</span>
-                            <span class="ticket-desc-text">${data.description.substring(0, 50)}${data.description.length > 50 ? '...' : ''}</span>
+        htmlBuffer += `
+            <div class="service-list-bar ticket-wrapper">
+                <div class="bar-header" onclick="this.parentElement.classList.toggle('expanded')">
+                    <div style="display:flex; align-items:flex-start; gap:12px; flex-grow:1; overflow:hidden;">
+                        <span style="font-size:1.6rem; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${icons.phone}</span>
+                        <div style="overflow:hidden; min-width:0;">
+                            <div class="bar-title">${deviceInfo} ${saleBadge}</div>
+                            <div class="bar-summary">
+                                <span class="ticket-date-badge">${icons.calendar} ${dateStr} <span class="ticket-id-sep"></span> #${data.id.slice(0, 6).toUpperCase()}</span>
+                                <span class="ticket-desc-text">${data.description.substring(0, 50)}${data.description.length > 50 ? '...' : ''}</span>
+                            </div>
                         </div>
                     </div>
+                    <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+                        <span style="font-size:0.8rem; color:${data.status === 'Bekliyor' ? '#F59E0B' : '#10B981'}; font-weight:700; background:rgba(0,0,0,0.05); padding:3px 9px; border-radius:20px; white-space:nowrap;">${data.status}</span>
+                        <span class="expand-icon">▼</span>
+                    </div>
                 </div>
-                <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
-                    <span style="font-size:0.8rem; color:${data.status === 'Bekliyor' ? '#F59E0B' : '#10B981'}; font-weight:700; background:rgba(0,0,0,0.05); padding:3px 9px; border-radius:20px; white-space:nowrap;">${data.status}</span>
-                    <span class="expand-icon">▼</span>
-                </div>
+                <div class="bar-details"><div style="display:flex; flex-direction:column; gap:15px; padding-bottom:10px;"><div><span style="color:var(--gray-light); font-size:0.9rem;">Müşteri E-Posta:</span><br><strong>${data.userEmail}</strong></div><div><span style="color:var(--gray-light); font-size:0.9rem;">Detaylı Şikayet:</span><br><span>${data.description}</span></div>${formatAIReport(data.aiReport)}<div style="margin-top:10px; border-top:1px dashed var(--border-color); padding-top:15px;">${techActionHtml}</div></div></div>
             </div>
-            <div class="bar-details"><div style="display:flex; flex-direction:column; gap:15px; padding-bottom:10px;"><div><span style="color:var(--gray-light); font-size:0.9rem;">Müşteri E-Posta:</span><br><strong>${data.userEmail}</strong></div><div><span style="color:var(--gray-light); font-size:0.9rem;">Detaylı Şikayet:</span><br><span>${data.description}</span></div>${formatAIReport(data.aiReport)}<div style="margin-top:10px; border-top:1px dashed var(--border-color); padding-top:15px;">${techActionHtml}</div></div></div>
         `;
-        listContainer.appendChild(bar);
     }); // forEach sonu
+    
+    listContainer.innerHTML = htmlBuffer;
+    
+    // Sadece ilk sayfa ve filtreleme yoksa önbelleğe kaydet
+    if (currentPage === 1 && (!filterType || filterType.value === "Tümü")) {
+        localStorage.setItem(`tz_service_tickets_cache_${window.currentServiceTab}`, htmlBuffer);
+    }
 
     if (totalPages > 1) {
         const paginationDiv = document.createElement('div');

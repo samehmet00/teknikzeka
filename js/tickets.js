@@ -307,17 +307,16 @@ document.getElementById('submit-rating-btn')?.addEventListener('click', async ()
 onAuthStateChanged(auth, async (user) => {
     if (user && ticketList) {
 
-        // --- ANI ÖNBELLEK YÜKLEME ---
         const cachedHtml = localStorage.getItem('tz_customer_tickets_cache');
         if (cachedHtml) {
             ticketList.innerHTML = cachedHtml;
-            // Cache'ten yüklenen tab görünümünü hemen uygula
             window.switchTab(window.currentTab, null);
         } else {
-            ticketList.innerHTML = `<div style="text-align:center; padding:3rem 1rem; color:var(--gray-light);">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px; opacity:0.4; display:block; margin-left:auto; margin-right:auto;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                Kayıtlarınız yükleniyor...
-            </div>`;
+            ticketList.innerHTML = `
+                <div class="skeleton-card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text" style="width:70%;"></div><div class="skeleton skeleton-badge"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text" style="width:70%;"></div><div class="skeleton skeleton-badge"></div></div>
+                <div class="skeleton-card"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div><div class="skeleton skeleton-text" style="width:70%;"></div><div class="skeleton skeleton-badge"></div></div>
+            `;
         }
 
         const q = query(collection(db, "tickets"), where("userEmail", "==", user.email));

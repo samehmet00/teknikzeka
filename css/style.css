@@ -173,7 +173,14 @@ body.light-mode .navbar {
     }
 
     .user-name-text {
-        display: none !important; /* Mobilde ismi gizleyip alan açalım */
+        display: flex !important; /* İkonu ve ismi yan yana tutar */
+        align-items: center;
+        gap: 5px;
+        max-width: 80px; /* Logo gitmeyecek kadar harf sığdıralım */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.85rem !important;
     }
 }
 
@@ -1377,4 +1384,47 @@ body.light-mode .icon-sun {
     font-size: 0.85rem;
     font-weight: 500;
     margin-top: 3px;
+}
+
+/* SKELETON LOADING */
+.skeleton {
+    background: linear-gradient(90deg, var(--bg-main) 25%, var(--border-color) 50%, var(--bg-main) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite linear;
+    border-radius: 8px;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skeleton-title { height: 20px; width: 60%; }
+.skeleton-text { height: 14px; width: 90%; }
+.skeleton-badge { height: 24px; width: 80px; border-radius: 20px; }
+
+.name-truncate {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+    max-width: 150px;
+}
+
+@media (max-width: 768px) {
+    .name-truncate {
+        max-width: 70px;
+    }
 }
