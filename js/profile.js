@@ -79,6 +79,15 @@ function buildProfileHtml({ isTech, heroColor, companyDisplay, email, roleLabel,
                 </div>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
             </a>
+            <a href="chats.html" class="profile-menu-item">
+                <div class="profile-menu-item-left">
+                    <div class="profile-menu-icon" style="background:rgba(16, 185, 129, 0.08); color: #10B981;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                    </div>
+                    Mesajlarım
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
             ${isTech ? `
             <a href="service.html" class="profile-menu-item">
                 <div class="profile-menu-item-left">

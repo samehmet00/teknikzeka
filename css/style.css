@@ -71,6 +71,22 @@ body.light-mode .navbar {
     font-weight: 800;
     letter-spacing: 1px;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo img {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: 2px solid #10B981; /* Yeşil kenar */
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.logo-text-desktop {
+    display: block;
 }
 
 .logo span {
@@ -120,6 +136,45 @@ body.light-mode .navbar {
     height: 24px;
     background: var(--border-color);
     margin: 0 5px;
+}
+
+/* MOBİL NAVİGASYON DÜZENLEMELERİ */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 15px;
+        gap: 8px; /* Öğeler arası mesafeyi azalttık */
+    }
+
+    .logo-text-desktop {
+        display: none !important; /* Mobilde yazıyı kaldır */
+    }
+
+    .logo img {
+        width: 56px !important; /* Logoyu büyüttük */
+        height: 56px !important;
+    }
+
+    .nav-links {
+        display: none; /* Mobilde linkler zaten butonla açılıyor */
+    }
+
+    .nav-controls {
+        margin-left: auto; /* Sağdaki kontrol butonlarını ittik */
+        gap: 6px;
+    }
+
+    .nav-actions-pill {
+        padding: 4px 5px 4px 10px;
+        gap: 5px;
+    }
+
+    .nav-divider {
+        display: none; /* Mobilde ayırıcıya gerek yok */
+    }
+
+    .user-name-text {
+        display: none !important; /* Mobilde ismi gizleyip alan açalım */
+    }
 }
 
 /* ========== GOOGLE TRANSLATE HIDE UI (GLOBAL) ========== */
@@ -1093,6 +1148,16 @@ body.light-mode .icon-sun {
     border-radius: 12px;
     width: 100%;
     border-top: 3px solid var(--primary);
+}
+
+.ticket-id-sep {
+    display: inline-block;
+    width: 1px;
+    height: 10px;
+    background: #94A3B8;
+    opacity: 0.5;
+    margin: 0 8px;
+    vertical-align: middle;
 }
 
 .delete-action-btn {

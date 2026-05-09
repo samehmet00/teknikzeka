@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <!-- Mobil Uygulama (PWA) Etiketleri -->
@@ -9,13 +10,18 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/app2.css">
     <link rel="manifest" href="../manifest.json">
-    
+
 </head>
+
 <body class="light-mode">
 
     <nav class="navbar" style="position: fixed; width: 100%; top: 0; z-index: 50;">
-        <a href="javascript:history.back()" class="logo" style="text-decoration: none; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        <a href="javascript:history.back()" class="logo"
+            style="text-decoration: none; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m15 18-6-6 6-6" />
+            </svg>
             Geri
         </a>
     </nav>
@@ -26,7 +32,8 @@
             <div class="chat-header-info">
                 <div class="chat-avatar" id="chat-avatar-letter">?</div>
                 <div>
-                    <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);" id="chat-partner-name">Bağlanıyor...</h3>
+                    <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);" id="chat-partner-name">
+                        Bağlanıyor...</h3>
                     <span style="font-size: 0.8rem; color: var(--gray-light);" id="chat-ticket-info">Bekleyiniz</span>
                 </div>
             </div>
@@ -39,9 +46,14 @@
 
         <!-- Mesaj Yazma Alanı -->
         <form class="chat-input-area" id="chat-form">
-            <input type="text" id="msg-input" class="chat-input" placeholder="Bir mesaj yazın..." autocomplete="off" required>
+            <input type="text" id="msg-input" class="chat-input" placeholder="Bir mesaj yazın..." autocomplete="off"
+                required>
             <button type="submit" class="chat-send-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
             </button>
         </form>
     </div>
@@ -51,18 +63,18 @@
         // URL'den Arıza/İhale ID'sini al
         const urlParams = new URLSearchParams(window.location.search);
         const ticketId = urlParams.get('ticketId');
-        
+
         // Cache verilerini anında ekrana bas
         if (ticketId) {
             const cachedPartnerName = localStorage.getItem(`tz_chat_partner_${ticketId}`);
             const cachedTicketInfo = localStorage.getItem(`tz_chat_info_${ticketId}`);
             const cachedAvatar = localStorage.getItem(`tz_chat_avatar_${ticketId}`);
             const cachedMessagesHtml = localStorage.getItem(`tz_chat_msgs_${ticketId}`);
-            
+
             if (cachedPartnerName) document.getElementById('chat-partner-name').innerText = cachedPartnerName;
             if (cachedTicketInfo) document.getElementById('chat-ticket-info').innerText = cachedTicketInfo;
             if (cachedAvatar) document.getElementById('chat-avatar-letter').innerText = cachedAvatar;
-            
+
             const chatMessagesBox = document.getElementById('chat-messages');
             if (cachedMessagesHtml) {
                 chatMessagesBox.innerHTML = cachedMessagesHtml;
@@ -77,4 +89,5 @@
     <script type="module" src="../js/chat.js"></script>
     <script type="module" src="../js/theme-manager.js"></script>
 </body>
+
 </html>

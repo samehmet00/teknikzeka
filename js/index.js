@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const el = document.querySelector(sel);
         if (el) counterObserver.observe(el);
     });
+
 });
 
 // --- AUTH ---
@@ -139,6 +140,7 @@ function renderAuthUI(username, isTech) {
                         <a href="index.html">Ana Sayfa</a>
                         ${!isTech ? `<a href="pages/dashboard.html">Yeni Kayıt Oluştur</a><a href="pages/tickets.html">Geçmiş Kayıtlarım</a>` : `<a href="pages/service.html">Servis Paneli</a>`}
                         <a href="pages/chats.html">Mesajlarım</a>
+                        <a href="pages/notifications.html">Bildirimlerim</a>
                         <a href="pages/profile.html">Profilim</a>
                         <a href="pages/settings.html">Ayarlar</a>
                     </div>

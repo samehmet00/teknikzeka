@@ -18,6 +18,8 @@ function renderAuthUI(username, isTech) {
                 </button>
                 <div class="profile-dropdown-content">
                     ${!isTech ? `<a href="dashboard.html">Müşteri Paneli</a>` : `<a href="service.html">Servis Paneli</a>`}
+                    <a href="chats.html">Mesajlarım</a>
+                    <a href="notifications.html">Bildirimlerim</a>
                     <a href="profile.html">Profilim</a>
                     <a href="settings.html">Ayarlar</a>
                 </div>

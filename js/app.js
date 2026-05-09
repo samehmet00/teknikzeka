@@ -5,9 +5,9 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 import { deviceData } from './deviceData.js';
 import { icons } from './icons.js';
 
-const keyPart1 = "gsk_FrBvhp1olAlq5nrdZ1IqWGdyb"; 
+const keyPart1 = "gsk_FrBvhp1olAlq5nrdZ1IqWGdyb";
 const keyPart2 = "3FYPc8T04HcYnTBDJWMbjkTbFMF";
-const GROQ_API_KEY = keyPart1+keyPart2; 
+const GROQ_API_KEY = keyPart1 + keyPart2;
 
 const ticketForm = document.getElementById('ticket-form');
 const deviceTypeInput = document.getElementById('device-type');
@@ -21,7 +21,7 @@ const navAuthMenu = document.getElementById('nav-auth-menu');
 // --- 1. MENÜ ÇİZİM FONKSİYONU (Hem Cache Hem Firebase kullanır) ---
 const renderAuthMenu = (username) => {
     if (!navAuthMenu) return;
-    
+
     navAuthMenu.innerHTML = `
         <div style="display: flex; align-items: center; gap: 10px;">
             <div class="profile-dropdown" id="profile-dropdown-container">
@@ -36,7 +36,7 @@ const renderAuthMenu = (username) => {
                     <a href="tickets.html">Geçmiş Kayıtlarım</a>
                     <a href="profile.html">Profilim</a>
                     <a href="settings.html">Ayarlar</a>
-                    <a href="chats.html">Mesajlar</a>
+                    <a href="chats.html">Mesajlarım</a>
                 </div>
             </div>
             
@@ -54,11 +54,11 @@ const renderAuthMenu = (username) => {
     // Çıkış Yapma
     const logoutBtn = document.getElementById('home-logout-btn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => { 
-            e.stopPropagation(); 
+        logoutBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             localStorage.removeItem('tz_customer_cache');
             localStorage.removeItem('tz_customer_tickets_cache');
-            signOut(auth).then(() => { window.location.href = "login.html"; }); 
+            signOut(auth).then(() => { window.location.href = "login.html"; });
         });
     }
 };
@@ -72,22 +72,22 @@ if (cachedUser && cachedUser.username) {
 
 // --- KATEGORİ SİSTEMİ ---
 const initCategories = () => {
-    if(!deviceTypeInput) return;
+    if (!deviceTypeInput) return;
     deviceTypeInput.innerHTML = '<option value="">Cihaz Kategorisi Seçin</option>';
     Object.keys(deviceData).forEach(category => deviceTypeInput.appendChild(new Option(category, category)));
 };
-initCategories(); 
+initCategories();
 
-if(deviceTypeInput) {
+if (deviceTypeInput) {
     deviceTypeInput.addEventListener('change', (e) => {
         const selectedType = e.target.value;
         deviceBrandInput.innerHTML = '<option value="">Marka Seçin</option>';
         deviceModelInput.innerHTML = '<option value="">Model Seçin</option>';
-        deviceModelInput.disabled = true; 
+        deviceModelInput.disabled = true;
         if (selectedType && deviceData[selectedType]) {
             Object.keys(deviceData[selectedType]).forEach(brand => deviceBrandInput.appendChild(new Option(brand, brand)));
-            deviceBrandInput.disabled = false; 
-        } else deviceBrandInput.disabled = true; 
+            deviceBrandInput.disabled = false;
+        } else deviceBrandInput.disabled = true;
     });
 
     deviceBrandInput.addEventListener('change', (e) => {
@@ -96,8 +96,8 @@ if(deviceTypeInput) {
         deviceModelInput.innerHTML = '<option value="">Model Seçin</option>';
         if (selectedBrand && deviceData[selectedType] && deviceData[selectedType][selectedBrand]) {
             deviceData[selectedType][selectedBrand].forEach(model => deviceModelInput.appendChild(new Option(model, model)));
-            deviceModelInput.disabled = false; 
-        } else deviceModelInput.disabled = true; 
+            deviceModelInput.disabled = false;
+        } else deviceModelInput.disabled = true;
     });
 }
 
@@ -108,7 +108,7 @@ function formatAIReport(aiText) {
     cleanText.split('\n').forEach(line => {
         const lower = line.toLowerCase();
         if (lower.includes('ariza:') || lower.includes('arıza:')) ariza = line.split(':').slice(1).join(':').trim();
-        if (lower.includes('zorluk:')) zorluk = parseInt(line.split(':').slice(1).join(':').trim().replace(/\D/g,'')) || 5;
+        if (lower.includes('zorluk:')) zorluk = parseInt(line.split(':').slice(1).join(':').trim().replace(/\D/g, '')) || 5;
         if (lower.includes('sure:') || lower.includes('süre:')) sure = line.split(':').slice(1).join(':').trim();
         if (lower.includes('aciliyet:')) aciliyet = line.split(':').slice(1).join(':').trim();
         if (lower.includes('cozum:') || lower.includes('çözüm:')) cozum = line.split(':').slice(1).join(':').trim();
@@ -116,10 +116,10 @@ function formatAIReport(aiText) {
 
     const diffColor = zorluk <= 3 ? '#10B981' : zorluk <= 6 ? '#F59E0B' : '#EF4444';
     const diffLabel = zorluk <= 3 ? 'Kolay' : zorluk <= 6 ? 'Orta' : 'Zor';
-    const diffBg   = zorluk <= 3 ? 'rgba(16,185,129,0.12)' : zorluk <= 6 ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)';
+    const diffBg = zorluk <= 3 ? 'rgba(16,185,129,0.12)' : zorluk <= 6 ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)';
     const aciColor = aciliyet.toLowerCase().includes('yüksek') || aciliyet.toLowerCase().includes('yuksek') ? '#EF4444'
-                   : aciliyet.toLowerCase().includes('orta') ? '#F59E0B' : '#10B981';
-    const diffPct  = zorluk * 10;
+        : aciliyet.toLowerCase().includes('orta') ? '#F59E0B' : '#10B981';
+    const diffPct = zorluk * 10;
 
     return `
         <div class="ai-diag-card">
@@ -168,14 +168,14 @@ function formatAIReport(aiText) {
 }
 
 // --- YENİ KAYIT ---
-if(ticketForm) {
+if (ticketForm) {
     ticketForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const currentUser = auth.currentUser;
         if (!currentUser) return alert("Sisteme dahil olmanız icap eder! (Giriş yapmalısınız)");
 
         const isForSale = document.getElementById('is-for-sale')?.checked || false;
-        const skipAi = document.getElementById('skip-ai')?.checked || false; 
+        const skipAi = document.getElementById('skip-ai')?.checked || false;
 
         ticketMsg.style.display = 'block';
         if (skipAi) ticketMsg.innerHTML = `<div style="color: var(--primary); font-weight: 600; font-size: 0.95rem; display:flex; align-items:center; gap:5px;">${icons.rocket} Hızlı kayıt oluşturuluyor, lütfen bekleyiniz...</div>`;
@@ -184,7 +184,7 @@ if(ticketForm) {
         try {
             let aiAnalysis = "";
             if (!skipAi) {
-                let prompt = isForSale 
+                let prompt = isForSale
                     ? `Sen bir ikinci el cihaz eksperisin. Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. Arızası: "${issueDescInput.value}". SADECE su formatta yanit ver (baska hicbir sey yazma):\nAriza: [ariza adi]\nZorluk: [1-10]\nSure: [tahmini sure, orn: 30-60 dk]\nAciliyet: [Dusuk / Orta / Yuksek]\nCozum: [kisa satis tavsiyesi]`
                     : `Sen uzman bir teknik servissin. Sikayet: "${issueDescInput.value}". Cihaz: ${deviceTypeInput.value} - ${deviceBrandInput.value} ${deviceModelInput.value}. SADECE su formatta yanit ver (baska hicbir sey yazma):\nAriza: [kisa ariza tahmini]\nZorluk: [1-10]\nSure: [tahmini onarim suresi, orn: 2-3 saat]\nAciliyet: [Dusuk / Orta / Yuksek]\nCozum: [tek cumle tavsiye]`;
 
@@ -193,7 +193,7 @@ if(ticketForm) {
                     body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{ role: "user", content: prompt }], max_tokens: 150, temperature: 0.2 })
                 });
 
-                if (!response.ok) throw new Error("Bilinmeyen API Hatası"); 
+                if (!response.ok) throw new Error("Bilinmeyen API Hatası");
                 aiAnalysis = (await response.json()).choices[0].message.content;
             } else {
                 aiAnalysis = "Arıza kaydı, 'Hızlı Gönder' seçeneği kullanıldığı için yapay zekâ analizi yapılmadan doğrudan servise iletilmiştir.";
@@ -201,16 +201,16 @@ if(ticketForm) {
 
             await addDoc(collection(db, "tickets"), {
                 userEmail: currentUser.email, deviceType: deviceTypeInput.value, deviceBrand: deviceBrandInput.value, deviceModel: deviceModelInput.value, description: issueDescInput.value,
-                aiReport: aiAnalysis, status: "Bekliyor", interestedServices: [], assignedService: "", isForSale: isForSale, offers: {}, createdAt: serverTimestamp(), processStep: 0 
+                aiReport: aiAnalysis, status: "Bekliyor", interestedServices: [], assignedService: "", isForSale: isForSale, offers: {}, createdAt: serverTimestamp(), processStep: 0
             });
 
-            ticketForm.reset(); 
-            if(deviceBrandInput) deviceBrandInput.disabled = true; 
-            if(deviceModelInput) deviceModelInput.disabled = true;
+            ticketForm.reset();
+            if (deviceBrandInput) deviceBrandInput.disabled = true;
+            if (deviceModelInput) deviceModelInput.disabled = true;
             ticketMsg.innerHTML = `<span style="color: #10B981; font-weight: bold; display:flex; align-items:center; gap:5px;">${icons.check} Talebiniz başarıyla oluşturuldu ve servislere iletildi!</span>`;
             setTimeout(() => ticketMsg.style.display = 'none', 4000);
 
-        } catch (error) { 
+        } catch (error) {
             console.error("İşlem Hatası:", error);
             ticketMsg.innerHTML = `<span style="color: #EF4444; font-weight: bold; display:flex; align-items:center; gap:5px;">${icons.cross} Hata oluştu. Lütfen "⚡ Hızlı Gönder"i seçin.</span>`;
         }
@@ -241,12 +241,12 @@ onAuthStateChanged(auth, async (user) => {
     if (user) {
         // Gerçek kullanıcı adını Firebase'den al
         const username = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
-        
+
         // Rol Kontrolü
         const userDoc = await getDoc(doc(db, "users", user.uid));
-        if(userDoc.exists() && userDoc.data().role === "servis") { 
-            window.location.href = "service.html"; 
-            return; 
+        if (userDoc.exists() && userDoc.data().role === "servis") {
+            window.location.href = "service.html";
+            return;
         }
 
         // Cache'i gerçek isimle güncelle ve menüyü yeniden çiz
@@ -257,7 +257,7 @@ onAuthStateChanged(auth, async (user) => {
         const notiQ = query(collection(db, "notifications"), where("userEmail", "==", user.email), where("read", "==", false));
         onSnapshot(notiQ, (snapshot) => {
             const badge = document.getElementById('noti-badge');
-            if(badge) { if(snapshot.empty) badge.style.display = 'none'; else { badge.style.display = 'flex'; badge.innerText = snapshot.size; } }
+            if (badge) { if (snapshot.empty) badge.style.display = 'none'; else { badge.style.display = 'flex'; badge.innerText = snapshot.size; } }
         });
 
 

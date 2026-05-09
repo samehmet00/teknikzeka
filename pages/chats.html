@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,7 +10,7 @@
     <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/layout.css">
 
-    
+
     <style>
         .chat-list-container {
             max-width: 800px;
@@ -19,7 +20,7 @@
             flex-direction: column;
             gap: 12px;
         }
-        
+
         .chat-list-item {
             display: flex;
             align-items: center;
@@ -33,23 +34,28 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .chat-list-item::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
             background: var(--primary);
             opacity: 0;
             transition: 0.3s;
         }
-        
+
         .chat-list-item:hover {
             border-color: var(--primary);
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
         }
-        
-        .chat-list-item:hover::before { opacity: 1; }
+
+        .chat-list-item:hover::before {
+            opacity: 1;
+        }
 
         .chat-list-avatar {
             width: 55px;
@@ -66,7 +72,7 @@
             position: relative;
             box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
         }
-        
+
         .status-dot {
             position: absolute;
             bottom: 2px;
@@ -82,17 +88,23 @@
             color: #94A3B8;
             transition: 0.3s;
         }
+
         .chat-list-item:hover .chat-arrow {
             color: var(--primary);
             transform: translateX(4px);
         }
     </style>
 </head>
+
 <body class="light-mode">
 
     <nav class="navbar">
-        <a href="javascript:history.back()" class="logo" style="text-decoration: none; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        <a href="javascript:history.back()" class="logo"
+            style="text-decoration: none; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m15 18-6-6 6-6" />
+            </svg>
             Geri
         </a>
         <span style="font-weight: bold; color: var(--text-main); font-size: 1.2rem;">Mesajlarım</span>
@@ -101,8 +113,13 @@
     <div class="chat-list-container">
         <!-- ARAMA ÇUBUĞU -->
         <div style="position: relative; margin-bottom: 20px;">
-            <input type="text" id="chat-search" class="premium-input" placeholder="İsim, e-posta veya cihaz ara..." style="padding-left: 45px !important;">
-            <svg style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gray-light);" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="chat-search" class="premium-input" placeholder="İsim, e-posta veya cihaz ara..."
+                style="padding-left: 45px !important;">
+            <svg style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gray-light);"
+                width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
         </div>
 
         <!-- SEKMELER -->
@@ -111,12 +128,14 @@
                 Devam Edenler <span class="tab-badge" id="active-count" style="display:none;">0</span>
             </button>
             <button class="tab-btn" data-tab="completed">
-                Tamamlananlar <span class="tab-badge" id="completed-count" style="display:none; background: #10B981;">0</span>
+                Tamamlananlar <span class="tab-badge" id="completed-count"
+                    style="display:none; background: #10B981;">0</span>
             </button>
         </div>
 
         <div id="chats-list">
-            <p style="text-align: center; color: var(--gray-light); margin-top: 50px;">Sohbetleriniz kontrol ediliyor...</p>
+            <p style="text-align: center; color: var(--gray-light); margin-top: 50px;">Sohbetleriniz kontrol ediliyor...
+            </p>
         </div>
     </div>
 
@@ -163,7 +182,7 @@
             // Sayaçları güncelle
             const activeCount = allTickets.filter(t => !t.processCompleted).length;
             const completedCount = allTickets.filter(t => t.processCompleted).length;
-            
+
             activeCountEl.innerText = activeCount;
             activeCountEl.style.display = activeCount > 0 ? 'inline-block' : 'none';
             completedCountEl.innerText = completedCount;
@@ -174,10 +193,10 @@
                 const partnerName = partnerEmail.split('@')[0].toLowerCase();
                 const device = `${t.deviceBrand} ${t.deviceModel}`.toLowerCase();
                 const matchesSearch = partnerName.includes(searchQuery) || partnerEmail.toLowerCase().includes(searchQuery) || device.includes(searchQuery);
-                
+
                 const isCompleted = t.processCompleted === true;
                 const matchesTab = currentTab === 'active' ? !isCompleted : isCompleted;
-                
+
                 return matchesSearch && matchesTab;
             });
 
@@ -187,7 +206,7 @@
                     const partnerEmail = currentUser.email === t.userEmail ? t.assignedService : t.userEmail;
                     const partnerName = partnerEmail.split('@')[0];
                     const avatarLetter = partnerName.charAt(0).toUpperCase();
-                    
+
                     html += `
                         <a href="chat.html?ticketId=${t.id}" class="chat-list-item">
                             <div class="chat-list-avatar">
@@ -197,7 +216,7 @@
                             <div style="flex: 1; overflow: hidden;">
                                 <div style="display: flex; justify-content: space-between; align-items: baseline;">
                                     <h3 style="margin: 0; color: var(--text-main); font-size: 1.15rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${partnerName}</h3>
-                                    <span style="font-size: 0.75rem; color: #94A3B8;">#${t.id.slice(0,6).toUpperCase()}</span>
+                                    <span style="font-size: 0.75rem; color: #94A3B8;">#${t.id.slice(0, 6).toUpperCase()}</span>
                                 </div>
                                 <p style="margin: 2px 0 0 0; color: var(--primary); font-size: 0.8rem; font-weight: 600;">${partnerEmail}</p>
                                 <p style="margin: 4px 0 0 0; color: var(--gray-light); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px;">
@@ -235,4 +254,5 @@
         });
     </script>
 </body>
+
 </html>

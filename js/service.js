@@ -413,7 +413,7 @@ function renderTickets() {
                     <div style="overflow:hidden; min-width:0;">
                         <div class="bar-title">${deviceInfo} ${saleBadge}</div>
                         <div class="bar-summary">
-                            <span class="ticket-date-badge">${icons.calendar} ${dateStr}</span>
+                            <span class="ticket-date-badge">${icons.calendar} ${dateStr} <span class="ticket-id-sep"></span> #${data.id.slice(0, 6).toUpperCase()}</span>
                             <span class="ticket-desc-text">${data.description.substring(0, 50)}${data.description.length > 50 ? '...' : ''}</span>
                         </div>
                     </div>

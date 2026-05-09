@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -16,6 +17,7 @@
             margin: 90px auto 50px;
             padding: 0 1rem;
         }
+
         .service-hero-card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -26,27 +28,64 @@
             display: flex;
             align-items: center;
             gap: 1.5rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
         }
+
         .service-avatar {
-            width: 72px; height: 72px;
+            width: 72px;
+            height: 72px;
             border-radius: 18px;
             background: linear-gradient(135deg, var(--primary), #06B6D4);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.8rem; font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 800;
             flex-shrink: 0;
         }
-        .service-name { font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
-        .service-email { font-size: 0.85rem; color: var(--gray-light); margin-bottom: 10px; }
+
+        .service-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .service-email {
+            font-size: 0.85rem;
+            color: var(--gray-light);
+            margin-bottom: 10px;
+        }
+
         .rating-summary {
-            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
+
         .rating-big {
-            font-size: 2.4rem; font-weight: 900; color: #F59E0B; line-height: 1;
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: #F59E0B;
+            line-height: 1;
         }
-        .stars-row { display: flex; gap: 3px; }
-        .star { width: 20px; height: 20px; }
-        .review-count { font-size: 0.85rem; color: var(--gray-light); }
+
+        .stars-row {
+            display: flex;
+            gap: 3px;
+        }
+
+        .star {
+            width: 20px;
+            height: 20px;
+        }
+
+        .review-count {
+            font-size: 0.85rem;
+            color: var(--gray-light);
+        }
 
         .reviews-list-card {
             background: var(--card-bg);
@@ -54,58 +93,142 @@
             border: 1px solid var(--border-color);
             overflow: hidden;
         }
+
         .reviews-list-header {
             padding: 1rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
-            font-size: 0.95rem; font-weight: 700; color: var(--text-main);
-            display: flex; align-items: center; gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
         .review-item {
             padding: 1.2rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
             animation: fadeInUp 0.4s ease both;
         }
-        .review-item:last-child { border-bottom: none; }
-        @keyframes fadeInUp {
-            from { opacity:0; transform: translateY(12px); }
-            to { opacity:1; transform: translateY(0); }
+
+        .review-item:last-child {
+            border-bottom: none;
         }
-        .review-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
-        .reviewer-info { display: flex; align-items: center; gap: 10px; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .reviewer-avatar {
-            width: 36px; height: 36px; border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             background: linear-gradient(135deg, var(--primary), #06B6D4);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 0.9rem; font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 700;
             flex-shrink: 0;
         }
-        .reviewer-name { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
-        .review-date { font-size: 0.78rem; color: var(--gray-light); margin-top: 1px; }
-        .review-stars { display: flex; gap: 2px; }
-        .review-stars svg { width: 14px; height: 14px; }
-        .review-text { font-size: 0.9rem; color: var(--gray-light); line-height: 1.6; font-style: italic; }
+
+        .reviewer-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .review-date {
+            font-size: 0.78rem;
+            color: var(--gray-light);
+            margin-top: 1px;
+        }
+
+        .review-stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .review-stars svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .review-text {
+            font-size: 0.9rem;
+            color: var(--gray-light);
+            line-height: 1.6;
+            font-style: italic;
+        }
+
         .no-reviews {
-            text-align: center; padding: 3rem 1rem; color: var(--gray-light);
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-light);
         }
-        .no-reviews svg { margin-bottom: 1rem; opacity: 0.4; }
+
+        .no-reviews svg {
+            margin-bottom: 1rem;
+            opacity: 0.4;
+        }
+
         .loading-spinner {
-            display: flex; align-items: center; justify-content: center; padding: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
         }
+
         .spinner {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             border: 3px solid var(--border-color);
             border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
+
 <body class="light-mode">
 
     <nav class="navbar">
-        <a href="javascript:history.back()" class="logo" style="text-decoration:none; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+        <a href="javascript:history.back()" class="logo"
+            style="text-decoration:none; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="m15 18-6-6 6-6" />
+            </svg>
             Geri Dön
         </a>
     </nav>
@@ -113,24 +236,32 @@
     <div class="reviews-page-wrapper">
         <!-- Service Hero -->
         <div class="service-hero-card" id="service-hero">
-            <div class="loading-spinner"><div class="spinner"></div></div>
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
         </div>
 
         <!-- Reviews List -->
         <div class="reviews-list-card">
             <div class="reviews-list-header" style="justify-content: space-between;">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
                     Kullanıcı Değerlendirmeleri
                 </div>
-                <select id="sort-reviews" style="padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); font-size: 0.85rem; cursor: pointer; outline: none;">
+                <select id="sort-reviews"
+                    style="padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); font-size: 0.85rem; cursor: pointer; outline: none;">
                     <option value="newest">En Yeni</option>
                     <option value="highest">En Yüksek Puan</option>
                     <option value="lowest">En Düşük Puan</option>
                 </select>
             </div>
             <div id="reviews-list">
-                <div class="loading-spinner"><div class="spinner"></div></div>
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -270,4 +401,5 @@
     </script>
     <script type="module" src="../js/theme-manager.js"></script>
 </body>
+
 </html>

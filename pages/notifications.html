@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
-    
+
     <!-- Mobil Uygulama (PWA) Etiketleri -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4f46e5">
-    <meta name="mobile-web-app-capable" content="yes"> 
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TeknikZeka">
     <link rel="manifest" href="../manifest.json">
@@ -15,11 +16,16 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/app.css">
 </head>
+
 <body class="light-mode">
 
     <nav class="navbar">
-        <a href="javascript:history.back()" class="logo" style="text-decoration: none; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        <a href="javascript:history.back()" class="logo"
+            style="text-decoration: none; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m15 18-6-6 6-6" />
+            </svg>
             Geri Dön
         </a>
     </nav>
@@ -32,7 +38,7 @@
                 <button id="clear-all-btn" class="action-btn danger-btn">🗑️ Tümünü Sil</button>
             </div>
         </div>
-        
+
         <div id="notifications-list">
             <p style="text-align: center; color: var(--gray-light); padding: 20px;">Yükleniyor...</p>
         </div>
@@ -42,4 +48,5 @@
     <script type="module" src="../js/notifications.js"></script>
     <script type="module" src="../js/theme-manager.js"></script>
 </body>
+
 </html>

@@ -522,7 +522,7 @@ onAuthStateChanged(auth, async (user) => {
                                     <span style="font-size:1.8rem; background:rgba(79,70,229,0.1); border-radius:12px; padding:5px; display:inline-flex; align-items:center; justify-content:center;">${icons.phone}</span>
                                     <div>
                                         <h4 style="margin:0; font-size:1.05rem; color:var(--text-main);">${deviceInfo}</h4>
-                                        <span style="font-size:0.78rem; color:#94A3B8; display:flex; align-items:center; gap:3px;">${icons.calendar} ${dateStr} &nbsp;|&nbsp; #${ticketId.slice(0, 6).toUpperCase()}</span>
+                                        <span style="font-size:0.78rem; color:#94A3B8; display:flex; align-items:center; gap:3px;">${icons.calendar} ${dateStr} <span class="ticket-id-sep"></span> #${ticketId.slice(0, 6).toUpperCase()}</span>
                                     </div>
                                 </div>
                                 <span class="status-pill ${statusClass}">${data.status}</span>

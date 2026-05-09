@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -11,13 +12,20 @@
     <title>Hakkımızda - TeknikZeka</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
 
     <nav class="navbar">
         <a href="../index.html" class="logo" style="text-decoration:none;">Teknik<span>Zeka</span></a>
         <div class="nav-actions-pill">
-            <a href="../index.html" style="color:var(--text-main); text-decoration:none; font-weight:600; font-size:0.95rem; display:flex; align-items:center; gap:5px;" title="Ana Sayfa">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <a href="../index.html"
+                style="color:var(--text-main); text-decoration:none; font-weight:600; font-size:0.95rem; display:flex; align-items:center; gap:5px;"
+                title="Ana Sayfa">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
             </a>
             <div class="nav-divider"></div>
             <div id="dynamic-auth-menu">
@@ -26,28 +34,296 @@
         </div>
     </nav>
 
-    <header class="about-hero">
-        <h1>Geleceğin <span style="color:var(--primary);">Servis Ağı</span></h1>
-        <p>Yapay zekâ ve dijital dönüşümü bir araya getirerek, teknik onarım sektöründe şeffaf, hızlı ve güvenilir bir köprü inşa ediyoruz.</p>
-    </header>
+    <style>
+        .about-hero-container {
+            position: relative;
+            margin-top: 100px;
+            margin-bottom: 4rem;
+            padding: 40px 0;
+            margin-left: 5%;
+            margin-right: 5%;
+            z-index: 5;
+        }
+
+        .about-hero {
+            position: relative;
+            min-height: 550px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #000;
+            text-align: center;
+            border-radius: 40px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            -webkit-mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
+            mask-image: linear-gradient(to bottom, black 95%, transparent 100%);
+        }
+
+        /* YouTube Tarzı Sinematik Aydınlatma (Ambient Mode) */
+        .hero-ambilight {
+            position: absolute;
+            top: -15%;
+            left: -15%;
+            width: 130%;
+            height: 130%;
+            z-index: 1;
+            filter: blur(140px) saturate(2.5);
+            opacity: 0.65;
+            pointer-events: none;
+            transition: opacity 2s ease;
+        }
+
+        .hero-ambilight video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Ana Video */
+        .about-hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            opacity: 1;
+            /* Başlangıçta tam net */
+            object-fit: cover;
+            pointer-events: none;
+            transition: all 2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Video Kafa Karışıklığı Yaratmasın Diye Sonraki Hali */
+        .about-hero.content-visible .about-hero-video {
+            opacity: 0.55;
+            filter: blur(5px) brightness(0.7);
+        }
+
+        .about-hero.content-visible .hero-ambilight {
+            opacity: 0.4;
+        }
+
+        /* Dıştaki Dekoratif Çizgiler */
+        .hero-external-line {
+            position: absolute;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            z-index: 10;
+            box-shadow: 0 0 25px var(--primary);
+            opacity: 0.8;
+        }
+
+        .line-top {
+            top: 10px;
+        }
+
+        .line-bottom {
+            bottom: 10px;
+        }
+
+        /* Yazı Okunabilirliği İçin Gradyan Katman */
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
+            z-index: 3;
+            opacity: 0.6;
+            transition: opacity 2s ease;
+        }
+
+        .about-hero.content-visible .hero-overlay {
+            opacity: 1;
+        }
+
+        .about-hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 850px;
+            padding: 20px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* İçerik Görünür Olduğunda Tetiklenecek Animasyon */
+        .about-hero.content-visible .about-hero-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-hero h1 {
+            font-size: clamp(2.2rem, 8vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            text-shadow:
+                0 20px 100px rgba(0, 0, 0, 1),
+                0 10px 40px rgba(0, 0, 0, 1),
+                0 4px 15px rgba(0, 0, 0, 0.9),
+                0 0 5px rgba(0, 0, 0, 1);
+            letter-spacing: -0.03em;
+        }
+
+        .about-hero p {
+            font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.6;
+            text-shadow:
+                0 15px 100px rgba(0, 0, 0, 1),
+                0 10px 50px rgba(0, 0, 0, 1),
+                0 5px 15px rgba(0, 0, 0, 1);
+        }
+
+        /* Gelecek Hedefleri Kart Stili */
+        .goals-card {
+            margin-top: 3rem;
+            text-align: center;
+            background: var(--card-bg);
+            padding: 4rem 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .goals-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .goals-icon-wrap {
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            border-radius: 20px;
+            transition: all 0.5s ease;
+        }
+
+        .goals-card:hover .goals-icon-wrap {
+            transform: translateY(-15px) rotate(-10deg) scale(1.15);
+            /* Roket kalkış efekti */
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 15px 30px rgba(79, 70, 229, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .about-hero-container {
+                margin-top: 80px;
+                margin-bottom: 2rem;
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+
+            .about-hero {
+                min-height: 400px;
+                border-radius: 20px;
+            }
+
+            .hero-external-line {
+                left: 5%;
+                right: 5%;
+            }
+        }
+    </style>
+
+    <div class="about-hero-container">
+        <div class="hero-external-line line-top"></div>
+        <header class="about-hero" id="aboutHero">
+            <!-- Arka Planda Kalan Ambilight -->
+            <div class="hero-ambilight">
+                <video muted playsinline id="bgVideo">
+                    <source src="../img/animasyon.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            <!-- Ana Video (Intro için) -->
+            <video muted playsinline class="about-hero-video" id="introVideo">
+                <source src="../img/animasyon.mp4" type="video/mp4">
+            </video>
+
+            <div class="hero-overlay"></div>
+
+            <div class="about-hero-content">
+                <h1>Geleceğin <span style="color:rgb(3, 155, 112);">Servis </span><span
+                        style="color:rgb(16, 137, 184);">Ağı</span></h1>
+                <p>Yapay zekâ ve dijital dönüşümü bir araya getirerek, teknik onarım sektöründe şeffaf, hızlı ve
+                    güvenilir bir köprü inşa ediyoruz.</p>
+            </div>
+        </header>
+        <div class="hero-external-line line-bottom"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const introVideo = document.getElementById('introVideo');
+            const bgVideo = document.getElementById('bgVideo');
+            const aboutHero = document.getElementById('aboutHero');
+
+            // Video yüklendiğinde otomatik başlat (Sessiz olduğu için politikaya takılmaz)
+            introVideo.play().catch(e => console.log("Video oynatma hatası:", e));
+
+            // Video bittiğinde veya bitmeye yakın animasyonları başlat
+            introVideo.onended = () => {
+                // İçeriği göster ve videoyu arka plana at
+                aboutHero.classList.add('content-visible');
+
+                // Arka plan videosunu döngüde başlat
+                bgVideo.loop = true;
+                bgVideo.play();
+
+                // Intro videosunu da döngüye al (opsiyonel, veya silebiliriz)
+                introVideo.loop = true;
+                introVideo.play();
+            };
+
+            // Eğer video çok uzunsa, kullanıcıyı bekletmemek için 5. saniyede de tetikleyebiliriz
+            setTimeout(() => {
+                if (!aboutHero.classList.contains('content-visible')) {
+                    aboutHero.classList.add('content-visible');
+                    bgVideo.loop = true;
+                    bgVideo.play();
+                }
+            }, 6000); // 6 saniye sonra zorunlu gösterim
+        });
+    </script>
 
     <section class="about-container">
         <div class="about-grid">
             <div class="info-card">
                 <div class="info-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
                         <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                        </path>
                     </svg>
                 </div>
                 <h2>Projenin Vizyonu</h2>
-                <p>TeknikZeka, geleneksel teknik servis süreçlerindeki zaman kaybını ve iletişim eksikliğini ortadan kaldırmak amacıyla tasarlanmış yenilikçi bir platformdur. Kullanıcıların teknik arızalarını kendi kelimeleriyle ifade etmesini sağlar ve <strong>Llama 3 70B (Groq AI)</strong> modelini kullanarak saniyeler içinde donanımsal ön teşhis koyar.</p>
+                <p>TeknikZeka, geleneksel teknik servis süreçlerindeki zaman kaybını ve iletişim eksikliğini ortadan
+                    kaldırmak amacıyla tasarlanmış yenilikçi bir platformdur. <strong>Llama 3 70B (Groq AI)</strong>
+                    modelini kullanarak donanımsal ön teşhis koyar.</p>
             </div>
-
             <div class="info-card" style="--card-accent:#10B981;">
                 <div class="info-icon" style="background:rgba(16,185,129,0.1); color:#10B981;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                         <polyline points="14 2 14 8 20 8"></polyline>
                         <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -55,55 +331,80 @@
                     </svg>
                 </div>
                 <h2>Sistem Nasıl Çalışır?</h2>
-                <p>Oluşturulan yapay zekâ destekli biletler, sistemdeki yerel teknik servislere anında düşer. Servisler; arıza tipine, cihaz modeline ve onarım zorluğuna göre talepleri inceler. İhale usulü ile çalışan bu yapı, müşteriyi en hızlı ve şeffaf çözüme ulaştırır.</p>
+                <p>Oluşturulan biletler servislerin önüne düşer. Servisler talepleri inceler ve ihale usulü ile teklif
+                    verir. Bu yapı müşteriyi en hızlı çözüme ulaştırır.</p>
+            </div>
+        </div>
+
+        <div class="goals-card">
+            <div class="goals-icon-wrap">
+                <!-- Daha uygun ve modern roket SVG'si -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z">
+                    </path>
+                    <path
+                        d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z">
+                    </path>
+                    <path d="M9 12H4s.55-3.03 2-5c1.62-2.2 5-3 5-3"></path>
+                    <path d="M12 15v5s3.03-.55 5-2c2.2-1.62 3-5 3-5"></path>
+                </svg>
+            </div>
+            <h2 style="color:var(--text-main); margin-bottom: 1rem;">Gelecek Hedeflerimiz</h2>
+            <p style="color:var(--gray-light); max-width: 800px; margin: 0 auto; line-height: 1.8;">
+                TeknikZeka, sadece bir ödev projesi değil; Türkiye genelindeki tüm bağımsız teknik servisleri tek bir
+                çatı altında toplayan devasa bir ekosistemin ilk adımıdır. Amacımız, yapay zekâ analizleri ile arıza
+                tespit maliyetlerini sıfıra indirmektir.
+            </p>
+        </div>
+
+        <div class="about-grid" style="margin-top: 1rem;">
+            <div class="info-card">
+                <div class="info-icon" style="background:rgba(245,158,11,0.1); color:#F59E0B;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <h2>Hız ve Verimlilik</h2>
+                <p>Talebinizi oluşturduğunuz andan itibaren dakikalar içinde servislerden teklif almaya başlar, süreci
+                    takip edersiniz.</p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon" style="background:rgba(99,102,241,0.1); color:#6366F1;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <h2>Güven ve Şeffaflık</h2>
+                <p>Tüm fiyat tekliflerini önceden görür, servis puanları ve yorumları sayesinde en doğru seçimi
+                    yaparsınız.</p>
             </div>
         </div>
 
         <div class="dev-card">
-            <div class="dev-icon" style="background:linear-gradient(135deg,var(--primary),#818cf8); color:white; border-radius:20px; box-shadow:0 10px 25px rgba(79,70,229,0.25); display:flex; align-items:center; justify-content:center; width:80px; height:80px; flex-shrink:0;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="dev-icon"
+                style="background:linear-gradient(135deg,var(--primary),#818cf8); color:white; border-radius:20px; display:flex; align-items:center; justify-content:center; width:80px; height:80px; flex-shrink:0;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
                     <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
                 </svg>
             </div>
             <div class="dev-info">
                 <h3>Akademik Altyapı ve Geliştirici</h3>
-                <p>Bu platform, modern web teknolojileri (HTML5, CSS3, ES6 JavaScript) ve BaaS (Firebase) mimarisi kullanılarak sıfırdan kodlanmıştır. İnönü Üniversitesi Bilgisayar Mühendisliği Bölümü <strong>İnternet Programcılığı</strong> dersi projesi kapsamında, profesyonel standartlara uygun olarak hayata geçirilmiştir.</p>
+                <p>İnönü Üniversitesi Bilgisayar Mühendisliği Bölümü <strong>İnternet Programcılığı</strong> dersi
+                    projesi kapsamında hayata geçirilmiştir.</p>
             </div>
         </div>
 
-        <!-- YENİ BÖLÜM: NEDEN BİZ? -->
-        <div class="about-grid" style="margin-top: 1rem;">
-            <div class="info-card">
-                <div class="info-icon" style="background:rgba(245,158,11,0.1); color:#F59E0B;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                </div>
-                <h2>Hız ve Verimlilik</h2>
-                <p>Günlerce servis bekleme dönemini kapatıyoruz. Talebinizi oluşturduğunuz andan itibaren dakikalar içinde servislerden teklif almaya başlar, süreci saniye saniye takip edersiniz.</p>
-            </div>
-
-            <div class="info-card">
-                <div class="info-icon" style="background:rgba(99,102,241,0.1); color:#6366F1;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                </div>
-                <h2>Güven ve Şeffaflık</h2>
-                <p>Sürpriz maliyetlere son! Tüm fiyat tekliflerini önceden görür, sadece onayladığınız servis ile çalışırsınız. Servis puanları ve yorumları sayesinde en doğru seçimi yaparsınız.</p>
-            </div>
-        </div>
-
-        <!-- YENİ BÖLÜM: GELECEK HEDEFLERİMİZ -->
-        <div style="margin-top: 2rem; text-align: center; background: var(--card-bg); padding: 3rem; border-radius: 20px; border: 1px solid var(--border-color);">
-            <h2 style="color:var(--text-main); margin-bottom: 1rem;">Gelecek Hedeflerimiz</h2>
-            <p style="color:var(--gray-light); max-width: 800px; margin: 0 auto; line-height: 1.8;">
-                TeknikZeka, sadece bir ödev projesi değil; Türkiye genelindeki tüm bağımsız teknik servisleri tek bir çatı altında toplayan devasa bir ekosistemin ilk adımıdır. Amacımız, yapay zekâ analizleri ile arıza tespit maliyetlerini sıfıra indirmek ve onarım süreçlerini herkes için ulaşılabilir kılmaktır.
-            </p>
-        </div>
-
-        <!-- ALT BOŞLUK (READABILITY FIX) -->
         <div style="height: 100px;"></div>
     </section>
 
     <script type="module" src="../js/about-auth.js"></script>
     <script type="module" src="../js/theme-manager.js"></script>
 </body>
+
 </html>
