@@ -1,0 +1,399 @@
+/* =============================================
+   OFFER.CSS — Fiyat Pazarlık Sayfası Stilleri
+   ============================================= */
+
+body { background: var(--bg-main); }
+
+.offer-page-container {
+    max-width: 680px;
+    margin: 80px auto 40px;
+    padding: 0 16px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* --- Cihaz Bilgi Kartı --- */
+.offer-device-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+.offer-device-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(79,70,229,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--primary);
+    font-size: 1.6rem;
+}
+.offer-device-info { flex: 1; min-width: 0; }
+.offer-device-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-main);
+    margin: 0 0 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.offer-device-meta {
+    font-size: 0.8rem;
+    color: var(--gray-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.offer-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+.offer-type-sale { background: rgba(16,185,129,0.1); color: #10B981; border: 1px solid #10B98140; }
+.offer-type-repair { background: rgba(79,70,229,0.1); color: var(--primary); border: 1px solid rgba(79,70,229,0.25); }
+
+/* Skeleton */
+.offer-device-card-skeleton { width: 100%; }
+.skeleton-line {
+    background: var(--border-color);
+    border-radius: 6px;
+    animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* --- Güncel Durum --- */
+.offer-current-status {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px 20px;
+}
+.offer-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.offer-status-label {
+    font-size: 0.82rem;
+    color: var(--gray-light);
+    margin-bottom: 4px;
+}
+.offer-status-price {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1;
+}
+.offer-status-part {
+    font-size: 0.83rem;
+    color: var(--gray-light);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* --- Pazarlık Geçmişi --- */
+.offer-history-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+}
+.offer-history-label {
+    padding: 12px 18px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--gray-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.offer-history {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 80px;
+}
+.offer-history-empty {
+    text-align: center;
+    color: var(--gray-light);
+    font-size: 0.88rem;
+    padding: 12px 0;
+}
+
+/* Teklif kaydı */
+.offer-record {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+.offer-record-bubble {
+    max-width: 82%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    position: relative;
+    transition: transform 0.15s;
+}
+.offer-record-bubble:hover { transform: translateY(-1px); }
+.offer-record.from-customer { align-items: flex-end; }
+.offer-record.from-service  { align-items: flex-start; }
+
+.offer-record.from-customer .offer-record-bubble {
+    background: linear-gradient(135deg, var(--primary), #4338ca);
+    color: white;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 12px rgba(79,70,229,0.2);
+}
+.offer-record.from-service .offer-record-bubble {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border-color);
+    color: var(--text-main);
+    border-bottom-left-radius: 4px;
+}
+
+.offer-record-who {
+    font-size: 0.72rem;
+    font-weight: 700;
+    opacity: 0.7;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.offer-record-price {
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+}
+.offer-record-part {
+    font-size: 0.8rem;
+    opacity: 0.85;
+    margin-top: 2px;
+}
+.offer-record-note {
+    font-size: 0.82rem;
+    opacity: 0.8;
+    margin-top: 4px;
+    font-style: italic;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 5px;
+}
+.offer-record.from-service .offer-record-note {
+    border-color: var(--border-color);
+}
+.offer-record-time {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    margin-top: 5px;
+    text-align: right;
+}
+.offer-record.from-service .offer-record-time { text-align: left; }
+
+/* Durum rozeti (Kabul/Red) */
+.offer-record-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-top: 6px;
+    align-self: flex-end;
+}
+.offer-record.from-service .offer-record-status { align-self: flex-start; }
+.offer-status-pending  { background: rgba(245,158,11,0.12); color: #D97706; }
+.offer-status-accepted { background: rgba(16,185,129,0.12); color: #059669; }
+.offer-status-rejected { background: rgba(239,68,68,0.12); color: #DC2626; }
+
+/* Servis Kabul/Reddet Butonları */
+.offer-action-btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+.offer-accept-btn, .offer-reject-btn {
+    flex: 1;
+    padding: 9px 0;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+    transition: 0.18s;
+}
+.offer-accept-btn {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: white;
+    box-shadow: 0 4px 10px rgba(16,185,129,0.25);
+}
+.offer-accept-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(16,185,129,0.35); }
+.offer-reject-btn {
+    background: transparent;
+    color: #EF4444;
+    border: 1.5px solid #EF444455;
+}
+.offer-reject-btn:hover { background: rgba(239,68,68,0.08); }
+.offer-accept-btn:disabled, .offer-reject-btn:disabled {
+    opacity: 0.5; cursor: not-allowed; transform: none;
+}
+
+/* --- Teklif Gönderme Formu --- */
+.offer-send-form {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+.offer-send-form-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.offer-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.offer-price-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(79,70,229,0.05);
+    border: 1.5px solid var(--primary);
+    border-radius: 12px;
+    padding: 10px 16px;
+    transition: 0.2s;
+}
+.offer-price-input-wrap:focus-within {
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.12);
+}
+.offer-currency-sym {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+}
+.offer-price-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    outline: none;
+}
+.offer-price-input::placeholder { color: var(--gray-light); font-weight: 400; font-size: 1rem; }
+.offer-note-input {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 14px;
+    background: transparent;
+    color: var(--text-main);
+    font-size: 0.88rem;
+    resize: none;
+    outline: none;
+    box-sizing: border-box;
+    transition: 0.2s;
+    font-family: inherit;
+}
+.offer-note-input:focus { border-color: var(--primary); }
+.offer-send-btn {
+    background: linear-gradient(135deg, var(--primary), #4338ca);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: 0.2s;
+    box-shadow: 0 4px 12px rgba(79,70,229,0.25);
+}
+.offer-send-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(79,70,229,0.35); }
+.offer-send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.offer-send-hint {
+    font-size: 0.78rem;
+    color: var(--gray-light);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* --- Servis bekleme mesajı --- */
+.offer-service-waiting {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--gray-light);
+    font-size: 0.9rem;
+}
+
+/* Tamamlanmış teklif bilgisi */
+.offer-completed-box {
+    background: rgba(16,185,129,0.06);
+    border: 1.5px solid #10B98140;
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.offer-completed-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #10B981;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+@media (max-width: 600px) {
+    .offer-page-container { padding: 0 12px 80px; }
+    .offer-record-price { font-size: 1.25rem; }
+    .offer-status-price { font-size: 1.5rem; }
+}

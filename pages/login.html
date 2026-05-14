@@ -3,18 +3,66 @@
 
 <head>
     <meta charset="UTF-8">
-
-    <!-- Mobil Uygulama (PWA) Etiketleri -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#4f46e5">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TeknikZeka">
     <link rel="manifest" href="../manifest.json">
-
     <title>Sisteme Giriş - TeknikZeka</title>
     <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Giriş kartı genişliği — flex container içinde daralmasın */
+        #auth-container {
+            width: 100%;
+            max-width: 500px;
+            min-width: 320px;
+            box-sizing: border-box;
+        }
+
+        /* Section padding'i azalt, kart daha geniş görünsün */
+        .app-container {
+            padding: 2rem 1rem !important;
+        }
+
+        /* Şifre alanı wrapper — göz ikonunu konumlandırır */
+        .password-field-wrap {
+            position: relative;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        /* Wrapper içindeki input'un kendi margin'ini sıfırla */
+        .password-field-wrap > input {
+            margin-bottom: 0 !important;
+            padding-right: 46px !important;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .pw-eye-btn {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--gray-light);
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            border-radius: 50%;
+            transition: color 0.2s, background 0.2s;
+            line-height: 0;
+        }
+        .pw-eye-btn:hover { color: var(--primary); background: rgba(79,70,229,0.08); }
+
+        /* Hesap türü kartları — çok sıkışmasın */
+        .acc-group { flex-wrap: wrap; }
+        .acc-option { flex: 1 1 120px; }
+        .acc-card { min-width: 0; }
+    </style>
 </head>
 
 <body class="light-mode">
@@ -22,80 +70,118 @@
     <nav class="navbar">
         <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
         <div style="display: flex; gap: 15px; align-items: center; margin-left: auto;">
-            <a href="../index.html" class="nav-icon-btn" title="Ana Sayfaya Dön"><svg xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24">
+            <a href="../index.html" class="nav-icon-btn" title="Ana Sayfaya Dön">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2-2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg></a>
+                </svg>
+            </a>
         </div>
     </nav>
 
-    <section class="app-container"
-        style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+    <section class="app-container" style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
         <div id="auth-container" class="auth-box">
             <h2 id="auth-title">Sisteme Giriş</h2>
             <form id="auth-form">
 
+                <!-- Hesap Türü (sadece kayıt modunda görünür) -->
                 <div id="account-type-container" style="display: none; margin-bottom: 20px; text-align: left;">
-                    <p style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 5px; font-weight: bold;">Hesap
-                        Türünüzü Seçin</p>
+                    <p style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 5px; font-weight: bold;">Hesap Türünüzü Seçin</p>
                     <div class="acc-group">
                         <label class="acc-option">
                             <input type="radio" name="acc-type" value="musteri" checked>
                             <div class="acc-card">
-                                <span class="acc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round">
+                                <span class="acc-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="12" cy="7" r="4"></circle>
-                                    </svg></span>
+                                    </svg>
+                                </span>
                                 <span>Bireysel Müşteri</span>
                             </div>
                         </label>
-
                         <label class="acc-option">
                             <input type="radio" name="acc-type" value="servis">
                             <div class="acc-card">
-                                <span class="acc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <path
-                                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
-                                        </path>
-                                    </svg></span>
+                                <span class="acc-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                                    </svg>
+                                </span>
                                 <span>Teknik Servis</span>
                             </div>
                         </label>
                     </div>
                 </div>
 
+                <!-- Ad / Soyad (sadece kayıt modunda görünür) -->
                 <input type="text" id="first-name" placeholder="Adınız" style="display: none;">
                 <input type="text" id="last-name" placeholder="Soyadınız" style="display: none;">
 
-                <input type="text" id="company-name" placeholder="Firma / Dükkan Adı"
-                    style="display: none; border-color: #10B981;">
-                <input type="password" id="secret-code" placeholder="Sistem Onay Kodu (Örn: TZ-2026-SERVIS)"
-                    style="display: none; border-color: #10B981;">
+                <!-- Firma / Kod (sadece servis kaydında görünür) -->
+                <input type="text" id="company-name" placeholder="Firma / Dükkan Adı" style="display: none; border-color: #10B981;">
+                <input type="password" id="secret-code" placeholder="Sistem Onay Kodu (Örn: TZ-2026-SERVIS)" style="display: none; border-color: #10B981;">
 
+                <!-- E-posta -->
                 <input type="email" id="email" placeholder="E-posta adresiniz" required>
-                <input type="password" id="password" placeholder="Şifreniz" required>
 
+                <!-- Şifre + Göz İkonu -->
+                <div class="password-field-wrap">
+                    <input type="password" id="password" placeholder="Şifreniz" required>
+                    <button type="button" id="toggle-password" class="pw-eye-btn" title="Şifreyi Göster/Gizle" tabindex="-1">
+                        <svg id="pw-eye-open" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <svg id="pw-eye-closed" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Şifre Tekrar (sadece kayıt modunda görünür) -->
+                <div class="password-field-wrap" id="confirm-password-wrap" style="display:none;">
+                    <input type="password" id="confirm-password" placeholder="Şifrenizi Tekrar Girin">
+                    <button type="button" id="toggle-confirm-password" class="pw-eye-btn" title="Şifreyi Göster/Gizle" tabindex="-1">
+                        <svg id="cpw-eye-open" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <svg id="cpw-eye-closed" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Şifremi Unuttum -->
                 <div style="text-align: right; margin-bottom: 15px;">
                     <a href="#" id="forgot-password-link"
-                        style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600; display: inline-block;">Şifremi
-                        Unuttum?</a>
+                        style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600; display: inline-block;">
+                        Şifremi Unuttum?
+                    </a>
                 </div>
 
                 <button type="submit" id="auth-btn">Giriş Yap</button>
             </form>
+
             <p id="toggle-text" style="margin-top: 15px;">Hesabınız yok mu? <a href="#" id="toggle-link"
                     style="color: var(--primary); font-weight: bold;">Hemen Kayıt Olun</a></p>
-            <p id="auth-error"
-                style="color: #EF4444; display: none; margin-top: 10px; font-size: 0.9rem; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px;">
-            </p>
-            <p id="auth-success"
-                style="color: #10B981; display: none; margin-top: 10px; font-size: 0.9rem; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px;">
-            </p>
+            <p id="auth-error" style="color: #EF4444; display: none; margin-top: 10px; font-size: 0.9rem; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px;"></p>
+            <p id="auth-success" style="color: #10B981; display: none; margin-top: 10px; font-size: 0.9rem; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px;"></p>
         </div>
     </section>
 

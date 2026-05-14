@@ -21,25 +21,54 @@ const accountTypeContainer = document.getElementById('account-type-container');
 const companyNameInput = document.getElementById('company-name');
 const secretCodeInput = document.getElementById('secret-code');
 
+const confirmPasswordInput = document.getElementById('confirm-password');
+const confirmPasswordWrap  = document.getElementById('confirm-password-wrap');
+
 let isLoginMode = true;
 
-// ÖZEL/VIP MAİLLER (Bu mailler doğrulama adımını atlayıp direkt girer)
-const vipEmails = ["servis@teknikzeka.app", "admin@test.com"]; 
+// --- ŞİFRE GÖZ İKONU TOGGLE ---
+function setupEyeToggle(btnId, inputId, openId, closedId) {
+    const btn    = document.getElementById(btnId);
+    const inp    = document.getElementById(inputId);
+    const iOpen  = document.getElementById(openId);
+    const iClose = document.getElementById(closedId);
+    if (!btn || !inp) return;
+    btn.addEventListener('click', () => {
+        const show = inp.type === 'password';
+        inp.type           = show ? 'text'     : 'password';
+        iOpen.style.display  = show ? 'none'    : 'block';
+        iClose.style.display = show ? 'block'   : 'none';
+    });
+}
+setupEyeToggle('toggle-password',         'password',         'pw-eye-open',  'pw-eye-closed');
+setupEyeToggle('toggle-confirm-password', 'confirm-password', 'cpw-eye-open', 'cpw-eye-closed');
 
-if(toggleText) {
+// ÖZEL/VIP MAİLLER (Bu mailler doğrulama adımını atlayıp direkt girer)
+const vipEmails = ["servis@teknikzeka.app", "servis@mehmet.app", "servis@ahmet.app", "servis@mustafa.app", "servis@fatih.app", "servis@abdullah.app", "servis@metin.app"];
+
+if (toggleText) {
     toggleText.addEventListener('click', (e) => {
-        if(e.target.tagName === 'A') {
+        if (e.target.tagName === 'A') {
             e.preventDefault();
             isLoginMode = !isLoginMode;
-            
+
             authTitle.innerText = isLoginMode ? "Sisteme Giriş" : "Yeni Hesap Oluştur";
             authBtn.innerText = isLoginMode ? "Giriş Yap" : "Kayıt Ol";
             forgotPasswordLink.style.display = isLoginMode ? "inline-block" : "none";
-            
+
             firstNameInput.style.display = isLoginMode ? "none" : "block";
             lastNameInput.style.display = isLoginMode ? "none" : "block";
             accountTypeContainer.style.display = isLoginMode ? "none" : "block";
-            
+
+            // Şifre tekrar alanı: kayıt modunda aç, giriş modunda kapat
+            if (confirmPasswordWrap) {
+                confirmPasswordWrap.style.display = isLoginMode ? "none" : "block";
+                if (confirmPasswordInput) {
+                    confirmPasswordInput.required = !isLoginMode;
+                    confirmPasswordInput.value = '';
+                }
+            }
+
             firstNameInput.required = !isLoginMode;
             lastNameInput.required = !isLoginMode;
 
@@ -49,11 +78,11 @@ if(toggleText) {
             secretCodeInput.style.display = "none";
             companyNameInput.required = false;
             secretCodeInput.required = false;
-            
-            toggleText.innerHTML = isLoginMode 
-                ? 'Hesabınız yok mu? <a href="#" id="toggle-link" style="color: var(--primary); font-weight: bold;">Hemen Kayıt Olun</a>' 
+
+            toggleText.innerHTML = isLoginMode
+                ? 'Hesabınız yok mu? <a href="#" id="toggle-link" style="color: var(--primary); font-weight: bold;">Hemen Kayıt Olun</a>'
                 : 'Zaten hesabınız var mı? <a href="#" id="toggle-link" style="color: var(--primary); font-weight: bold;">Giriş Yapın</a>';
-            
+
             authError.style.display = 'none'; authSuccess.style.display = 'none';
         }
     });
@@ -62,7 +91,7 @@ if(toggleText) {
 // SERVİS SEÇİMİ DİNLEYİCİSİ
 accTypeRadios.forEach(radio => {
     radio.addEventListener('change', (e) => {
-        if(e.target.value === 'servis') {
+        if (e.target.value === 'servis') {
             companyNameInput.style.display = "block";
             secretCodeInput.style.display = "block";
             companyNameInput.required = true;
@@ -83,7 +112,7 @@ forgotPasswordLink.addEventListener('click', (e) => {
     sendPasswordResetEmail(auth, email).then(() => showSuccess("Sıfırlama linki e-postanıza gönderildi.")).catch(() => showError("Hesap bulunamadı."));
 });
 
-if(authForm) {
+if (authForm) {
     authForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = emailInput.value.trim();
@@ -115,13 +144,24 @@ if(authForm) {
                 return;
             }
 
+            // Kayıt sırasında onAuthStateChanged'in devreye girip yönlendirmesini engelle
+            isRegistering = true;
+
             try {
+                // Şifre eşleşme kontrolü
+                if (confirmPasswordInput && passwordInput.value !== confirmPasswordInput.value) {
+                    showError("Şifreler eşleşmiyor! Lütfen aynı şifreyi iki kere girin.");
+                    authBtn.innerText = "Kayıt Ol"; authBtn.disabled = false;
+                    isRegistering = false;
+                    return;
+                }
+
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-                
+
                 await updateProfile(user, { displayName: `${firstName} ${lastName}` });
 
-                // Veritabanına rolü ve firma adını kaydet
+                // Veritabanına rolü ve firma adını kaydet — ÖNCE bunu bekle!
                 await setDoc(doc(db, "users", user.uid), {
                     firstName: firstName,
                     lastName: lastName,
@@ -136,9 +176,9 @@ if(authForm) {
                 // E-posta gönderimi
                 await sendEmailVerification(user);
 
-                // VIP MAİL KONTROLÜ: Eğer VIP bir mail ile kayıt olunduysa, çıkış yaptırma, direkt girsin!
                 if (!vipEmails.includes(user.email)) {
-                    // Normal kullanıcı, çıkış yaptır ve onay bekle
+                    // Normal kullanıcı: çıkış yaptır ve onay bekle
+                    isRegistering = false;
                     await signOut(auth);
 
                     isLoginMode = true;
@@ -152,18 +192,27 @@ if(authForm) {
 
                     showSuccess("✅ Kayıt başarılı! Ancak giriş yapabilmek için e-posta adresinize gönderdiğimiz onay linkine tıklamalısınız.\n\n⚠️ ÖNEMLİ: Mail gelmediyse lütfen Spam / Gereksiz klasörünüzü kontrol ediniz.");
                 } else {
-                    // VIP mail ile kayıt olunduysa direkt panele geçeceği için mesaj veriyoruz
+                    // VIP mail: setDoc tamamlandı, artık yönlendirmeye izin ver
+                    isRegistering = false;
                     showSuccess("👑 Yönetici/Özel hesap oluşturuldu. Sisteme giriş yapılıyor...");
+                    // Manuel yönlendirme — onAuthStateChanged'i beklemeden
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists() && userDoc.data().role === "servis") {
+                        window.location.href = "service.html";
+                    } else {
+                        window.location.href = "dashboard.html";
+                    }
                 }
 
             } catch (error) {
+                isRegistering = false;
                 let msg = "Kayıt olurken bir hata oluştu.";
-                if(error.code === 'auth/email-already-in-use') msg = "Bu e-posta adresi zaten kullanılıyor.";
-                if(error.code === 'auth/weak-password') msg = "Şifreniz çok zayıf. En az 6 karakter olmalı.";
+                if (error.code === 'auth/email-already-in-use') msg = "Bu e-posta adresi zaten kullanılıyor.";
+                if (error.code === 'auth/weak-password') msg = "Şifreniz çok zayıf. En az 6 karakter olmalı.";
                 showError(msg);
-            } finally { 
-                authBtn.innerText = isLoginMode ? "Giriş Yap" : "Kayıt Ol"; 
-                authBtn.disabled = false; 
+            } finally {
+                authBtn.innerText = isLoginMode ? "Giriş Yap" : "Kayıt Ol";
+                authBtn.disabled = false;
             }
         }
     });
@@ -172,14 +221,26 @@ if(authForm) {
 function showError(msg) { authError.innerText = msg; authError.style.display = 'block'; authSuccess.style.display = 'none'; }
 function showSuccess(msg) { authSuccess.innerHTML = msg.replace(/\n/g, '<br>'); authSuccess.style.display = 'block'; authError.style.display = 'none'; }
 
+// Kayıt işlemi devam ederken yönlendirmeyi engelleme bayrağı
+let isRegistering = false;
+
 // DİNAMİK ROL KONTROLÜ (Veritabanından)
 onAuthStateChanged(auth, async (user) => {
+    // Kayıt süreci devam ediyorsa bekle
+    if (isRegistering) return;
+
     // KULLANICI DOĞRULANMIŞSA VEYA VIP LİSTESİNDEYSE İÇERİ AL
     if (user && (user.emailVerified || vipEmails.includes(user.email))) {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if(userDoc.exists()) {
-            if (userDoc.data().role === "servis") { window.location.href = "service.html"; } 
-            else { window.location.href = "tickets.html"; }
+        // Firestore'dan rol oku — henüz yazılmamış olabilir, kısa retry ekle
+        let userDoc = await getDoc(doc(db, "users", user.uid));
+        if (!userDoc.exists()) {
+            // Belge henüz oluşmamış olabilir, 1sn bekle tekrar dene
+            await new Promise(r => setTimeout(r, 1000));
+            userDoc = await getDoc(doc(db, "users", user.uid));
         }
-    } 
+        if (userDoc.exists()) {
+            if (userDoc.data().role === "servis") { window.location.href = "service.html"; }
+            else { window.location.href = "dashboard.html"; }
+        }
+    }
 });

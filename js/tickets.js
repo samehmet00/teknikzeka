@@ -11,12 +11,9 @@ function generateCargoCode() {
 async function sendEmailNotification(toEmail, subject, message) {
     // Email gönderme fonksiyonunu çağırmak için emailjs'in window objesinde yüklü olmasını bekler
     if (typeof emailjs !== 'undefined') {
-        const wantsEmail = confirm(`Bu bildirim e-posta ile de gönderilsin mi?\nAlıcı: ${toEmail}`);
-        if (wantsEmail) {
-            try {
-                await emailjs.send("service_u85t58o", "template_0a4enu5", { to_email: toEmail, subject: subject, message: message }, "_P1jn1r_0u2nA33Q3");
-            } catch (err) { console.error("Mail hatası:", err); }
-        }
+        try {
+            await emailjs.send("service_u85t58o", "template_0a4enu5", { to_email: toEmail, subject: subject, message: message }, "_P1jn1r_0u2nA33Q3");
+        } catch (err) { console.error("Mail hatası:", err); }
     }
 }
 
@@ -158,6 +155,14 @@ window.deleteTicket = async (ticketId, event) => {
 
 window.requestCancelTicket = async (ticketId, serviceEmail, event) => {
     if (event) event.stopPropagation();
+    
+    // İşlem tamamlanmışsa iptal edilemez
+    const snap = await getDoc(doc(db, 'tickets', ticketId));
+    if (snap.exists() && snap.data().processCompleted) {
+        alert('Bu işlem zaten tamamlanmış, iptal edilemez.');
+        return;
+    }
+
     if (!confirm('Bu işlemi iptal etmek istediğinize emin misiniz? Servis iptal talebinizi görecek ve onaylayacak.')) return;
     try {
         await updateDoc(doc(db, 'tickets', ticketId), { cancellationRequested: true });
@@ -189,13 +194,18 @@ window.acceptOffer = async (ticketId, serviceEmail, price, event) => {
     if (confirm(`${price.toLocaleString('tr-TR')} ₺ teklifi kabul etmek istediğinize emin misiniz?`)) {
         const cargoCode = generateCargoCode();
         try {
-            await updateDoc(doc(db, "tickets", ticketId), { assignedService: serviceEmail, status: "Satıldı", acceptedPrice: price, processStep: 0, cargoCode: cargoCode });
+            await updateDoc(doc(db, "tickets", ticketId), { assignedService: serviceEmail, status: "Satıldı", acceptedPrice: price, processStep: 0, cargoCode: cargoCode, cancellationRequested: false });
             await addDoc(collection(db, "notifications"), { userEmail: serviceEmail, message: `🤝 Müşteri cihazını size satmayı kabul etti! (${price.toLocaleString('tr-TR')} ₺)`, link: `track.html?id=${ticketId}`, read: false, createdAt: serverTimestamp() });
             sendEmailNotification(serviceEmail, "TeknikZeka: Teklifiniz Kabul Edildi!", `Tebrikler! Müşteri ${price.toLocaleString('tr-TR')} ₺ tutarındaki teklifinizi kabul etti. Müşteri cihazı kargoya vermek üzere yönlendirildi.`);
             sendEmailNotification(auth.currentUser.email, "TeknikZeka: Satış Onaylandı & Kargo Kodunuz", `Cihazınızı ${serviceEmail} servisine ${price.toLocaleString('tr-TR')} ₺ karşılığında satmayı kabul ettiniz.\n\nAnlaşmalı Kargo Kodunuz: ${cargoCode}\n\nLütfen cihazınızı güvenli bir şekilde paketleyip kargo şubesine bu kod ile teslim ediniz. Cihaz servise ulaştığında ödemeniz hesabınıza aktarılacaktır.`);
             alert("Teklifi kabul ettiniz! Kargo kodunuz ekranda belirmiştir.");
         } catch (error) { console.error("Hata:", error); }
     }
+};
+
+window.counterOffer = (ticketId, serviceEmail, event) => {
+    if (event) event.stopPropagation();
+    window.location.href = `offer.html?ticketId=${ticketId}&serviceEmail=${encodeURIComponent(serviceEmail)}&type=sale`;
 };
 
 // --- BİLETLERİ YÜKLEME ---
@@ -392,9 +402,17 @@ onAuthStateChanged(auth, async (user) => {
                         bidHtml += `<span style="display:flex;align-items:center;gap:5px;font-size:0.85rem;margin-top:4px;margin-bottom:4px;">İlgili Servisin Sayfası için Mail'in Üzerine Tıklayınız...</span>`;
                         const offerKeys = data.offers ? Object.keys(data.offers) : [];
                         if (offerKeys.length > 0) {
+                            offerKeys.sort((a, b) => {
+                                let pa = data.offers[a]; if (typeof pa === 'object') pa = pa.price || 0;
+                                let pb = data.offers[b]; if (typeof pb === 'object') pb = pb.price || 0;
+                                return Number(pb) - Number(pa);
+                            });
+                            const highestOfferSrv = offerKeys[0];
                             offerKeys.forEach(srv => {
                                 let offerPrice = data.offers[srv];
                                 if (typeof offerPrice === 'object') offerPrice = offerPrice.price || 0;
+                                offerPrice = Number(offerPrice);
+                                const isHighest = srv === highestOfferSrv;
 
                                 let ratingHtml = '';
                                 if (serviceRatings[srv]) {
@@ -405,9 +423,12 @@ onAuthStateChanged(auth, async (user) => {
                                 }
 
                                 bidHtml += `
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding:10px; background:rgba(0,0,0,0.1); border-radius:8px;">
-                                    <span style="font-size:0.95rem;"><a href="service-reviews.html?email=${encodeURIComponent(srv)}" onclick="event.stopPropagation()" style="text-decoration:underline; color:inherit; font-weight:700;">${srv}</a> ${ratingHtml}: <strong style="font-size: 1.1rem; color: #10B981;">${Number(offerPrice).toLocaleString('tr-TR')} ₺</strong></span>
-                                    <button onclick="window.acceptOffer('${ticketId}', '${srv}', ${offerPrice}, event)" style="background:#10B981; border:none; padding:6px 15px; border-radius:6px; color:white; font-weight:bold; cursor:pointer;">Kabul Et</button>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding:10px; background:rgba(0,0,0,0.1); border-radius:8px; gap:8px;">
+                                    <span style="font-size:0.95rem; flex:1; min-width:0;"><a href="service-reviews.html?email=${encodeURIComponent(srv)}" onclick="event.stopPropagation()" style="text-decoration:underline; color:inherit; font-weight:700;">${srv}</a> ${ratingHtml}: <strong style="font-size: 1.1rem; color: #10B981;">${offerPrice.toLocaleString('tr-TR')} ₺</strong>${isHighest ? ' <span style="font-size:0.72rem; background:rgba(16,185,129,0.15); color:#10B981; border-radius:4px; padding:1px 6px; margin-left:4px;">EN YÜKSEK</span>' : ''}</span>
+                                    <div style="display:flex; gap:6px; flex-shrink:0;">
+                                        <button onclick="window.counterOffer('${ticketId}', '${srv}', event)" style="background:transparent; border:1px solid #10B981; padding:6px 12px; border-radius:6px; color:#10B981; font-weight:bold; cursor:pointer; white-space:nowrap;">Değiştir</button>
+                                        ${isHighest ? `<button onclick="window.acceptOffer('${ticketId}', '${srv}', ${offerPrice}, event)" style="background:#10B981; border:none; padding:6px 15px; border-radius:6px; color:white; font-weight:bold; cursor:pointer; white-space:nowrap;">Kabul Et</button>` : ''}
+                                    </div>
                                 </div>`;
                             });
                         } else { bidHtml += `<span style="font-size:0.85rem; display:flex; align-items:center; gap:5px;">${icons.clock} Henüz fiyat teklifi gelmedi...</span>`; }
@@ -434,9 +455,10 @@ onAuthStateChanged(auth, async (user) => {
                         bidHtml = `
                         <div class="success-box-dynamic" style="display:flex; flex-direction:column; gap:8px;">
                             <div>
-                            <span style="display:flex;align-items:center;gap:5px;">${icons.check} Cihaziniz <a href="service-reviews.html?email=${encodeURIComponent(data.assignedService)}" onclick="event.stopPropagation()" style="font-weight:700; text-decoration:underline; color:inherit;">${data.assignedService}</a> isimli servise yonlendirildi.</span>
-                            ${ratingInfoHtml}
-                        </div>
+                                <span style="display:flex;align-items:center;gap:5px;">${icons.check} Cihaziniz <a href="service-reviews.html?email=${encodeURIComponent(data.assignedService)}" onclick="event.stopPropagation()" style="font-weight:700; text-decoration:underline; color:inherit;">${data.assignedService}</a> isimli servise yonlendirildi.</span>
+                                ${ratingInfoHtml}
+                            </div>
+                            ${cargoHtml}
                             <div style="display:flex; gap:10px; margin-top: 4px;">
                                 <a href="track.html?id=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: linear-gradient(135deg, var(--primary), #4338ca); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">Sureci Takip Et ${icons.truck}</a>
                                 <a href="chat.html?ticketId=${ticketId}" style="flex:1; text-align:center; padding:8px 10px; background: transparent; border: 1px solid #10B981; color: #10B981; text-decoration: none; border-radius: 8px; font-weight: bold; display:flex;align-items:center;justify-content:center;gap:5px;">${icons.chat} Mesajlas</a>
@@ -445,6 +467,7 @@ onAuthStateChanged(auth, async (user) => {
                     }
                     else if (data.interestedServices && data.interestedServices.length > 0) {
                         bidHtml = `<div class="info-box-dynamic"><strong style="display:flex;align-items:center;gap:5px;">${icons.party} Bu cihazı tamir edebilecek servisler:</strong><br>`;
+                        bidHtml += `<span style="display:flex;align-items:center;gap:5px;font-size:0.85rem;margin-top:4px;margin-bottom:4px;">İlgili Servisin Sayfası için Mail'in Üzerine Tıklayınız...</span>`;
                         data.interestedServices.forEach(srv => {
                             let ratingHtml = '';
                             if (serviceRatings[srv]) {
@@ -454,17 +477,23 @@ onAuthStateChanged(auth, async (user) => {
                                 ratingHtml = `<span style="font-size:0.8rem; color:#94A3B8; margin-left:5px;">★ Yeni</span>`;
                             }
 
+                            const hasRepairOffer = data.repairOffers && data.repairOffers[srv];
                             let offerDetailsHtml = '';
-                            if (data.repairOffers && data.repairOffers[srv]) {
+                            if (hasRepairOffer) {
                                 offerDetailsHtml = `<div style="font-size:0.85rem; color:#f0fdf4; margin-top:4px; opacity:0.9;">Fiyat: <strong>${data.repairOffers[srv].price.toLocaleString('tr-TR')} ₺</strong> &nbsp;|&nbsp; Parça: <strong>${data.repairOffers[srv].part}</strong></div>`;
                             }
 
-                            bidHtml += `<div style="margin-top:8px; background: #10B981; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
-                                <div>
+                            bidHtml += `<div style="margin-top:8px; background: #10B981; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap:8px;">
+                                <div style="min-width:0; flex:1;">
                                     <a href="service-reviews.html?email=${encodeURIComponent(srv)}" onclick="event.stopPropagation()" style="color:white; text-decoration:underline; font-weight:bold;">${srv}</a> ${ratingHtml}
                                     ${offerDetailsHtml}
                                 </div>
-                                <button onclick="window.selectService('${ticketId}', '${srv}', event)" style="background: white; color: #10B981; padding: 5px 12px; border:none; border-radius: 6px; font-weight:bold; cursor:pointer;">Seç</button>
+                                <div style="display:flex; gap:6px; flex-shrink:0;">
+                                    ${hasRepairOffer ? `<a href="offer.html?ticketId=${ticketId}&serviceEmail=${encodeURIComponent(srv)}&type=repair" onclick="event.stopPropagation()" style="background:white; color:#10B981; padding:5px 10px; border-radius:6px; font-weight:bold; text-decoration:none; font-size:0.82rem; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">💬 Pazarlık</a>` : ''}
+                                    ${hasRepairOffer
+                                        ? `<button onclick="window.selectService('${ticketId}', '${srv}', event)" style="background: rgba(0,0,0,0.2); color: white; padding: 5px 12px; border:none; border-radius: 6px; font-weight:bold; cursor:pointer; white-space:nowrap;">Kabul Et</button>`
+                                        : `<button onclick="window.selectService('${ticketId}', '${srv}', event)" style="background: rgba(0,0,0,0.2); color: white; padding: 5px 12px; border:none; border-radius: 6px; font-weight:bold; cursor:pointer; white-space:nowrap;">Seç</button>`}
+                                </div>
                             </div>`;
                         });
                         bidHtml += `</div>`;
@@ -520,7 +549,12 @@ onAuthStateChanged(auth, async (user) => {
                                 <div style="display:flex; align-items:center; gap:10px;">
                                     <span style="font-size:1.8rem; background:rgba(79,70,229,0.1); border-radius:12px; padding:5px; display:inline-flex; align-items:center; justify-content:center;">${icons.phone}</span>
                                     <div>
-                                        <h4 style="margin:0; font-size:1.05rem; color:var(--text-main);">${deviceInfo}</h4>
+                                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                            <h4 style="margin:0; font-size:1.05rem; color:var(--text-main);">${deviceInfo}</h4>
+                                            ${data.isForSale
+                                                ? '<span style="font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px; background:rgba(16,185,129,0.12); color:#10B981; border:1px solid #10B98140;">💰 Satılık</span>'
+                                                : '<span style="font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px; background:rgba(79,70,229,0.1); color:var(--primary); border:1px solid rgba(79,70,229,0.2);">🔧 Tamir</span>'}
+                                        </div>
                                         <span style="font-size:0.78rem; color:#94A3B8; display:flex; align-items:center; gap:3px;">${icons.calendar} ${dateStr} <span class="ticket-id-sep"></span> #${ticketId.slice(0, 6).toUpperCase()}</span>
                                     </div>
                                 </div>

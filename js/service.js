@@ -335,8 +335,9 @@ function renderTickets() {
                 } else techActionHtml = `<div class="error-box-dynamic" style="display:flex;align-items:center;gap:5px;">${icons.cross} Cihaz başka bir servise satıldı.</div>`;
             } else {
                 let myOfferRaw = data.offers ? data.offers[window.currentServiceEmail] : null;
-                let myOffer = (typeof myOfferRaw === 'object' && myOfferRaw !== null) ? Number(myOfferRaw.price) : Number(myOfferRaw); if (isNaN(myOffer)) myOffer = 0;
-                const minOfferAllowed = highestBid > 0 ? highestBid + 10 : 100; 
+                let myOffer = (typeof myOfferRaw === 'object' && myOfferRaw !== null) ? Number(myOfferRaw.price) : Number(myOfferRaw);
+                if (isNaN(myOffer)) myOffer = 0;
+                const minOfferAllowed = highestBid > 0 ? highestBid + 10 : 100;
 
                 const offerInputHtml = `<div style="display:flex; align-items:center; gap:10px; margin-top:10px; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px; border: 1px dashed #10B981;"><span style="font-weight: 800; color: #10B981; font-size: 1.2rem;">₺</span><input type="text" id="offer-input-${data.id}" oninput="window.formatPrice(this)" placeholder="Teklif (Örn: ${minOfferAllowed})" value="${myOffer ? myOffer.toLocaleString('tr-TR') : ''}" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); outline:none;" onclick="event.stopPropagation();"><button onclick="window.makeOffer('${data.id}', '${data.userEmail}', event)" style="background:#10B981; color:white; padding:8px 20px; font-weight:bold; border:none; border-radius:6px; cursor:pointer;">${myOffer ? 'Güncelle' : 'Teklif Gönder'}</button></div>`;
 
@@ -401,12 +402,15 @@ function renderTickets() {
 
                 if (myRepairOffer) {
                     techActionHtml = `
-                    <div id="repair-offer-display-${data.id}" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-top:10px;">
+                    <div id="repair-offer-display-${data.id}" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-top:10px; flex-wrap:wrap; gap:8px;">
                         <span style="color: var(--text-main); display:flex;flex-direction:column;gap:3px;font-size:0.9rem;">
                             <strong style="display:flex;align-items:center;gap:5px;">${icons.check} ${myRepairOffer.price.toLocaleString('tr-TR')} ₺ teklif verdiniz.</strong>
                             <span style="font-size:0.8rem; color:var(--gray-light);">Parça: ${myRepairOffer.part}</span>
                         </span>
-                        <button onclick="event.stopPropagation(); document.getElementById('repair-offer-display-${data.id}').style.display='none'; document.getElementById('repair-offer-edit-${data.id}').style.display='block';" style="background: transparent; border: 1px solid #10B981; color: #10B981; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Değiştir</button>
+                        <div style="display:flex; gap:6px;">
+                            <a href="offer.html?ticketId=${data.id}&serviceEmail=${encodeURIComponent(window.currentServiceEmail)}&type=repair" onclick="event.stopPropagation()" style="background:transparent; border:1px solid var(--primary); color:var(--primary); padding:6px 12px; border-radius:6px; font-weight:bold; text-decoration:none; font-size:0.82rem; display:inline-flex; align-items:center; gap:4px;">💬 Pazarlık</a>
+                            <button onclick="event.stopPropagation(); document.getElementById('repair-offer-display-${data.id}').style.display='none'; document.getElementById('repair-offer-edit-${data.id}').style.display='block';" style="background: transparent; border: 1px solid #10B981; color: #10B981; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Değiştir</button>
+                        </div>
                     </div>
                     <div id="repair-offer-edit-${data.id}" style="display: none;">${formHtml}</div>`;
                 } else {
@@ -507,6 +511,7 @@ window.submitRepairOffer = async (ticketId, customerEmail, event) => {
                 repairOffers: repairOffers
             }); 
             await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: "Bir servis cihazınızı tamir edebileceğini belirtti!", link: "dashboard.html", read: false, createdAt: serverTimestamp() });
+            sendEmailNotification(customerEmail, "TeknikZeka: Cihazınız İçin Tamir Teklifi!", `Merhaba, bir teknik servis cihazınızı tamir edebileceğini belirtti. Teklifi incelemek için sisteme giriş yapabilirsiniz.`);
             alert("Tamir teklifiniz müşteriye iletildi!"); 
         }
     } catch (error) { console.error("Hata:", error); alert("Hata oluştu."); }
@@ -514,7 +519,15 @@ window.submitRepairOffer = async (ticketId, customerEmail, event) => {
 
 window.approveCancellation = async (ticketId, customerEmail, event) => {
     event.stopPropagation();
-    if (!confirm('Müşterinin iptal talebini onaylamak istediğinize emin misiniz? İş havuzuna geri dönecek.')) return;
+
+    // İşlem tamamlanmışsa iptal edilemez
+    const snap = await getDoc(doc(db, 'tickets', ticketId));
+    if (snap.exists() && snap.data().processCompleted) {
+        alert('Bu işlem zaten tamamlanmış, iptal onaylanamaz.');
+        return;
+    }
+
+    if (!confirm('Müşterinin iptal talebi onaylamak istediğinize emin misiniz? İş havuzuna geri dönecek.')) return;
     try {
         await updateDoc(doc(db, 'tickets', ticketId), {
             assignedService: '',
@@ -546,7 +559,8 @@ window.makeOffer = async (ticketId, customerEmail, event) => {
     try {
         const ticketRef = doc(db, "tickets", ticketId); const ticketSnap = await getDoc(ticketRef);
         if (ticketSnap.exists()) {
-            let currentOffers = ticketSnap.data().offers || {}; currentOffers[window.currentServiceEmail] = price; 
+            let currentOffers = ticketSnap.data().offers || {}; 
+            currentOffers[window.currentServiceEmail] = { price: price, customerProposed: false }; 
             await updateDoc(ticketRef, { offers: currentOffers });
             await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: `🤝 Cihazınız için ${price.toLocaleString('tr-TR')} ₺ yeni bir teklif geldi!`, link: "dashboard.html", read: false, createdAt: serverTimestamp() });
             sendEmailNotification(customerEmail, "TeknikZeka: Cihazınıza Yeni Teklif Geldi!", `Merhaba, arızalı cihazınız için ${window.currentServiceEmail} servisi size ${price.toLocaleString('tr-TR')} ₺ teklif sundu.`);

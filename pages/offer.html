@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4f46e5">
+    <title>Fiyat Pazarlığı - TeknikZeka</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/offer.css">
+    <link rel="manifest" href="../manifest.json">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+
+<body class="light-mode">
+
+    <nav class="navbar" style="position:fixed; width:100%; top:0; z-index:50;">
+        <a href="javascript:history.back()" class="logo"
+            style="text-decoration:none; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="m15 18-6-6 6-6" />
+            </svg>
+            Geri
+        </a>
+        <div id="offer-page-header-info" style="display:flex; flex-direction:column; align-items:center;">
+            <span id="offer-page-title" style="font-weight:700; font-size:0.95rem; color:var(--text-main);">Fiyat Pazarlığı</span>
+            <span id="offer-page-subtitle" style="font-size:0.75rem; color:var(--gray-light);"></span>
+        </div>
+        <div style="width:60px;"></div>
+    </nav>
+
+    <div class="offer-page-container">
+
+        <!-- Cihaz Bilgi Kartı -->
+        <div class="offer-device-card" id="offer-device-card">
+            <div class="offer-device-card-skeleton">
+                <div class="skeleton-line" style="width:60%; height:18px;"></div>
+                <div class="skeleton-line" style="width:40%; height:14px; margin-top:6px;"></div>
+            </div>
+        </div>
+
+        <!-- Güncel Teklif Durumu -->
+        <div id="offer-current-status" class="offer-current-status" style="display:none;"></div>
+
+        <!-- Pazarlık Geçmişi -->
+        <div class="offer-history-section">
+            <div class="offer-history-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                Pazarlık Geçmişi
+            </div>
+            <div id="offer-history" class="offer-history">
+                <div class="offer-history-empty">Henüz bir teklif gönderilmedi.</div>
+            </div>
+        </div>
+
+        <!-- Teklif Gönderme Formu (müşteri tarafı) -->
+        <div id="offer-send-form" class="offer-send-form" style="display:none;">
+            <div class="offer-send-form-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                Yeni Teklif Gönder
+            </div>
+            <div class="offer-input-group">
+                <div class="offer-price-input-wrap">
+                    <span class="offer-currency-sym">₺</span>
+                    <input type="number" id="new-offer-price" class="offer-price-input"
+                        placeholder="Önerdiğiniz fiyat..." min="10" />
+                </div>
+                <textarea id="new-offer-note" class="offer-note-input"
+                    placeholder="Kısa bir not ekleyin... (İsteğe bağlı)" rows="2"></textarea>
+                <button id="send-offer-btn" class="offer-send-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                    Teklif Gönder
+                </button>
+            </div>
+            <p class="offer-send-hint">
+                Teklifiniz servise bildirim olarak iletilecek. Servis kabul ederse işlem onaylanır ve kargo kodunuz oluşturulur.
+            </p>
+        </div>
+
+        <!-- Servis tarafı: Bekleyen teklif yoksa bilgi -->
+        <div id="offer-service-waiting" class="offer-service-waiting" style="display:none;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4;">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>Müşteriden yeni bir teklif bekleniyor...</span>
+        </div>
+
+    </div>
+
+    <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/offer.js"></script>
+    <script type="module" src="../js/theme-manager.js"></script>
+</body>
+</html>

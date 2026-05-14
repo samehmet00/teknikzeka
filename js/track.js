@@ -106,7 +106,17 @@ function renderUI() {
     if (currentTicket.cargoCode) {
         cargoDisplayBox.style.display = "flex";
         cargoCodeText.innerText = currentTicket.cargoCode;
-        if (cargoInput) cargoInput.value = currentTicket.cargoCode;
+        if (cargoInput) {
+            cargoInput.value = currentTicket.cargoCode;
+            cargoInput.disabled = true; // Kargo kodu değiştirilemesin
+            cargoInput.style.opacity = "0.7";
+            cargoInput.title = "Kargo kodu bir kez girildikten sonra değiştirilemez.";
+        }
+        const saveBtn = document.getElementById('save-cargo-btn');
+        if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.style.display = "none";
+        }
     }
 
     // Servis puan kutusunu göster (müşteri için)
@@ -266,9 +276,20 @@ function renderUI() {
             if (completedBtn) completedBtn.style.display = "none";
         }
 
+        // Kargo kodu girişi - Son aşamada gizle (yerine onayla butonu gelecek)
+        const cargoSection = document.querySelector('.cargo-input-group');
+        if (cargoSection) {
+            if (isLastStep) {
+                cargoSection.style.display = "none";
+            } else {
+                cargoSection.style.display = currentTicket.cargoCode ? "none" : "flex";
+            }
+        }
+
         const saveCargoBtn = document.getElementById('save-cargo-btn');
         if (saveCargoBtn) {
             saveCargoBtn.onclick = async () => {
+                if (currentTicket.cargoCode) return; // Zaten varsa kaydetme
                 const code = cargoInput ? cargoInput.value.trim() : "";
                 if (code) {
                     await updateDoc(doc(db, "tickets", ticketId), { cargoCode: code });
