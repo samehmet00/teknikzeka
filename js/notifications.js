@@ -101,7 +101,8 @@ function renderNotifications(notifications) {
         
         div.onclick = async () => {
             if (!noti.read && noti.id) await updateDoc(doc(db, "notifications", noti.id), { read: true });
-            if (noti.link) window.location.href = noti.link;
+            // Link varsa oraya git, yoksa geçmiş kayıtlar sayfasına yönlendir
+            window.location.href = noti.link || 'tickets.html';
         };
         notiList.appendChild(div);
     });

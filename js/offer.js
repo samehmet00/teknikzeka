@@ -162,9 +162,9 @@ function setupUI() {
         }
     }
 
-    // Servis tarafı: bekleme mesajı (başlangıçta göster, teklif gelince gizlenir)
+    // Servis tarafı: bekleme mesajı — başlangıçta GİZLİ, yalnızca boş negotiate listesinde gösterilir
     if (isService && serviceWaitEl) {
-        serviceWaitEl.style.display = 'flex';
+        serviceWaitEl.style.display = 'none'; // renderHistory içinde kontrol edilecek
     }
 }
 
@@ -189,6 +189,8 @@ function renderHistory(snapshot) {
 
     if (snapshot.empty) {
         historyEl.innerHTML = '<div class="offer-history-empty">Henüz bir teklif gönderilmedi.</div>';
+        // Servis tarafındaysa bekleme mesajını göster
+        if (isService && serviceWaitEl) serviceWaitEl.style.display = 'flex';
         return;
     }
 
@@ -258,6 +260,11 @@ function renderHistory(snapshot) {
 
     // Servis bekleme mesajını gizle (kayıt varsa)
     if (serviceWaitEl) serviceWaitEl.style.display = 'none';
+}
+
+// renderHistory boş snapshot için: eğer servis tarafındaysak "bekleme" göster
+function showServiceWaitIfNeeded() {
+    if (isService && serviceWaitEl) serviceWaitEl.style.display = 'flex';
 }
 
 // --- GÜNCEL DURUM BANNER ---

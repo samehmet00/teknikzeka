@@ -272,6 +272,11 @@ function renderTickets() {
         if (window.currentServiceTab === 'havuz') {
             // İş havuzu: sadece henüz servis atanmamış kayıtlar
             matchTab = !ticket.assignedService;
+        } else if (window.currentServiceTab === 'bekleyen') {
+            // Bekleyen işlerim: bu servis teklif gönderdi ama henüz seçilmedi
+            const inInterested = ticket.interestedServices && ticket.interestedServices.includes(window.currentServiceEmail);
+            const inOffers = ticket.offers && ticket.offers[window.currentServiceEmail] !== undefined;
+            matchTab = (inInterested || inOffers) && !ticket.assignedService;
         } else if (window.currentServiceTab === 'aktif') {
             // Aktif işlerim: bu servise atanmış + tamamlanmamış
             matchTab = (ticket.assignedService === window.currentServiceEmail) && !ticket.processCompleted;
@@ -461,6 +466,11 @@ function renderTickets() {
     } // else sonu (filtered.length > 0)
 
     // Badge sayaçları
+    const bekleyenCount = allTickets.filter(t => {
+        const inInterested = t.interestedServices && t.interestedServices.includes(window.currentServiceEmail);
+        const inOffers = t.offers && t.offers[window.currentServiceEmail] !== undefined;
+        return (inInterested || inOffers) && !t.assignedService;
+    }).length;
     const activeCount = allTickets.filter(t =>
         t.assignedService === window.currentServiceEmail && !t.processCompleted
     ).length;
@@ -468,8 +478,13 @@ function renderTickets() {
         t.assignedService === window.currentServiceEmail && !!t.processCompleted
     ).length;
 
+    const bekleyenBadge = document.getElementById('service-bekleyen-badge');
     const activeBadge = document.getElementById('service-active-badge');
     const doneBadge = document.getElementById('service-done-badge');
+    if (bekleyenBadge) {
+        bekleyenBadge.style.display = bekleyenCount > 0 ? 'inline-block' : 'none';
+        bekleyenBadge.innerText = bekleyenCount;
+    }
     if (activeBadge) {
         activeBadge.style.display = activeCount > 0 ? 'inline-block' : 'none';
         activeBadge.innerText = activeCount;
@@ -510,7 +525,7 @@ window.submitRepairOffer = async (ticketId, customerEmail, event) => {
                 interestedServices: arrayUnion(window.currentServiceEmail),
                 repairOffers: repairOffers
             }); 
-            await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: "Bir servis cihazınızı tamir edebileceğini belirtti!", link: "dashboard.html", read: false, createdAt: serverTimestamp() });
+            await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: "Bir servis cihazınızı tamir edebileceğini belirtti!", link: "tickets.html", read: false, createdAt: serverTimestamp() });
             sendEmailNotification(customerEmail, "TeknikZeka: Cihazınız İçin Tamir Teklifi!", `Merhaba, bir teknik servis cihazınızı tamir edebileceğini belirtti. Teklifi incelemek için sisteme giriş yapabilirsiniz.`);
             alert("Tamir teklifiniz müşteriye iletildi!"); 
         }
@@ -562,7 +577,7 @@ window.makeOffer = async (ticketId, customerEmail, event) => {
             let currentOffers = ticketSnap.data().offers || {}; 
             currentOffers[window.currentServiceEmail] = { price: price, customerProposed: false }; 
             await updateDoc(ticketRef, { offers: currentOffers });
-            await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: `🤝 Cihazınız için ${price.toLocaleString('tr-TR')} ₺ yeni bir teklif geldi!`, link: "dashboard.html", read: false, createdAt: serverTimestamp() });
+            await addDoc(collection(db, "notifications"), { userEmail: customerEmail, message: `🤝 Cihazınız için ${price.toLocaleString('tr-TR')} ₺ yeni bir teklif geldi!`, link: "tickets.html", read: false, createdAt: serverTimestamp() });
             sendEmailNotification(customerEmail, "TeknikZeka: Cihazınıza Yeni Teklif Geldi!", `Merhaba, arızalı cihazınız için ${window.currentServiceEmail} servisi size ${price.toLocaleString('tr-TR')} ₺ teklif sundu.`);
             alert("Teklifiniz başarıyla müşteriye iletildi!");
         }

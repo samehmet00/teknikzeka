@@ -68,7 +68,7 @@ body.light-mode .navbar { background-color: rgba(255, 255, 255, 0.95); }
 
 /* --- UYGULAMA KONTEYNERİ VE KARTLAR --- */
 .app-container { padding: 4rem 5% 4rem; display: flex; justify-content: center; min-height: 100vh; }
-.app-wrapper { width: 100%; max-width: 800px; }
+.app-wrapper { width: 100%; max-width: 960px; }
 .auth-box, .ticket-box { background-color: var(--card-bg); color: var(--card-text); padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid var(--border-color); margin-bottom: 2rem; width: 100%; }
 body.light-mode .auth-box, body.light-mode .ticket-box { box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 

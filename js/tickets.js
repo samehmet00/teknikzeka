@@ -142,11 +142,14 @@ window.initSwipeMenu = () => {
 
 window.deleteTicket = async (ticketId, event) => {
     if (event) event.stopPropagation();
-    // Aktif işlemler silinemez
+    // Sadece aktif (assignedService var ama henüz tamamlanmamış) kayıtlar silinemez
     const snap = await getDoc(doc(db, 'tickets', ticketId));
-    if (snap.exists() && snap.data().assignedService) {
-        alert('Bu kayıt şu anda aktif bir servise bağlı. Silmek yerine "İşlemi İptal Et" butonunu kullanın.');
-        return;
+    if (snap.exists()) {
+        const d = snap.data();
+        if (d.assignedService && !d.processCompleted) {
+            alert('Bu kayıt şu anda aktif bir servise bağlı. Silmek yerine "İşlemi İptal Et" butonunu kullanın.');
+            return;
+        }
     }
     if (confirm('Bu kaydı kalıcı olarak silmek istediğinize emin misiniz?')) {
         try { await deleteDoc(doc(db, 'tickets', ticketId)); } catch (e) { alert('Silinirken bir hata oluştu.'); }
@@ -155,7 +158,7 @@ window.deleteTicket = async (ticketId, event) => {
 
 window.requestCancelTicket = async (ticketId, serviceEmail, event) => {
     if (event) event.stopPropagation();
-    
+
     // İşlem tamamlanmışsa iptal edilemez
     const snap = await getDoc(doc(db, 'tickets', ticketId));
     if (snap.exists() && snap.data().processCompleted) {
@@ -317,6 +320,7 @@ document.getElementById('submit-rating-btn')?.addEventListener('click', async ()
 onAuthStateChanged(auth, async (user) => {
     if (user && ticketList) {
 
+        // Önbelleğten anında yükle — butonlar window scope'ta kayıtlı olduğundan çalışır
         const cachedHtml = localStorage.getItem('tz_customer_tickets_cache');
         if (cachedHtml) {
             ticketList.innerHTML = cachedHtml;
@@ -491,12 +495,19 @@ onAuthStateChanged(auth, async (user) => {
                                 <div style="display:flex; gap:6px; flex-shrink:0;">
                                     ${hasRepairOffer ? `<a href="offer.html?ticketId=${ticketId}&serviceEmail=${encodeURIComponent(srv)}&type=repair" onclick="event.stopPropagation()" style="background:white; color:#10B981; padding:5px 10px; border-radius:6px; font-weight:bold; text-decoration:none; font-size:0.82rem; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;">💬 Pazarlık</a>` : ''}
                                     ${hasRepairOffer
-                                        ? `<button onclick="window.selectService('${ticketId}', '${srv}', event)" style="background: rgba(0,0,0,0.2); color: white; padding: 5px 12px; border:none; border-radius: 6px; font-weight:bold; cursor:pointer; white-space:nowrap;">Kabul Et</button>`
-                                        : `<button onclick="window.selectService('${ticketId}', '${srv}', event)" style="background: rgba(0,0,0,0.2); color: white; padding: 5px 12px; border:none; border-radius: 6px; font-weight:bold; cursor:pointer; white-space:nowrap;">Seç</button>`}
+                                    ? `<button onclick="window.selectService('${ticketId}', '${srv}', event)" style="background: rgba(0,0,0,0.2); color: white; padding: 5px 12px; border:none; border-radius: 6px; font-weight:bold; cursor:pointer; white-space:nowrap;">Kabul Et</button>`
+                                    : `<button onclick="window.selectService('${ticketId}', '${srv}', event)" style="background: rgba(0,0,0,0.2); color: white; padding: 5px 12px; border:none; border-radius: 6px; font-weight:bold; cursor:pointer; white-space:nowrap;">Seç</button>`}
                                 </div>
                             </div>`;
                         });
                         bidHtml += `</div>`;
+                    } else if (!data.assignedService) {
+                        // Henüz hiçbir servis ilgi göstermedi — bekleyen durum
+                        bidHtml = `<div class="info-box-dynamic">
+                            <strong style="display:flex;align-items:center;gap:5px;">${icons.clock} Servislerden Gelen Teklifler:</strong><br>
+                            <span style="display:flex;align-items:center;gap:5px;font-size:0.85rem;margin-top:4px;margin-bottom:4px;">İlgili Servisin Sayfası için Mail'in Üzerine Tıklayınız...</span>
+                            <span style="font-size:0.85rem; display:flex; align-items:center; gap:5px;">${icons.clock} Henüz tamir teklifi gelmedi...</span>
+                        </div>`;
                     }
                 }
 
@@ -552,8 +563,8 @@ onAuthStateChanged(auth, async (user) => {
                                         <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                                             <h4 style="margin:0; font-size:1.05rem; color:var(--text-main);">${deviceInfo}</h4>
                                             ${data.isForSale
-                                                ? '<span style="font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px; background:rgba(16,185,129,0.12); color:#10B981; border:1px solid #10B98140;">💰 Satılık</span>'
-                                                : '<span style="font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px; background:rgba(79,70,229,0.1); color:var(--primary); border:1px solid rgba(79,70,229,0.2);">🔧 Tamir</span>'}
+                        ? '<span style="font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px; background:rgba(16,185,129,0.12); color:#10B981; border:1px solid #10B98140;">₺ Satılık</span>'
+                        : '<span style="font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:10px; background:rgba(79,70,229,0.1); color:var(--primary); border:1px solid rgba(79,70,229,0.2);">🔧 Tamir</span>'}
                                         </div>
                                         <span style="font-size:0.78rem; color:#94A3B8; display:flex; align-items:center; gap:3px;">${icons.calendar} ${dateStr} <span class="ticket-id-sep"></span> #${ticketId.slice(0, 6).toUpperCase()}</span>
                                     </div>
