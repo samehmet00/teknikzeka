@@ -260,6 +260,26 @@ function renderHistory(docs) {
             `;
         }
 
+        // Müşteri tarafı için — servisin karşı teklifi pending ise kabul/reddet göster
+        if (isCustomer && isLastRecord && neg.status === 'pending' && neg.proposedBy === 'service') {
+            actionBtns = `
+                <div class="offer-action-btns">
+                    <button class="offer-reject-btn" onclick="window.customerRespondOffer('${d.id}', 'rejected', ${neg.price})">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                        Reddet
+                    </button>
+                    <button class="offer-accept-btn" onclick="window.customerRespondOffer('${d.id}', 'accepted', ${neg.price})">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        Kabul Et
+                    </button>
+                </div>
+            `;
+        }
+
         html += `
             <div class="offer-record ${fromClass}">
                 <div class="offer-record-bubble">
@@ -274,6 +294,59 @@ function renderHistory(docs) {
             </div>
         `;
     });
+
+    // Servis karşı teklif formu: son kayıt reddedilmiş müşteri teklifi ise göster
+    const lastNegData = lastDoc.data();
+    const canServiceCounterOffer = isService
+        && lastNegData.status === 'rejected'
+        && lastNegData.proposedBy === 'customer';
+
+    if (canServiceCounterOffer) {
+        // Fiyat sınırlarını hesapla
+        const customerLastPrice = lastNegData.price; // Müşterinin reddedilen son teklifi
+        let srvOriginalPrice = 0;
+        if (offerType === 'sale') {
+            const offerRaw = ticketData.offers?.[targetSrv];
+            srvOriginalPrice = typeof offerRaw === 'object' ? (offerRaw?.price || 0) : (Number(offerRaw) || 0);
+        } else {
+            srvOriginalPrice = ticketData.repairOffers?.[targetSrv]?.price || 0;
+        }
+
+        // Tamir: müşteri teklifi ≤ karşı teklif ≤ servis orijinal fiyatı
+        // Satış: servis orijinal fiyatı ≤ karşı teklif ≤ müşteri teklifi
+        const minAllowed = offerType === 'repair' ? customerLastPrice : srvOriginalPrice;
+        const maxAllowed = offerType === 'repair' ? srvOriginalPrice   : customerLastPrice;
+        const rangeHint  = offerType === 'repair'
+            ? `Müşteri teklifi (${customerLastPrice.toLocaleString('tr-TR')} ₺) ile orijinal fiyatınız (${srvOriginalPrice.toLocaleString('tr-TR')} ₺) arasında olmalı.`
+            : `Orijinal teklifiniz (${srvOriginalPrice.toLocaleString('tr-TR')} ₺) ile müşteri teklifi (${customerLastPrice.toLocaleString('tr-TR')} ₺) arasında olmalı.`;
+
+        html += `
+            <div id="service-counter-form" data-min="${minAllowed}" data-max="${maxAllowed}"
+                style="margin-top:16px; background:rgba(79,70,229,0.06); border:1px dashed var(--primary); border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:10px;">
+                <div style="font-weight:700; color:var(--text-main); font-size:0.95rem; display:flex; align-items:center; gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Yeni Karşı Teklifinizi Gönderin
+                </div>
+                <p style="margin:0; font-size:0.8rem; color:var(--gray-light); display:flex; align-items:center; gap:5px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    ${rangeHint}
+                </p>
+                <div style="display:flex; align-items:center; gap:8px; background:var(--card-bg); border:1px solid var(--border-color); border-radius:8px; padding:8px 12px;">
+                    <span style="font-weight:800; color:var(--primary); font-size:1.2rem;">&#8378;</span>
+                    <input type="number" id="service-counter-price"
+                        placeholder="${minAllowed.toLocaleString('tr-TR')} — ${maxAllowed.toLocaleString('tr-TR')} ₺"
+                        min="${minAllowed}" max="${maxAllowed}"
+                        style="flex:1; border:none; background:transparent; color:var(--text-main); outline:none; font-size:1rem;" />
+                </div>
+                <textarea id="service-counter-note" placeholder="Bir not ekleyin... (İsteğe bağlı)" rows="2"
+                    style="resize:none; border:1px solid var(--border-color); border-radius:8px; padding:10px; background:var(--card-bg); color:var(--text-main); outline:none; font-size:0.9rem;"></textarea>
+                <button onclick="window.serviceCounterOffer()" style="background:linear-gradient(135deg, var(--primary), #4338ca); color:white; border:none; border-radius:8px; padding:10px 20px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Karşı Teklif Gönder
+                </button>
+            </div>
+        `;
+    }
 
     historyEl.innerHTML = html;
 
@@ -514,6 +587,143 @@ window.respondOffer = async (negId, response, price) => {
             alert("Teklif reddedildi. Müşteriye bildirim gönderildi.");
         }
 
+    } catch (e) {
+        console.error("Yanıt hatası:", e);
+        alert("Bir hata oluştu, lütfen tekrar deneyin.");
+        document.querySelectorAll('.offer-accept-btn, .offer-reject-btn').forEach(b => b.disabled = false);
+    }
+};
+
+// --- KARşI TEKLİF GÖNDER (Servis) ---
+window.serviceCounterOffer = async () => {
+    const form       = document.getElementById('service-counter-form');
+    const priceInput = document.getElementById('service-counter-price');
+    const noteInput  = document.getElementById('service-counter-note');
+    const price = parseInt(priceInput?.value, 10);
+
+    if (isNaN(price) || price < 10) {
+        alert('Lütfen geçerli bir fiyat giriniz.');
+        return;
+    }
+
+    // Aralık doğrulaması — form'daki data-min / data-max değerlerinden okunur
+    const minAllowed = parseInt(form?.dataset?.min || '0', 10);
+    const maxAllowed = parseInt(form?.dataset?.max || '999999999', 10);
+    if (price < minAllowed) {
+        alert(`❌ Karşı teklifiniz müşterinin reddedilen teklifinin (${minAllowed.toLocaleString('tr-TR')} ₺) altına inemez.`);
+        priceInput.value = minAllowed;
+        priceInput.focus();
+        return;
+    }
+    if (price > maxAllowed) {
+        alert(`❌ Karşı teklifiniz orijinal teklifinizin (${maxAllowed.toLocaleString('tr-TR')} ₺) üstüne çıkamaz.`);
+        priceInput.value = maxAllowed;
+        priceInput.focus();
+        return;
+    }
+
+    const note = noteInput?.value.trim() || '';
+
+    const btn = document.querySelector('#service-counter-form button');
+    if (btn) { btn.disabled = true; btn.textContent = 'Gönderiliyor...'; }
+
+    try {
+        await addDoc(collection(db, "negotiations"), {
+            ticketId,
+            serviceEmail: targetSrv,
+            customerEmail: ticketData.userEmail,
+            proposedBy: 'service',
+            price,
+            part: '',
+            note,
+            type: offerType,
+            status: 'pending',
+            createdAt: serverTimestamp()
+        });
+
+        // Müşteriye bildirim
+        await addDoc(collection(db, "notifications"), {
+            userEmail: ticketData.userEmail,
+            message: `💬 Servis yeni bir karşı teklif gönderdi: ${price.toLocaleString('tr-TR')} ₺`,
+            link: `offer.html?ticketId=${ticketId}&serviceEmail=${encodeURIComponent(targetSrv)}&type=${offerType}`,
+            read: false,
+            createdAt: serverTimestamp()
+        });
+
+        alert("Karşı teklifiniz müşteriye iletildi!");
+    } catch (e) {
+        console.error("Karşı teklif hatası:", e);
+        alert("Teklif gönderilemedi, lütfen tekrar deneyin.");
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Karşı Teklif Gönder'; }
+    }
+};
+
+// --- MÜŞTERİ: SERVİS KARŞI TEKLİFİNE YANIT ---
+window.customerRespondOffer = async (negId, response, price) => {
+    const confirmMsg = response === 'accepted'
+        ? `Servisin ${Number(price).toLocaleString('tr-TR')} ₺ karşı teklifini KABUL etmek istiyor musunuz?`
+        : 'Bu teklifi REDDETMEK istiyor musunuz?';
+
+    if (!confirm(confirmMsg)) return;
+
+    document.querySelectorAll('.offer-accept-btn, .offer-reject-btn').forEach(b => b.disabled = true);
+
+    try {
+        await updateDoc(doc(db, "negotiations", negId), { status: response });
+
+        if (response === 'accepted') {
+            const cargoCode = generateCargoCode();
+
+            if (offerType === 'sale') {
+                await updateDoc(doc(db, "tickets", ticketId), {
+                    assignedService: targetSrv,
+                    status: "Satıldı",
+                    acceptedPrice: price,
+                    processStep: 0,
+                    cargoCode,
+                    cancellationRequested: false
+                });
+            } else {
+                const existingOffer = ticketData.repairOffers?.[targetSrv] || {};
+                let repairOffers = { ...(ticketData.repairOffers || {}) };
+                repairOffers[targetSrv] = { ...existingOffer, price };
+
+                await updateDoc(doc(db, "tickets", ticketId), {
+                    assignedService: targetSrv,
+                    status: "Servise Yönlendirildi",
+                    processStep: 0,
+                    cargoCode,
+                    repairOffers,
+                    cancellationRequested: false
+                });
+            }
+
+            // Servise bildirim
+            await addDoc(collection(db, "notifications"), {
+                userEmail: targetSrv,
+                message: `🎉 Müşteri ${Number(price).toLocaleString('tr-TR')} ₺ karşı teklifinizi kabul etti! Kargo kodu: ${cargoCode}`,
+                link: `track.html?id=${ticketId}`,
+                read: false,
+                createdAt: serverTimestamp()
+            });
+            sendEmailNotification(
+                targetSrv,
+                "TeknikZeka: Karşı Teklifiniz Kabul Edildi!",
+                `Müşteri ${Number(price).toLocaleString('tr-TR')} ₺ karşı teklifinizi kabul etti. Kargo kodu: ${cargoCode}`
+            );
+            alert("Teklif kabul edildi! Servis bilgilendirildi.");
+        } else {
+            // Red: servise bildirim
+            await addDoc(collection(db, "notifications"), {
+                userEmail: targetSrv,
+                message: `❌ Müşteri karşı teklifinizi reddetti. Yeni teklif gönderebilirsiniz.`,
+                link: `offer.html?ticketId=${ticketId}&serviceEmail=${encodeURIComponent(targetSrv)}&type=${offerType}`,
+                read: false,
+                createdAt: serverTimestamp()
+            });
+            alert("Teklif reddedildi. Servis bilgilendirildi.");
+        }
     } catch (e) {
         console.error("Yanıt hatası:", e);
         alert("Bir hata oluştu, lütfen tekrar deneyin.");
