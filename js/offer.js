@@ -2,7 +2,7 @@
 // Fiyat Pazarlık Sayfası — Satış ve Tamir Teklifleri İçin
 import { db, auth } from './firebase-config.js';
 import {
-    collection, query, where, orderBy, onSnapshot,
+    collection, query, where, onSnapshot,
     addDoc, updateDoc, getDoc, getDocs,
     doc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -170,24 +170,44 @@ function setupUI() {
 
 // --- PAZARLIKLARı DİNLE (Realtime) ---
 function listenToNegotiations() {
+    // Yalnızca ticketId ile sorgula (tek koşul = index/güvenlik sorunu yok)
+    // serviceEmail filtresi client-side yapılıyor — hem müşteri hem servis çalışır
     const q = query(
         collection(db, "negotiations"),
-        where("ticketId", "==", ticketId),
-        where("serviceEmail", "==", targetSrv),
-        orderBy("createdAt", "asc")
+        where("ticketId", "==", ticketId)
     );
 
     onSnapshot(q, (snapshot) => {
-        renderHistory(snapshot);
-        updateCurrentStatus(snapshot);
+        const docs = [];
+        snapshot.forEach(d => {
+            const neg = d.data();
+            // Hem targetSrv hem de aktif kullanıcı email'iyle eşleştir
+            // (URL encoding farkı veya ufak uyumsuzluklar için güvence)
+            const matchesSrv = neg.serviceEmail === targetSrv;
+            const matchesUser = isService && neg.serviceEmail === currentUser?.email;
+            if (matchesSrv || matchesUser) {
+                docs.push(d);
+            }
+        });
+        // createdAt'a göre artan sıralama
+        docs.sort((a, b) => {
+            const aMs = a.data().createdAt?.toMillis?.() || 0;
+            const bMs = b.data().createdAt?.toMillis?.() || 0;
+            return aMs - bMs;
+        });
+        renderHistory(docs);
+        updateCurrentStatus(docs);
+    }, (err) => {
+        console.error("⚠️ Pazarlık sorgu hatası:", err);
+        if (historyEl) historyEl.innerHTML = '<div class="offer-history-empty">⚠️ Pazarlık geçmişi yüklenemedi. Lütfen sayfayı yenileyin.</div>';
     });
 }
 
 // --- GEÇMİŞ RENDER ---
-function renderHistory(snapshot) {
+function renderHistory(docs) {
     if (!historyEl) return;
 
-    if (snapshot.empty) {
+    if (docs.length === 0) {
         historyEl.innerHTML = '<div class="offer-history-empty">Henüz bir teklif gönderilmedi.</div>';
         // Servis tarafındaysa bekleme mesajını göster
         if (isService && serviceWaitEl) serviceWaitEl.style.display = 'flex';
@@ -195,10 +215,9 @@ function renderHistory(snapshot) {
     }
 
     let html = '';
-    let lastDoc = null;
-    snapshot.forEach(d => { lastDoc = d; });
+    const lastDoc = docs[docs.length - 1];
 
-    snapshot.forEach(d => {
+    docs.forEach(d => {
         const neg = d.data();
         const isLastRecord = d.id === lastDoc.id;
         const fromCustomer = neg.proposedBy === 'customer';
@@ -262,19 +281,13 @@ function renderHistory(snapshot) {
     if (serviceWaitEl) serviceWaitEl.style.display = 'none';
 }
 
-// renderHistory boş snapshot için: eğer servis tarafındaysak "bekleme" göster
-function showServiceWaitIfNeeded() {
-    if (isService && serviceWaitEl) serviceWaitEl.style.display = 'flex';
-}
-
 // --- GÜNCEL DURUM BANNER ---
-function updateCurrentStatus(snapshot) {
+function updateCurrentStatus(docs) {
     if (!currentStatusEl) return;
-    if (snapshot.empty) { currentStatusEl.style.display = 'none'; return; }
+    if (docs.length === 0) { currentStatusEl.style.display = 'none'; return; }
 
-    // Son kaydı bul
-    let lastNeg = null;
-    snapshot.forEach(d => { lastNeg = d.data(); });
+    // Son kaydı bul (client-side sıralı dizinin son elemanı)
+    const lastNeg = docs[docs.length - 1].data();
 
     // Orijinal servis teklifini göster (tickets.offers veya repairOffers'tan)
     let originalPrice = 0, originalPart = '';
