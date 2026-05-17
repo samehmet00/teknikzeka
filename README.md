@@ -17,12 +17,11 @@ Cihazı arızalanan kullanıcıları yapay zeka ön teşhisiyle doğru servise y
 
 ## 📸 Ekran Görüntüleri
 
-> ℹ️ Aşağıdaki alanlara proje ekran görüntülerini ekleyin. `img/` klasörüne görselleri yükledikten sonra yorum satırlarını kaldırın.
 
 <table>
   <tr>
-    <td align="center"><b>🏠 Ana Sayfa</b></td>
-    <td align="center"><b>📋 Müşteri — Bilet Listesi</b></td>
+    <td align="center"><b>Ana Sayfa</b></td>
+    <td align="center"><b>Müşteri — Bilet Listesi</b></td>
   </tr>
   <tr>
     <td>
@@ -37,8 +36,8 @@ Cihazı arızalanan kullanıcıları yapay zeka ön teşhisiyle doğru servise y
     </td>
   </tr>
   <tr>
-    <td align="center"><b>🔧 Servis Paneli</b></td>
-    <td align="center"><b>💬 Fiyat Pazarlık Sayfası</b></td>
+    <td align="center"><b>Servis Paneli</b></td>
+    <td align="center"><b>Fiyat Pazarlık Sayfası</b></td>
   </tr>
   <tr>
     <td>
@@ -53,8 +52,8 @@ Cihazı arızalanan kullanıcıları yapay zeka ön teşhisiyle doğru servise y
     </td>
   </tr>
   <tr>
-    <td align="center"><b>🤖 YZ Ön Teşhis Raporu</b></td>
-    <td align="center"><b>📦 Süreç Takip Sayfası</b></td>
+    <td align="center"><b>YZ Kayıt Raporu</b></td>
+    <td align="center"><b>Süreç Takip Sayfası</b></td>
   </tr>
   <tr>
     <td>
@@ -85,19 +84,19 @@ Cihazı arızalanan kullanıcılar çoğu zaman sorunun teknik adını bilmeden 
 
 ## ✨ Öne Çıkan Özellikler
 
-### 🤖 Yapay Zeka Entegrasyonu — Llama 3 70B (Groq)
+### Yapay Zeka Entegrasyonu — Llama 3 70B (Groq)
 - Kullanıcının girdiği şikayeti saniyeler içinde analiz eder.
 - **Olası Arıza**, **Onarım Zorluğu (1–10)**, **Tahmini Süre** ve **Aciliyet Seviyesi** üretir.
 - Kötüye kullanımı önlemek için katı *Prompt Engineering* filtresi uygulanır.
 - Groq API'nin ultra-düşük gecikmesi sayesinde yanıt anında gelir.
 
-### 💬 Gerçek Zamanlı Fiyat Pazarlığı
+### Gerçek Zamanlı Fiyat Pazarlığı
 - **Satılık ilanlar:** Servis teklif verir → Müşteri karşı fiyat önerir → Servis kabul/reddeder veya yeni karşı teklif gönderir.
 - **Tamir ilanlar:** Servis tamir fiyatı girer → Müşteri pazarlık eder → Anlaşma sağlanınca süreç başlar.
 - Servis panelinde müşteri karşı teklifi geldiğinde **gerçek zamanlı bildirim banner'ı** görünür.
 - Pazarlık geçmişi zaman damgasıyla kayıt altına alınır.
 
-### 👥 Çift Taraflı Rol Yönetimi (Firebase Auth)
+### Çift Taraflı Rol Yönetimi (Firebase Auth)
 | Müşteri Paneli | Servis Paneli |
 |---|---|
 | Yeni arıza / satış kaydı oluşturma | İş havuzunu filtreleyerek tarama |
@@ -107,35 +106,35 @@ Cihazı arızalanan kullanıcılar çoğu zaman sorunun teknik adını bilmeden 
 | Kargo kodunu görme & takip etme | İptal taleplerini onaylama |
 | Servisi puanlama (1–5 ⭐) | Süreç adımlarını güncelleme |
 
-### 📦 Süreç Takip Sistemi
+### Süreç Takip Sistemi
 - Anlaşma sonrası **otomatik kargo kodu** üretilir.
 - `track.html` üzerinden süreç adım adım takip edilir.
 - Hem müşteri hem servis aynı sayfada ilerlemeyi görür.
 
-### 💬 Anlık Mesajlaşma
+### Anlık Mesajlaşma
 - Her ticket için müşteri–servis arasında özel mesajlaşma kanalı.
 - `chats.html` tüm konuşmaları listeler.
 - Mesajlar Firestore üzerinden gerçek zamanlı senkronize edilir.
 
-### 🔔 Bildirim Sistemi
+### Bildirim Sistemi
 - Teklif, karşı teklif, kabul/ret, kargo kodu gibi olaylar için **anlık uygulama içi bildirim**.
 - Kullanıcı tercihine göre **e-posta bildirimi** (EmailJS entegrasyonu).
 - Okunmamış bildirim sayacı nav-bar'da görünür.
 
-### 🎨 Modern UI/UX
+### Modern UI/UX
 - **Koyu/Açık Tema** desteği, kullanıcı tercihiyle kalıcı olarak saklanır.
 - **Glassmorphism** kart tasarımı, gradient kenarlıklar, micro-animasyonlar.
 - Akordiyon kart yapısı, iskelet yükleme ekranları (skeleton), sayfalama.
 - Tam **mobil uyumlu** responsive tasarım.
 - Google Fonts (Outfit) ile profesyonel tipografi.
 
-### ⭐ Servis Değerlendirme Sistemi
+### Servis Değerlendirme Sistemi
 - İşlem tamamlandıktan sonra müşteri servisi **yarım yıldız hassasiyetinde** 1–5 puanla değerlendirir.
 - Puanlar servis panelinde ve herkese açık `service-reviews.html` sayfasında görünür.
 
 ---
 
-## 🛠 Kullanılan Teknolojiler
+## Kullanılan Teknolojiler
 
 | Katman | Teknoloji |
 |--------|-----------|
@@ -149,7 +148,7 @@ Cihazı arızalanan kullanıcılar çoğu zaman sorunun teknik adını bilmeden 
 
 ---
 
-## 🚀 Kurulum ve Çalıştırma
+## Kurulum ve Çalıştırma
 
 ### 1. Repoyu klonlayın
 ```bash
