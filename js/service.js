@@ -412,12 +412,8 @@ function renderTickets() {
                             <strong style="display:flex;align-items:center;gap:5px;">${icons.check} ${myRepairOffer.price.toLocaleString('tr-TR')} ₺ teklif verdiniz.</strong>
                             <span style="font-size:0.8rem; color:var(--gray-light);">Parça: ${myRepairOffer.part}</span>
                         </span>
-                        <div style="display:flex; gap:6px;">
-                            <a href="offer.html?ticketId=${data.id}&serviceEmail=${encodeURIComponent(window.currentServiceEmail)}&type=repair" onclick="event.stopPropagation()" style="background:transparent; border:1px solid var(--primary); color:var(--primary); padding:6px 12px; border-radius:6px; font-weight:bold; text-decoration:none; font-size:0.82rem; display:inline-flex; align-items:center; gap:4px;">💬 Pazarlık</a>
-                            <button onclick="event.stopPropagation(); document.getElementById('repair-offer-display-${data.id}').style.display='none'; document.getElementById('repair-offer-edit-${data.id}').style.display='block';" style="background: transparent; border: 1px solid #10B981; color: #10B981; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Değiştir</button>
-                        </div>
-                    </div>
-                    <div id="repair-offer-edit-${data.id}" style="display: none;">${formHtml}</div>`;
+                        <a href="offer.html?ticketId=${data.id}&serviceEmail=${encodeURIComponent(window.currentServiceEmail)}&type=repair" onclick="event.stopPropagation()" style="background:transparent; border:1px solid var(--primary); color:var(--primary); padding:6px 12px; border-radius:6px; font-weight:bold; text-decoration:none; font-size:0.82rem; display:inline-flex; align-items:center; gap:4px;">💬 Pazarlık</a>
+                    </div>`;
                 } else {
                     techActionHtml = formHtml;
                 }
