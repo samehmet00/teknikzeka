@@ -25,14 +25,10 @@ Cihazı arızalanan kullanıcıları yapay zeka ön teşhisiyle doğru servise y
   </tr>
   <tr>
     <td>
-      <!-- Ana sayfanın ekran görüntüsünü buraya ekleyin -->
-      <!-- ![Ana Sayfa](img/screenshots/homepage.png) -->
-      <img src="https://placehold.co/480x300/0f172a/4F46E5?text=Ana+Sayfa+Ekran+Görüntüsü" alt="Ana Sayfa" width="480"/>
+      <img src="img/anaSayfa.png" alt="Ana Sayfa" width="480"/>
     </td>
     <td>
-      <!-- Müşteri bilet listesinin ekran görüntüsünü buraya ekleyin -->
-      <!-- ![Bilet Listesi](img/screenshots/tickets.png) -->
-      <img src="https://placehold.co/480x300/0f172a/10B981?text=Bilet+Listesi+Ekran+Görüntüsü" alt="Bilet Listesi" width="480"/>
+      <img src="img/musteriBilet.png" alt="Müşteri Bilet Listesi" width="480"/>
     </td>
   </tr>
   <tr>
@@ -41,14 +37,10 @@ Cihazı arızalanan kullanıcıları yapay zeka ön teşhisiyle doğru servise y
   </tr>
   <tr>
     <td>
-      <!-- Servis panelinin ekran görüntüsünü buraya ekleyin -->
-      <!-- ![Servis Paneli](img/screenshots/service.png) -->
-      <img src="https://placehold.co/480x300/0f172a/F59E0B?text=Servis+Paneli+Ekran+Görüntüsü" alt="Servis Paneli" width="480"/>
+      <img src="img/servisPaneli.png" alt="Servis Paneli" width="480"/>
     </td>
     <td>
-      <!-- Pazarlık sayfasının ekran görüntüsünü buraya ekleyin -->
-      <!-- ![Pazarlık](img/screenshots/offer.png) -->
-      <img src="https://placehold.co/480x300/0f172a/EF4444?text=Pazarlık+Sayfası+Ekran+Görüntüsü" alt="Pazarlık Sayfası" width="480"/>
+      <img src="img/pazarlık.png" alt="Pazarlık Sayfası" width="480"/>
     </td>
   </tr>
   <tr>
@@ -57,14 +49,10 @@ Cihazı arızalanan kullanıcıları yapay zeka ön teşhisiyle doğru servise y
   </tr>
   <tr>
     <td>
-      <!-- YZ teşhis raporunun ekran görüntüsünü buraya ekleyin -->
-      <!-- ![YZ Rapor](img/screenshots/ai-report.png) -->
-      <img src="https://placehold.co/480x300/0f172a/4F46E5?text=YZ+Teşhis+Raporu+Ekran+Görüntüsü" alt="YZ Rapor" width="480"/>
+      <img src="img/yzKayıt.png" alt="YZ Kayıt Raporu" width="480"/>
     </td>
     <td>
-      <!-- Süreç takip sayfasının ekran görüntüsünü buraya ekleyin -->
-      <!-- ![Süreç Takip](img/screenshots/track.png) -->
-      <img src="https://placehold.co/480x300/0f172a/10B981?text=Süreç+Takip+Ekran+Görüntüsü" alt="Süreç Takip" width="480"/>
+      <img src="img/surecTakip.png" alt="Süreç Takip Sayfası" width="480"/>
     </td>
   </tr>
 </table>
