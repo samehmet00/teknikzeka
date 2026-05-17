@@ -55,6 +55,18 @@ Cihazı arızalanan kullanıcıları yapay zeka ön teşhisiyle doğru servise y
       <img src="img/surecTakip.png" alt="Süreç Takip Sayfası" width="480"/>
     </td>
   </tr>
+  <tr>
+    <td align="center"><b>Mesajlar</b></td>
+    <td align="center"><b>Profil</b></td>
+  </tr>
+  <tr>
+    <td>
+      <img src="img/mesaj.png" alt="Mesajlar" width="480"/>
+    </td>
+    <td>
+      <img src="img/profil.png" alt="Profil" width="480"/>
+    </td>
+  </tr>
 </table>
 
 ---
