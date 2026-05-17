@@ -56,7 +56,9 @@ let allTickets = [];
 window.highestBids = {}; 
 let currentPage = 1;
 const itemsPerPage = 8; 
-window.currentServiceTab = 'havuz'; 
+window.currentServiceTab = 'havuz';
+// ticketId -> son pending müşteri pazarlık teklifi { price, negId }
+let pendingSaleNegotiations = {};
 
 window.formatPrice = (input) => {
     let val = input.value.replace(/\D/g, ''); 
@@ -187,7 +189,31 @@ onAuthStateChanged(auth, async (user) => {
             onSnapshot(qAll, (snapshot) => {
                 allTickets = [];
                 snapshot.forEach(document => { allTickets.push({ id: document.id, ...document.data() }); });
-                renderTickets(); 
+                renderTickets();
+            });
+
+            // --- SATILIK PAZARLIKLARı GERÇEK ZAMANLI DİNLE ---
+            // Sadece serviceEmail + type=sale filtresi — composit index gerekmez
+            // proposedBy=customer ve status=pending kontrolü client-side yapılır
+            const qNegs = query(
+                collection(db, "negotiations"),
+                where("serviceEmail", "==", user.email),
+                where("type", "==", "sale")
+            );
+            onSnapshot(qNegs, (negSnap) => {
+                pendingSaleNegotiations = {};
+                negSnap.forEach(d => {
+                    const nd = d.data();
+                    // Sadece müşteriden gelen, henüz bekleyen teklifleri al
+                    if (nd.proposedBy !== 'customer' || nd.status !== 'pending') return;
+                    // Her ticket için en son müşteri teklifini sakla
+                    const existing = pendingSaleNegotiations[nd.ticketId];
+                    const ts = nd.createdAt?.toMillis?.() || 0;
+                    if (!existing || ts > existing.ts) {
+                        pendingSaleNegotiations[nd.ticketId] = { price: nd.price, negId: d.id, ts };
+                    }
+                });
+                renderTickets();
             });
         } else { window.location.href = "dashboard.html"; }
     } else { 
@@ -347,7 +373,30 @@ function renderTickets() {
                 const offerInputHtml = `<div style="display:flex; align-items:center; gap:10px; margin-top:10px; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px; border: 1px dashed #10B981;"><span style="font-weight: 800; color: #10B981; font-size: 1.2rem;">₺</span><input type="text" id="offer-input-${data.id}" oninput="window.formatPrice(this)" placeholder="Teklif (Örn: ${minOfferAllowed})" value="${myOffer ? myOffer.toLocaleString('tr-TR') : ''}" style="flex:1; padding:8px; border-radius:6px; border:1px solid var(--border-color); background:transparent; color:var(--text-main); outline:none;" onclick="event.stopPropagation();"><button onclick="window.makeOffer('${data.id}', '${data.userEmail}', event)" style="background:#10B981; color:white; padding:8px 20px; font-weight:bold; border:none; border-radius:6px; cursor:pointer;">${myOffer ? 'Güncelle' : 'Teklif Gönder'}</button></div>`;
 
                 if (myOffer) {
-                    techActionHtml = `<div id="offer-display-${data.id}" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-top:10px;"><span style="color: var(--text-main); display:flex;align-items:center;gap:5px;">${icons.check} <strong>${myOffer.toLocaleString('tr-TR')} ₺</strong> teklif verdiniz.</span><button onclick="event.stopPropagation(); document.getElementById('offer-display-${data.id}').style.display='none'; document.getElementById('offer-edit-${data.id}').style.display='block';" style="background: transparent; border: 1px solid #10B981; color: #10B981; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Değiştir</button></div><div id="offer-edit-${data.id}" style="display: none;">${offerInputHtml}</div>`;
+                    // Müşteri bu servise bekleyen pazarlık teklifi gönderdi mi?
+                    const pendingNeg = pendingSaleNegotiations[data.id];
+                    const negBanner = pendingNeg ? `
+                        <a href="offer.html?ticketId=${data.id}&serviceEmail=${encodeURIComponent(window.currentServiceEmail)}&type=sale"
+                            onclick="event.stopPropagation()"
+                            style="display:flex; align-items:center; justify-content:space-between; gap:10px;
+                                   margin-top:8px; padding:10px 14px;
+                                   background:rgba(245,158,11,0.1); border:1px solid #F59E0B;
+                                   border-radius:8px; text-decoration:none; color:inherit;">
+                            <span style="display:flex;align-items:center;gap:7px;font-size:0.88rem;color:#D97706;font-weight:600;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                Müşteri yeni teklif gönderdi: <strong style="color:#D97706;">${pendingNeg.price.toLocaleString('tr-TR')} ₺</strong>
+                            </span>
+                            <span style="font-size:0.82rem; font-weight:700; color:var(--primary); white-space:nowrap;">💬 Pazarlığa Git →</span>
+                        </a>` : '';
+                    techActionHtml = `
+                        <div style="display:flex; flex-direction:column; gap:0;">
+                            <div id="offer-display-${data.id}" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-top:10px;">
+                                <span style="color: var(--text-main); display:flex;align-items:center;gap:5px;">${icons.check} <strong>${myOffer.toLocaleString('tr-TR')} ₺</strong> teklif verdiniz.</span>
+                                <button onclick="event.stopPropagation(); document.getElementById('offer-display-${data.id}').style.display='none'; document.getElementById('offer-edit-${data.id}').style.display='block';" style="background: transparent; border: 1px solid #10B981; color: #10B981; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Değiştir</button>
+                            </div>
+                            ${negBanner}
+                            <div id="offer-edit-${data.id}" style="display: none;">${offerInputHtml}</div>
+                        </div>`;
                 } else techActionHtml = offerInputHtml;
             }
         } else {
