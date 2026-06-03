@@ -1,5 +1,9 @@
 /* css/style.css - Ana Sayfa ve Genel Tasarım */
 
+/* === ANA RENK AYARLARI  === */
+/* Sitenin genel renkleri buradan yönetilir.
+   Örneğin, --bg-main değerini değiştirirseniz sitenin ana arka plan rengi değişir.
+   Yazı rengini değiştirmek için --text-main değerini değiştirebilirsiniz. */
 /* --- PREMIUM RENK PALETİ --- */
 :root {
     --bg-main: #0f172a;
@@ -37,11 +41,14 @@ html {
 }
 
 body {
+    /* Genel arka plan rengi (Yukarıdaki :root'dan gelir) */
     background-color: var(--bg-main);
     color: var(--text-main);
     transition: background-color 0.4s ease, color 0.4s ease;
 }
 
+/* === ÜST MENÜ (NAVBAR) ARKA PLANI === */
+/* Navbar rengini değiştirmek için 'background: rgba(...)' değerini güncelleyin. */
 /* --- NAVBAR & KAPSÜL (PILL) TASARIMI --- */
 .navbar {
     position: fixed;
@@ -365,6 +372,9 @@ body.light-mode .icon-sun {
     padding-left: 22px;
 }
 
+/* === ANA BUTON RENGİ VE KONUMU === */
+/* "Buton rengini değiştir" , aşağıdaki 'background: linear-gradient(...)' satırını değiştirin.
+   "Butonun yerini değiştir" derse, 'margin' veya 'padding' ayarları ekleyerek değiştirebilirsiniz. */
 /* --- ANA BUTONLAR VE IŞIK EFEKTİ --- */
 .primary-btn-large,
 .floating-fab {

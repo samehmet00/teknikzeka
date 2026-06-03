@@ -1,5 +1,7 @@
 /* css/home.css — Ana sayfa özel stilleri */
 
+/* === ANA SAYFA RENK VE ARKA PLANLARI === */
+/* Ana sayfanın genel renkleri, butonların yeşil/mor tonları buradan (:root) ayarlanır. */
 /* ========== TEMEL — KOYU MOD (varsayılan) ========== */
 :root {
     /* Emerald Green Palette */
@@ -238,6 +240,8 @@ body.light-mode .theme-icon-dark {
     transform: translateY(-1px);
 }
 
+/* === HERO (ANA EKRAN) BÖLÜMÜ === */
+/* Ana ekrandaki büyük alanın arka planını (background) ve konumunu (padding, margin) buradan değiştirebiliriz. */
 /* ========== HERO ========== */
 .home-hero {
     min-height: 100vh;
@@ -345,6 +349,8 @@ body.light-mode .theme-icon-dark {
     margin-bottom: 40px;
 }
 
+/* === ANA SAYFA BUTONU === */
+/* Ana sayfadaki ana butonun rengini (background), boyutunu (padding) buradan değiştirebiliriz. */
 .btn-primary {
     display: inline-flex;
     align-items: center;

@@ -1,5 +1,8 @@
 /* css/app.css - Tüm Uygulama ve Kullanıcı Paneli (Bütünleşik Tasarım) */
 
+/* === GİRİŞ/KAYIT VE UYGULAMA İÇİ RENKLER === */
+/* Uygulamanın iç sayfalarının arka plan ve yazı renkleri buradan değişir. 
+   Örneğin, giriş formunun arka plan rengi --card-bg ile değişir. */
 /* --- TEMEL AYARLAR VE TEMA DEĞİŞKENLERİ --- */
 :root {
     --primary: #4F46E5;
@@ -75,6 +78,8 @@ body.light-mode .auth-box, body.light-mode .ticket-box { box-shadow: 0 4px 15px 
 .auth-box h2, .ticket-box h3, .header h2, .ticket-list-container h3 { color: var(--card-text); margin-bottom: 1.5rem; }
 .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; }
 
+/* === GİRİŞ FORMU GİRDİ ALANLARI === */
+/* Giriş/Kayıt formundaki kutuların rengini, kenarlıklarını ve genişliğini buradan değiştirebilirsiniz. */
 /* --- LOGIN FORMU ÖZEL STİLLERİ --- */
 input:not([type="submit"]), select, textarea { 
     width: 100%; padding: 1rem; margin-bottom: 1rem; 
@@ -83,6 +88,8 @@ input:not([type="submit"]), select, textarea {
 }
 input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); }
 
+/* === FORM BUTONU (GİRİŞ YAP / KAYIT OL vb.) === */
+/* Butonun rengini 'background-color' kısmından, yerini ve boyutunu 'padding' ve 'width' kısmından değiştirebiliriz. */
 button[type="submit"] { background-color: var(--primary); color: white; font-weight: 600; font-size: 1rem; padding: 1rem; border: none; border-radius: 8px; cursor: pointer; width: 100%; transition: 0.2s; }
 button[type="submit"]:hover { background-color: var(--primary-dark); transform: scale(1.02); }
 

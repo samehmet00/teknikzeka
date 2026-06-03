@@ -65,8 +65,12 @@
     </style>
 </head>
 
-<body class="light-mode">
+    <!-- === GÖVDE (BODY) BÖLÜMÜ === -->
+    <!--  Arka plan renkleri css/style.css içindeki 'body.light-mode' veya ':root' alanından çekilir -->
+    <body class="light-mode">
 
+    <!-- === ÜST MENÜ (NAVBAR) === -->
+    <!--   Navbar arka plan rengi ve yapısı css/style.css içindeki '.navbar' sınıfından ayarlanır -->
     <nav class="navbar">
         <a href="../index.html" class="logo" style="text-decoration: none;">Teknik<span>Zeka</span></a>
         <div style="display: flex; gap: 15px; align-items: center; margin-left: auto;">
@@ -80,6 +84,9 @@
     </nav>
 
     <section class="app-container" style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+        <!-- === GİRİŞ/KAYIT KARTI === -->
+        <!--   Bu kartın genişliği login.html içinde yukarıdaki <style> etiketinden (#auth-container) kontrol edilir. 
+             Genel renkleri ve gölgeleri ise css/app.css içindeki '.auth-box' sınıfındadır. -->
         <div id="auth-container" class="auth-box">
             <h2 id="auth-title">Sisteme Giriş</h2>
             <form id="auth-form">
@@ -175,6 +182,8 @@
                     </a>
                 </div>
 
+                <!-- === GİRİŞ YAP BUTONU === -->
+                <!--   Buton arka plan rengi css/app.css içindeki form butonları stilinden değişir -->
                 <button type="submit" id="auth-btn">Giriş Yap</button>
             </form>
 

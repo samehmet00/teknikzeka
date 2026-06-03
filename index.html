@@ -21,6 +21,8 @@
 
 <body>
 
+    <!-- === NAVBAR BÖLÜMÜ === -->
+    <!--   Navbar rengini, konumunu ve içindeki yazıların rengini değiştirmek için 'css/style.css' dosyasındaki '.navbar' ve '.nav-links a' sınıflarına bakmalısınız. -->
     <!-- NAVBAR -->
     <nav class="navbar" id="navbar">
         <a href="index.html" class="logo" style="text-decoration:none; display:flex; align-items:center; gap:8px;">
@@ -29,11 +31,11 @@
             <div class="logo-text-desktop">Teknik<span>Zeka</span></div>
         </a>
         <div class="nav-links" id="nav-menu">
-            <a href="pages/tickets.html" id="nav-records-link" data-tr="Arıza Kayıtlarım">Arıza
+            <a href="pages/tickets.html" id="nav-records-link">Arıza
                 Kayıtlarım</a>
-            <a href="#sell-device" id="nav-sell-link" data-tr="Cihaz Sat">Cihaz Sat</a>
-            <a href="pages/about.html" data-tr="Hakkımızda">Hakkımızda</a>
-            <a href="#footer" data-tr="İletişim">İletişim</a>
+            <a href="#sell-device" id="nav-sell-link">Cihaz Sat</a>
+            <a href="pages/about.html">Hakkımızda</a>
+            <a href="#footer">İletişim</a>
         </div>
         <div class="nav-controls">
             <!-- Özel Dil Butonu -->
@@ -63,7 +65,7 @@
 
         <div class="nav-actions-pill">
             <div id="dynamic-auth-menu">
-                <a href="pages/login.html" class="nav-login-btn" data-tr="Giriş Yap">Giriş Yap</a>
+                <a href="pages/login.html" class="nav-login-btn">Giriş Yap</a>
             </div>
         </div>
         <button id="mobile-menu-btn" class="nav-icon-btn" title="Menü" style="display:none;">
@@ -75,6 +77,8 @@
         </button>
     </nav>
 
+    <!-- === HERO (ANA BAŞLIK) BÖLÜMÜ === -->
+    <!--   Bu alanın arka plan rengini, konumunu ve animasyonlarını değiştirmek için 'css/home.css' içindeki '.home-hero' sınıfını düzenleyin. -->
     <!-- HERO -->
     <header class="home-hero">
         <!-- Arka plan animasyon topları -->
@@ -85,7 +89,7 @@
         </div>
 
         <div class="hero-inner">
-            <div class="hero-badge fade-up" style="animation-delay:0s;" data-tr="Yapay Zekâ Destekli Platform">
+            <div class="hero-badge fade-up" style="animation-delay:0s;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 10 4a2 2 0 0 1 2-2zM9 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
@@ -93,26 +97,26 @@
                 Yapay Zekâ Destekli Platform
             </div>
 
-            <h1 class="hero-title fade-up" style="animation-delay:0.1s;" data-tr="Cihaz Arızanıza Akıllı Çözüm">
+            <h1 class="hero-title fade-up" style="animation-delay:0.1s;">
                 Cihaz Arızanıza<br>
                 <span class="gradient-text">Akıllı Çözüm</span>
             </h1>
 
-            <p class="hero-subtitle fade-up" style="animation-delay:0.2s;"
-                data-tr="Şikayetinizi yazın — yapay zekâ anında teşhis koysun, sizi en yakın ve en uygun servise yönlendirsin.">
+            <p class="hero-subtitle fade-up" style="animation-delay:0.2s;">
                 Şikayetinizi yazın — yapay zekâ anında teşhis koysun,<br class="desktop-br">
                 sizi en yakın ve en uygun servise yönlendirsin.
             </p>
 
             <div class="hero-cta fade-up" style="animation-delay:0.3s;">
-                <a href="pages/login.html" class="btn-primary" id="hero-action-btn" data-tr="Arıza Kaydı Oluştur">
+                <!--   Bu butonun rengini ve yerini css/home.css içindeki '.btn-primary' sınıfından değiştirebilirsiniz -->
+                <a href="pages/login.html" class="btn-primary" id="hero-action-btn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                     </svg>
                     Arıza Kaydı Oluştur
                 </a>
-                <a href="#how-it-works" class="btn-ghost" data-tr="Nasıl Çalışır?">
+                <a href="#how-it-works" class="btn-ghost" >
                     Nasıl Çalışır?
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9" />
@@ -127,17 +131,16 @@
                         <span class="hero-stat-num counter-number" data-target="500">0</span>
                         <span style="color:var(--home-primary); font-weight:800; font-size:1.4rem;">+</span>
                     </div>
-                    <span class="hero-stat-label" data-tr="Kayıtlı Servis">Kayıtlı
+                    <span class="hero-stat-label">Kayıtlı
                         Servis</span>
                 </div>
                 <div class="hero-stat-divider"></div>
                 <div class="hero-stat">
                     <div style="display:flex; align-items:baseline; gap:2px;">
                         <span class="hero-stat-num counter-number" data-target="2">0</span>
-                        <span style="color:var(--home-primary); font-weight:800; font-size:1.4rem;"
-                            data-tr="dk">dk</span>
+                        <span style="color:var(--home-primary); font-weight:800; font-size:1.4rem;">dk</span>
                     </div>
-                    <span class="hero-stat-label" data-tr="Ort. Teklif">Ort. Teklif</span>
+                    <span class="hero-stat-label" >Ort. Teklif</span>
                 </div>
                 <div class="hero-stat-divider"></div>
                 <div class="hero-stat">
@@ -145,7 +148,7 @@
                         <span style="color:var(--home-primary); font-weight:800; font-size:1.4rem;">%</span>
                         <span class="hero-stat-num counter-number" data-target="98">0</span>
                     </div>
-                    <span class="hero-stat-label" data-tr="Memnuniyet">Memnuniyet</span>
+                    <span class="hero-stat-label" >Memnuniyet</span>
                 </div>
             </div>
         </div>
@@ -159,17 +162,17 @@
                         <span style="background:#F59E0B;"></span>
                         <span style="background:#10B981;"></span>
                     </div>
-                    <span style="font-size:0.75rem; color:#94A3B8;" data-tr="TeknikZeka — Yapay Zekâ Raporu">TeknikZeka
+                    <span style="font-size:0.75rem; color:#94A3B8;">TeknikZeka
                         — Yapay Zekâ Raporu</span>
                 </div>
                 <div class="mockup-body">
-                    <div class="mockup-label" data-tr="Tespit Edilen Arıza">Tespit Edilen Arıza
+                    <div class="mockup-label" >Tespit Edilen Arıza
                     </div>
-                    <div class="mockup-value" data-tr="Batarya / Şarj Devresi">
+                    <div class="mockup-value" >
                         Batarya / Şarj Devresi</div>
 
                     <div class="mockup-bar-wrap">
-                        <div class="mockup-bar-label" data-tr="Onarım Zorluğu">Onarım
+                        <div class="mockup-bar-label" >Onarım
                             Zorluğu</div>
                         <div class="mockup-bar-track">
                             <!-- Değişiklik burada: --bar-width eklendi -->
@@ -180,9 +183,9 @@
                         <span style="font-size:0.78rem; color:#4F46E5; font-weight:700;">6/10</span>
                     </div>
 
-                    <div class="mockup-label" style="margin-top:12px;" data-tr="Çözüm Önerisi">Çözüm Önerisi</div>
-                    <div class="mockup-value" style="font-size:0.82rem; color:#64748B;"
-                        data-tr="Batarya değişimi veya şarj entegresinin bakımı önerilir.">Batarya değişimi veya şarj
+                    <div class="mockup-label" style="margin-top:12px;" >Çözüm Önerisi</div>
+                    <div class="mockup-value" style="font-size:0.82rem; color:#64748B;">
+                        Batarya değişimi veya şarj
                         entegresinin bakımı önerilir.</div>
                     <div class="mockup-services">
                         <div class="mockup-service-chip">
@@ -203,11 +206,13 @@
         </div>
     </header>
 
+    <!-- === NASIL ÇALIŞIR BÖLÜMÜ === -->
+    <!--   Buradaki arka plan ve metin hizalamaları css/home.css içindeki '.how-section' ve '.section-title' sınıflarında yer alır. -->
     <!-- NASIL ÇALIŞIR -->
     <section id="how-it-works" class="how-section">
         <div class="section-head reveal">
-            <h2 class="section-title" data-tr="Nasıl Çalışır?">Nasıl Çalışır?</h2>
-            <p class="section-sub" data-tr="3 basit adımda cihazınızın sorununu çözün.">3 basit adımda cihazınızın
+            <h2 class="section-title" >Nasıl Çalışır?</h2>
+            <p class="section-sub" >3 basit adımda cihazınızın
                 sorununu çözün.</p>
         </div>
         <div class="steps-grid">
@@ -220,8 +225,8 @@
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                     </svg>
                 </div>
-                <h3 data-tr="Arıza Bildir">Arıza Bildir</h3>
-                <p data-tr="Cihazınızı ve şikayetinizi belirtin. Yapay zekâmız sorunu analiz etsin.">Cihazınızı ve
+                <h3 >Arıza Bildir</h3>
+                <p >Cihazınızı ve
                     şikayetinizi
                     belirtin. Yapay zekâmız sorunu analiz etsin.</p>
             </div>
@@ -236,8 +241,8 @@
                         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
                 </div>
-                <h3 data-tr="Teklifleri Karşılaştır">Teklifleri Karşılaştır</h3>
-                <p data-tr="Servislerden gelen fiyat ve süre tekliflerini değerlendirin.">Servislerden gelen fiyat ve
+                <h3 >Teklifleri Karşılaştır</h3>
+                <p >Servislerden gelen fiyat ve
                     süre
                     tekliflerini değerlendirin.</p>
             </div>
@@ -249,8 +254,8 @@
                         <polyline points="20 6 9 17 4 12" />
                     </svg>
                 </div>
-                <h3 data-tr="Hızlıca Onarılsın">Hızlıca Onarılsın</h3>
-                <p data-tr="Onay verdiğiniz servise cihazınızı teslim edin, kısa sürede geri alın.">Onay verdiğiniz
+                <h3 >Hızlıca Onarılsın</h3>
+                <p >Onay verdiğiniz
                     servise cihazınızı teslim edin, kısa sürede geri alın.</p>
             </div>
         </div>
@@ -260,20 +265,19 @@
     <section id="sell-device" class="sell-section reveal">
         <div class="sell-inner">
             <div class="sell-text">
-                <div class="sell-badge" data-tr="Arızalı Cihazını Sat">
+                <div class="sell-badge">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="1" x2="12" y2="23" />
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                     </svg>
                     Arızalı Cihazını Sat
                 </div>
-                <h2 data-tr="Tamir Masrafı mı Yüksek? Direkt Sat.">Tamir
+                <h2 >Tamir
                     Masrafı mı Yüksek?<br><span class="gradient-text">Direkt Sat.</span></h2>
-                <p
-                    data-tr="Sistemimizdeki yüzlerce teknik servise doğrudan satın. Kayıt oluştururken 'Satmak İstiyorum' seçeneğini işaretleyin ve en iyi fiyat teklifini anında kabul edin.">
+                <p>
                     Sistemimizdeki yüzlerce teknik servise doğrudan satın. Kayıt oluştururken "Satmak İstiyorum"
                     seçeneğini işaretleyin ve en iyi fiyat teklifini anında kabul edin.</p>
-                <a href="pages/login.html" class="btn-primary" id="sell-action-btn" data-tr="Cihazıma Fiyat Al">
+                <a href="pages/login.html" class="btn-primary" id="sell-action-btn" >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="1" x2="12" y2="23" />
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
@@ -315,23 +319,24 @@
     </section>
 
 
+    <!-- === NEDEN BİZ BÖLÜMÜ === -->
+    <!--   Bu bölümdeki kartların kutu renklerini ve yerleşimini css/home.css içindeki '.why-section' ve '.why-card' sınıflarından değiştirebiliriz. -->
     <!-- NEDEN BİZ -->
     <section class="why-section">
         <div class="section-head reveal">
-            <h2 class="section-title" data-tr="Neden TeknikZeka?">Neden <span class="gradient-text">TeknikZeka?</span>
+            <h2 class="section-title" >Neden <span class="gradient-text">TeknikZeka?</span>
             </h2>
         </div>
         <div class="why-grid">
             <div class="why-card reveal" style="animation-delay:0s;">
-                <div class="why-icon" style="background:rgba(79,70,229,0.08); color:var(--primary);">
+                <div class="why-icon" style="background:rgba(0, 0, 0, 0.08); color:var(--primary);">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10" />
                         <polyline points="12 6 12 12 16 14" />
                     </svg>
                 </div>
-                <h4 data-tr="Gerçek Zamanlı Takip">Gerçek Zamanlı Takip</h4>
-                <p
-                    data-tr="Cihazınızın her aşamasını anlık olarak takip edin. Kargo kodu, servis adımları, bildirimler.">
+                <h4 >Gerçek Zamanlı Takip</h4>
+                <p>
                     Cihazınızın her aşamasını anlık olarak takip edin. Kargo kodu, servis adımları, bildirimler.</p>
             </div>
             <div class="why-card reveal" style="animation-delay:0.1s;">
@@ -340,9 +345,8 @@
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                 </div>
-                <h4 data-tr="Güvenli İhale Sistemi">Güvenli İhale Sistemi</h4>
-                <p
-                    data-tr="Servisler size rekabetçi teklifler sunar. En uygun fiyatı siz seçersiniz, haksız fiyatlandırma yok.">
+                <h4 >Güvenli İhale Sistemi</h4>
+                <p>
                     Servisler size rekabetçi teklifler sunar. En uygun fiyatı siz seçersiniz, haksız fiyatlandırma yok.
                 </p>
             </div>
@@ -353,11 +357,10 @@
                             points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                     </svg>
                 </div>
-                <h4 data-tr="Puan & Yorum Sistemi">Puan & Yorum Sistemi</h4>
-                <p
-                    data-tr="Her tamamlanan işlem sonrası servisi puanlayın. Gerçek kullanıcı yorumlarıyla doğru seçimi yapın.">
-                    Her
-                    tamamlanan işlem sonrası servisi puanlayın. Gerçek kullanıcı yorumlarıyla doğru seçimi yapın.</p>
+                <h4>Puan & Yorum Sistemi</h4>
+                <p>
+                    Her tamamlanan işlem sonrası servisi puanlayın. Gerçek kullanıcı yorumlarıyla doğru seçimi yapın.
+                </p>
             </div>
             <div class="why-card reveal" style="animation-delay:0.3s;">
                 <div class="why-icon" style="background:rgba(239,68,68,0.08); color:#EF4444;">
@@ -365,10 +368,10 @@
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                 </div>
-                <h4 data-tr="Canlı Mesajlaşma">Canlı Mesajlaşma</h4>
-                <p
-                    data-tr="Servis teknisyeniyle doğrudan mesajlaşın. Süreç hakkında anlık bilgi alın, sorularınızı sorun.">
-                    Servis teknisyeniyle doğrudan mesajlaşın. Süreç hakkında anlık bilgi alın, sorularınızı sorun.</p>
+                <h4>Canlı Mesajlaşma</h4>
+                <p>
+                    Servis teknisyeniyle doğrudan mesajlaşın. Süreç hakkında anlık bilgi alın, sorularınızı sorun.
+                </p>
             </div>
         </div>
     </section>
@@ -378,23 +381,23 @@
         <div class="trust-inner">
             <div class="trust-item">
                 <div class="trust-num"><span class="counter-number" data-target="1240">0</span>+</div>
-                <div class="trust-label" data-tr="Tamamlanan Onarım">Tamamlanan Onarım</div>
+                <div class="trust-label" >Tamamlanan Onarım</div>
             </div>
             <div class="trust-divider"></div>
             <div class="trust-item">
                 <div class="trust-num"><span class="counter-number" data-target="500">0</span>+</div>
-                <div class="trust-label" data-tr="Kayıtlı Servis">Kayıtlı Servis</div>
+                <div class="trust-label">Kayıtlı Servis</div>
             </div>
             <div class="trust-divider"></div>
             <div class="trust-item">
                 <div class="trust-num"><span class="counter-number" data-target="98">0</span>%</div>
-                <div class="trust-label" data-tr="Memnuniyet Oranı">Memnuniyet Oranı</div>
+                <div class="trust-label">Memnuniyet Oranı</div>
             </div>
             <div class="trust-divider"></div>
             <div class="trust-item">
-                <div class="trust-num"><span class="counter-number" data-target="4">0</span><span data-tr="dk">dk</span>
+                <div class="trust-num"><span class="counter-number" data-target="4">0</span><span>dk</span>
                 </div>
-                <div class="trust-label" data-tr="Ort. İlk Teklif">Ort. İlk Teklif</div>
+                <div class="trust-label">Ort. İlk Teklif</div>
             </div>
         </div>
     </section>
@@ -402,9 +405,9 @@
     <!-- KULLANICI YORUMLARI -->
     <section class="reviews-section">
         <div class="section-head reveal">
-            <h2 class="section-title" data-tr="Kullanıcılar Ne Diyor?">Kullanıcılar <span class="gradient-text">Ne
+            <h2 class="section-title">Kullanıcılar <span class="gradient-text">Ne
                     Diyor?</span></h2>
-            <p class="section-sub" data-tr="Gerçek kullanıcılardan gerçek deneyimler.">Gerçek kullanıcılardan gerçek
+            <p class="section-sub">Gerçek kullanıcılardan gerçek
                 deneyimler.</p>
         </div>
         <div class="reviews-grid">
@@ -513,9 +516,9 @@
     <!-- ÖZELLİKLER / PLATFORM -->
     <section class="features-section">
         <div class="section-head reveal">
-            <h2 class="section-title" data-tr="Platform Özellikleri">Platform <span
+            <h2 class="section-title">Platform <span
                     class="gradient-text">Özellikleri</span></h2>
-            <p class="section-sub" data-tr="Tek platformda hem müşteri hem servis deneyimi.">Tek platformda hem müşteri
+            <p class="section-sub">Tek platformda hem müşteri
                 hem servis
                 deneyimi.</p>
         </div>
@@ -527,12 +530,13 @@
                     </svg>
                 </div>
                 <div class="feature-text">
-                    <div class="feature-title" data-tr="Şifreli Bağlantı">Şifreli
-                        Bağlantı</div>
-                    <div class="feature-desc"
-                        data-tr="Tüm veriler Firebase altyapısıyla güvende. Hiçbir kişisel bilgi üçüncü tarafla paylaşılmaz.">
+                    <div class="feature-title">
+                        Şifreli Bağlantı
+                    </div>
+                    <div class="feature-desc">
                         Tüm veriler Firebase altyapısıyla güvende. Hiçbir kişisel bilgi üçüncü
-                        tarafla paylaşılmaz.</div>
+                        tarafla paylaşılmaz.
+                    </div>
                 </div>
             </div>
             <div class="feature-item">
@@ -543,11 +547,11 @@
                     </svg>
                 </div>
                 <div class="feature-text">
-                    <div class="feature-title" data-tr="Gerçek Zamanlı">Gerçek Zamanlı</div>
-                    <div class="feature-desc"
-                        data-tr="Kayıt durumunuz anlık güncellenir. Servis her adımı sisteme girdikçe siz anında haberdar olursunuz.">
+                    <div class="feature-title">Gerçek Zamanlı</div>
+                    <div class="feature-desc">
                         Kayıt durumunuz anlık güncellenir. Servis her adımı sisteme girdikçe siz
-                        anında haberdar olursunuz.</div>
+                        anında haberdar olursunuz.
+                    </div>
                 </div>
             </div>
             <div class="feature-item">
@@ -557,12 +561,12 @@
                     </svg>
                 </div>
                 <div class="feature-text">
-                    <div class="feature-title" data-tr="Canlı Mesajlaşma">Canlı Mesajlaşma
+                    <div class="feature-title">Canlı Mesajlaşma
                     </div>
-                    <div class="feature-desc"
-                        data-tr="Servis teknisyeniyle anlık sohbet. Süreç hakkında sorularınızı doğrudan sorun.">
+                    <div class="feature-desc">
                         Servis teknisyeniyle anlık sohbet. Süreç hakkında sorularınızı doğrudan
-                        sorun.</div>
+                        sorun.
+                    </div>
                 </div>
             </div>
             <div class="feature-item">
@@ -573,10 +577,10 @@
                     </svg>
                 </div>
                 <div class="feature-text">
-                    <div class="feature-title" data-tr="Puan Sistemi">Puan Sistemi</div>
-                    <div class="feature-desc"
-                        data-tr="Her tamamlanan işlem sonrası servis puanlama. Doğrulanmış yorumlar ile en iyiyi seçin.">
-                        Her tamamlanan işlem sonrası servis puanlama. Doğrulanmış yorumlar ile en iyiyi seçin.</div>
+                    <div class="feature-title">Puan Sistemi</div>
+                    <div class="feature-desc">
+                        Her tamamlanan işlem sonrası servis puanlama. Doğrulanmış yorumlar ile en iyiyi seçin.
+                    </div>
                 </div>
             </div>
             <div class="feature-item">
@@ -588,9 +592,8 @@
                     </svg>
                 </div>
                 <div class="feature-text">
-                    <div class="feature-title" data-tr="Çoklu Cihaz">Çoklu Cihaz</div>
-                    <div class="feature-desc"
-                        data-tr="Telefon, tablet, bilgisayar, beyaz eşya — her tür cihaz için arıza kaydı oluşturabilirsiniz.">
+                    <div class="feature-title">Çoklu Cihaz</div>
+                    <div class="feature-desc">
                         Telefon, tablet, bilgisayar, beyaz eşya — her tür cihaz için arıza kaydı
                         oluşturabilirsiniz.</div>
                 </div>
@@ -605,9 +608,8 @@
                     </svg>
                 </div>
                 <div class="feature-text">
-                    <div class="feature-title" data-tr="Kayıt Arşivi">Kayıt Arşivi</div>
-                    <div class="feature-desc"
-                        data-tr="Tüm geçmiş işlemleriniz bulutta saklanır. Gerektiğinde kolayca erişin, takip edin.">
+                    <div class="feature-title">Kayıt Arşivi</div>
+                    <div class="feature-desc">
                         Tüm geçmiş işlemleriniz bulutta saklanır. Gerektiğinde kolayca erişin,
                         takip edin.</div>
                 </div>
@@ -616,35 +618,36 @@
     </section>
 
     <!-- FAB -->
-    <a href="pages/login.html" class="home-fab" id="fab-action-btn" data-tr="Kayıt Oluştur">
+    <a href="pages/login.html" class="home-fab" id="fab-action-btn">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
         </svg>
-        <span data-tr="Kayıt Oluştur">Kayıt Oluştur</span>
+        <span>Kayıt Oluştur</span>
     </a>
 
+    <!-- === FOOTER (ALT BİLGİ) BÖLÜMÜ === -->
+    <!--   Footer alanının arka plan rengi ve yazı rengi css/style.css veya css/home.css içindeki '.footer' sınıfından değişir. -->
     <!-- FOOTER -->
     <footer id="footer" class="footer reveal">
         <div class="footer-content">
             <div class="footer-brand">
                 <h2 class="gradient-text">Teknik<span style="color:var(--home-primary);">Zeka</span></h2>
-                <p data-tr="Yapay zekâ destekli teknik servis yönetim platformu.">Yapay zekâ destekli teknik servis
+                <p>Yapay zekâ destekli teknik servis
                     yönetim platformu.</p>
-                <p style="font-size:0.8rem; margin-top:4px; opacity:0.6;"
-                    data-tr="İnönü Üniversitesi — İnternet Programcılığı Dersi Projesi">İnönü Üniversitesi — İnternet
+                <p style="font-size:0.8rem; margin-top:4px; opacity:0.6;">İnönü Üniversitesi — İnternet
                     Programcılığı
                     Dersi Projesi</p>
             </div>
             <div class="footer-links">
-                <h4 data-tr="Hızlı Bağlantılar">Hızlı Bağlantılar</h4>
-                <a href="pages/tickets.html" data-tr="Arıza Kayıtlarım">Arıza Kayıtlarım</a>
-                <a href="#sell-device" data-tr="Cihaz Sat">Cihaz Sat</a>
-                <a href="pages/about.html" data-tr="Hakkımızda">Hakkımızda</a>
-                <a href="pages/login.html" data-tr="Giriş Yap">Giriş Yap</a>
+                <h4>Hızlı Bağlantılar</h4>
+                <a href="pages/tickets.html">Arıza Kayıtlarım</a>
+                <a href="#sell-device">Cihaz Sat</a>
+                <a href="pages/about.html">Hakkımızda</a>
+                <a href="pages/login.html">Giriş Yap</a>
             </div>
             <div class="footer-contact">
-                <h4 data-tr="İletişim">İletişim</h4>
+                <h4>İletişim</h4>
                 <p>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -663,7 +666,7 @@
         </div>
         <!-- SOSYAL MEDYA BANDI -->
         <div class="social-band">
-            <span class="social-band-label" data-tr="Bizi Takip Edin">Bizi Takip Edin</span>
+            <span class="social-band-label">Bizi Takip Edin</span>
             <div class="social-links">
                 <!-- LinkedIn -->
                 <a href="https://www.linkedin.com/in/mehmet-%C5%9Fa-704626297/" class="social-link"
@@ -688,14 +691,14 @@
         </div>
 
         <div class="footer-bottom">
-            <p data-tr="© 2026 TeknikZeka. Tüm hakları saklıdır.">
+            <p>
                 &copy; 2026 TeknikZeka. Tüm hakları saklıdır.</p>
             <span class="footer-badge">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 10 4a2 2 0 0 1 2-2z" />
                 </svg>
-                <span data-tr="Yapay Zekâ Destekli">Yapay Zekâ Destekli</span>
+                <span>Yapay Zekâ Destekli</span>
             </span>
         </div>
     </footer>
